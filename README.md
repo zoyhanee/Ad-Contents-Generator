@@ -4,7 +4,7 @@
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 **Ad-Contents-Generator** is an AI-powered web service designed to simplify the creation of marketing content for small businesses.
 
@@ -14,19 +14,19 @@ Our goal is to reduce the time and cost required to produce professional-quality
 
 ---
 
-## ✨ Key Features
+# ✨ Key Features
 
 - 🖼️ Product image upload
 - ✍️ AI-generated marketing copy
 - 🎨 AI-generated promotional images
 - 🎯 Multiple advertising styles
 - 📱 SNS-ready advertising content
-- ⚡ Fast API response
+- ⚡ FastAPI-based backend service
 - 🚀 GPU-accelerated inference (NVIDIA L4)
 
 ---
 
-## 🏗️ System Architecture
+# 🏗️ System Architecture
 
 ```text
                 User
@@ -34,39 +34,41 @@ Our goal is to reduce the time and cost required to produce professional-quality
                   ▼
           Streamlit Frontend
                   │
+             HTTP Request
+                  │
                   ▼
            FastAPI Backend
                   │
-                  ▼
-         AI Generation Engine
-         ├── Text Generation
-         └── Image Generation
-                  │
+        ┌─────────┴─────────┐
+        ▼                   ▼
+ Text Generation      Image Generation
+      Model                Model
+        │                   │
+        └─────────┬─────────┘
                   ▼
       Generated Advertisement
 ```
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
-### Frontend
+## Frontend
 
 - Streamlit
 
-### Backend
+## Backend
 
 - FastAPI
 - Uvicorn
 
-### AI Framework
+## AI Framework
 
 - PyTorch
 - Hugging Face Transformers
 - Diffusers
-- Stable Diffusion / FLUX (TBD)
 
-### Infrastructure
+## Infrastructure
 
 - Google Cloud Platform (GCP)
 - NVIDIA L4 GPU
@@ -74,45 +76,48 @@ Our goal is to reduce the time and cost required to produce professional-quality
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```text
 Ad-Contents-Generator/
 │
 ├── backend/
 │   ├── app/
-│   │   ├── api/
-│   │   ├── services/
-│   │   ├── models/
-│   │   ├── schemas/
-│   │   ├── utils/
+│   │   ├── api/            # API Routers
+│   │   ├── core/           # Configuration
+│   │   ├── ml/             # AI Models & Inference
+│   │   ├── schemas/        # Pydantic Schemas
+│   │   ├── services/       # Business Logic
+│   │   ├── utils/          # Utility Functions
 │   │   └── main.py
-│   └── requirements.txt
+│   │
+│   └── tests/
 │
 ├── frontend/
+│   ├── app.py
 │   ├── pages/
 │   ├── components/
-│   └── app.py
+│   └── assets/
 │
-├── model/
+├── weights/
+│   ├── text/
+│   └── image/
 │
 ├── outputs/
-│
 ├── docs/
-│
-├── docker/
+├── scripts/
 │
 ├── requirements.txt
 ├── docker-compose.yml
-├── .gitignore
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## ⚙️ Installation
+# ⚙️ Installation
 
-### 1. Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
@@ -120,7 +125,7 @@ git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
 cd Ad-Contents-Generator
 ```
 
-### 2. Create Virtual Environment
+## 2. Create Virtual Environment
 
 ```bash
 python3 -m virtualenv .venv
@@ -128,14 +133,14 @@ python3 -m virtualenv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install PyTorch (CUDA)
+## 3. Install PyTorch (CUDA)
 
 ```bash
 pip install torch torchvision torchaudio \
 --index-url https://download.pytorch.org/whl/cu128
 ```
 
-### 4. Install Dependencies
+## 4. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -143,15 +148,25 @@ pip install -r requirements.txt
 
 ---
 
-## 🚀 Run
+# 🚀 Run
 
-### Backend
+## Backend
 
 ```bash
+cd backend
+
 uvicorn app.main:app --reload
 ```
 
-### Frontend
+The backend server will be available at:
+
+```
+http://localhost:8000
+```
+
+---
+
+## Frontend
 
 ```bash
 streamlit run frontend/app.py
@@ -159,34 +174,63 @@ streamlit run frontend/app.py
 
 ---
 
-## 📚 Development Workflow
+# 📚 Development Workflow
 
 ```text
 feature/*
       │
       ▼
-Develop Branch
+develop
       │
       ▼
-Main Branch
+main
 ```
 
-Each feature should be developed in an independent feature branch and merged through Pull Requests.
+### Branch Strategy
+
+- **main** : Production-ready branch
+- **develop** : Integration branch
+- **feature/*** : Individual feature development
+
+All new features should be developed in feature branches and merged into `develop` through Pull Requests.
 
 ---
 
-## 👥 Team
+# 👥 Team
 
 | Name | Role |
 |------|------|
-| Han Seong Taek | Backend · AI Integration |
+| TBD | Project Manageer |
 | TBD | Frontend |
 | TBD | AI Model |
-| TBD | Project Management |
+| TBD | Backend · AI Integration |
 
 ---
 
-## 🎯 Future Improvements
+# 📌 Roadmap
+
+### Sprint 1
+
+- Development environment setup
+- FastAPI backend
+- Streamlit frontend
+- Backend-Frontend integration
+
+### Sprint 2
+
+- Text generation model integration
+- Image generation model integration
+- API implementation
+
+### Sprint 3
+
+- UI/UX improvement
+- Docker deployment
+- Final presentation
+
+---
+
+# 🎯 Future Improvements
 
 - Fine-tuned image generation model
 - Personalized advertisement styles
@@ -197,6 +241,6 @@ Each feature should be developed in an independent feature branch and merged thr
 
 ---
 
-## 📄 License
+# 📄 License
 
 This project was developed for educational purposes as part of the Codeit AI Project.
