@@ -21,3 +21,4 @@ python-multipart==0.0.32
 
 pydantic==2.13.4
 requests==2.34.2
+pydantic-settings==2.14.2

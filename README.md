@@ -1,246 +1,312 @@
 # Ad-Contents-Generator
 
-> An AI-powered advertising content generation service that helps small businesses create high-quality marketing copy and promotional images with minimal effort.
+> AI-powered platform-specific advertising content generation service for small businesses.
+
+Ad-Contents-Generator is an AI marketing assistant that analyzes products, recommends marketing strategies, and automatically generates advertising content optimized for different marketing platforms.
 
 ---
 
 # 📌 Project Overview
 
-**Ad-Contents-Generator** is an AI-powered web service designed to simplify the creation of marketing content for small businesses.
+Creating advertisements for multiple platforms is a time-consuming task for small business owners.
 
-Users upload a product image and provide basic product information. The system automatically generates engaging marketing copy and promotional images optimized for online advertising.
+Even for the same product, advertising strategies differ depending on the platform.
 
-Our goal is to reduce the time and cost required to produce professional-quality advertisements by leveraging state-of-the-art generative AI models.
+For example,
 
----
+- **Instagram** focuses on branding and storytelling.
+- **Baemin** focuses on promotions and increasing customer orders.
 
-# ✨ Key Features
-
-- 🖼️ Product image upload
-- ✍️ AI-generated marketing copy
-- 🎨 AI-generated promotional images
-- 🎯 Multiple advertising styles
-- 📱 SNS-ready advertising content
-- ⚡ FastAPI-based backend service
-- 🚀 GPU-accelerated inference (NVIDIA L4)
+This project leverages Generative AI to recommend marketing strategies and generate platform-specific advertisements automatically.
 
 ---
 
-# 🏗️ System Architecture
+# 🎯 Problem Statement
+
+Conventional AI advertisement generators simply generate text or images.
+
+However, effective marketing requires much more than generation.
+
+It requires:
+
+- Product analysis
+- Platform selection
+- Marketing strategy
+- Advertisement style
+- Platform-specific optimization
+
+Our goal is to automate this entire planning process.
+
+---
+
+# 💡 Solution
+
+Instead of
 
 ```text
-                User
-                  │
-                  ▼
-          Streamlit Frontend
-                  │
-             HTTP Request
-                  │
-                  ▼
-           FastAPI Backend
-                  │
-        ┌─────────┴─────────┐
-        ▼                   ▼
- Text Generation      Image Generation
-      Model                Model
-        │                   │
-        └─────────┬─────────┘
-                  ▼
-      Generated Advertisement
+Product
+
+↓
+
+Advertisement
 ```
 
----
-
-# 🛠 Tech Stack
-
-## Frontend
-
-- Streamlit
-
-## Backend
-
-- FastAPI
-- Uvicorn
-
-## AI Framework
-
-- PyTorch
-- Hugging Face Transformers
-- Diffusers
-
-## Infrastructure
-
-- Google Cloud Platform (GCP)
-- NVIDIA L4 GPU
-- Docker
-
----
-
-# 📁 Project Structure
+Ad-Contents-Generator provides
 
 ```text
-Ad-Contents-Generator/
-│
-├── backend/
-│   ├── app/
-│   │   ├── api/            # API Routers
-│   │   ├── core/           # Configuration
-│   │   ├── ml/             # AI Models & Inference
-│   │   ├── schemas/        # Pydantic Schemas
-│   │   ├── services/       # Business Logic
-│   │   ├── utils/          # Utility Functions
-│   │   └── main.py
-│   │
-│   └── tests/
-│
-├── frontend/
-│   ├── app.py
-│   ├── pages/
-│   ├── components/
-│   └── assets/
-│
-├── weights/
-│   ├── text/
-│   └── image/
-│
-├── outputs/
-├── docs/
-├── scripts/
-│
-├── requirements.txt
-├── docker-compose.yml
-├── README.md
-└── .gitignore
+Product
+
+↓
+
+AI Product Analysis
+
+↓
+
+Platform Recommendation
+
+↓
+
+Marketing Strategy Recommendation
+
+↓
+
+Advertisement Style Selection
+
+↓
+
+Platform-specific Advertisement Generation
 ```
 
 ---
 
-# ⚙️ Installation
+# 🎯 Supported Platforms
 
-## 1. Clone Repository
+## 📸 Instagram
 
-```bash
-git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
+Purpose
 
-cd Ad-Contents-Generator
-```
+- Brand Awareness
+- Social Media Marketing
 
-## 2. Create Virtual Environment
+Generated Contents
 
-```bash
-python3 -m virtualenv .venv
+- Feed Advertisement Image
+- Caption
+- Hashtags
 
-source .venv/bin/activate
-```
+Advertising Characteristics
 
-## 3. Install PyTorch (CUDA)
-
-```bash
-pip install torch torchvision torchaudio \
---index-url https://download.pytorch.org/whl/cu128
-```
-
-## 4. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
+- Emotional
+- Storytelling
+- Lifestyle Branding
 
 ---
 
-# 🚀 Run
+## 🍽️ Baemin
 
-## Backend
+Purpose
 
-```bash
-cd backend
+- Increase Orders
+- Promotion
 
-uvicorn app.main:app --reload
-```
+Generated Contents
 
-The backend server will be available at:
+- Promotional Advertisement Image
+- Event Copy
+- Call-To-Action (CTA)
 
-```
-http://localhost:8000
-```
+Advertising Characteristics
 
----
-
-## Frontend
-
-```bash
-streamlit run frontend/app.py
-```
+- Discount Promotion
+- Order Conversion
+- Event Marketing
 
 ---
 
-# 📚 Development Workflow
+# ✨ Core Features
+
+## 📦 AI Product Analysis
+
+Analyze uploaded products using AI.
+
+Input
+
+- Product Image
+- Product Name
+- Product Description
+- Price
+
+Output
+
+- Product Category
+- Product Characteristics
+- Target Customers
+- Marketing Highlights
+
+---
+
+## 📱 Platform Recommendation
+
+Recommend the most suitable advertising platform.
+
+Example
+
+Instagram ⭐⭐⭐⭐⭐ (95)
+
+Reason
+
+This product has strong visual appeal and is suitable for SNS marketing.
+
+---
+
+## 📈 Marketing Strategy Recommendation
+
+Recommend multiple advertising strategies.
+
+Examples
+
+- Emotional Marketing
+- Promotion Event
+- New Product Launch
+- Brand Marketing
+
+Each strategy includes
+
+- Recommendation Score
+- Expected Effect
+- Recommendation Reason
+
+---
+
+## 🎨 Advertisement Style Selection
+
+Users can customize advertisements by selecting different styles.
+
+Supported Styles
+
+- Emotional
+- Premium
+- Friendly
+- Humorous
+- Event Promotion
+
+---
+
+## 🖼 Platform-specific Advertisement Generation
+
+### Instagram
+
+Generate
+
+- Feed Image
+- Caption
+- Hashtags
+
+### Baemin
+
+Generate
+
+- Promotional Image
+- Event Copy
+- Call-To-Action
+
+---
+
+# 🚀 Service Flow
 
 ```text
-feature/*
-      │
-      ▼
-develop
-      │
-      ▼
-main
+Product Information
+(Image, Name, Description, Price)
+
+            │
+
+            ▼
+
+     AI Product Analysis
+
+            │
+
+            ▼
+
+ Platform Recommendation
+
+ Instagram / Baemin
+
+            │
+
+            ▼
+
+Marketing Strategy Recommendation
+
+            │
+
+            ▼
+
+Advertisement Style Selection
+
+            │
+
+            ▼
+
+Advertisement Generation
+
+            │
+
+            ▼
+
+Download
 ```
 
-### Branch Strategy
-
-- **main** : Production-ready branch
-- **develop** : Integration branch
-- **feature/*** : Individual feature development
-
-All new features should be developed in feature branches and merged into `develop` through Pull Requests.
-
 ---
 
-# 👥 Team
+# 🤖 AI Pipeline
 
-| Name | Role |
-|------|------|
-| TBD | Project Manageer |
-| TBD | Frontend |
-| TBD | AI Model |
-| TBD | Backend · AI Integration |
+```text
+             Product
+
+                │
+
+                ▼
+
+      Vision-based Analysis
+
+                │
+
+                ▼
+
+       Product Understanding
+
+                │
+
+                ▼
+
+               LLM
+
+      ┌─────────┼──────────┐
+
+      ▼         ▼          ▼
+
+ Platform   Strategy   Copy Generation
+
+Recommend  Recommend
+
+                │
+
+                ▼
+
+      Prompt Builder
+
+                │
+
+                ▼
+
+   Diffusers / FLUX Model
+
+                │
+
+                ▼
+
+ Advertisement Image
+```
 
 ---
-
-# 📌 Roadmap
-
-### Sprint 1
-
-- Development environment setup
-- FastAPI backend
-- Streamlit frontend
-- Backend-Frontend integration
-
-### Sprint 2
-
-- Text generation model integration
-- Image generation model integration
-- API implementation
-
-### Sprint 3
-
-- UI/UX improvement
-- Docker deployment
-- Final presentation
-
----
-
-# 🎯 Future Improvements
-
-- Fine-tuned image generation model
-- Personalized advertisement styles
-- Multi-language support
-- One-click SNS publishing
-- A/B testing for generated advertisements
-- Automatic banner generation
-
----
-
-# 📄 License
-
-This project was developed for educational purposes as part of the Codeit AI Project.
