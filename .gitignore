@@ -216,3 +216,32 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# ==========================
+# Project-specific
+# ==========================
+
+# VS Code
+.vscode/
+
+# Generated images and outputs
+outputs/
+generated/
+results/
+
+# Model weights
+models/
+*.ckpt
+*.safetensors
+*.bin
+*.pt
+*.pth
+
+# Hugging Face cache (optional)
+.cache/
+.huggingface/
+
+# Logs
+logs/
+*.log
