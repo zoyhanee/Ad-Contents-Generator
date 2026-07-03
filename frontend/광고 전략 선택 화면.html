@@ -1,0 +1,507 @@
+<!DOCTYPE html><html class="light" lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>AI 생성 - 광고 전략 선택</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#005ac1",
+                    "background": "#f7f9ff",
+                    "error-container": "#ffdad6",
+                    "primary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#001a41",
+                    "surface-tint": "#005bc0",
+                    "on-tertiary-fixed": "#341100",
+                    "on-primary-container": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#d7dae0",
+                    "outline-variant": "#c1c6d6",
+                    "secondary-container": "#4d8efe",
+                    "on-secondary-container": "#00285c",
+                    "tertiary": "#9e4300",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-tertiary-container": "#0e0200",
+                    "tertiary-fixed": "#ffdbcb",
+                    "surface-variant": "#dfe3e8",
+                    "on-error-container": "#93000a",
+                    "outline": "#727785",
+                    "on-primary-fixed-variant": "#004493",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed-variant": "#783100",
+                    "on-secondary-fixed-variant": "#004494",
+                    "surface-container-lowest": "#ffffff",
+                    "primary": "#005bbf",
+                    "primary-fixed-dim": "#adc7ff",
+                    "on-surface": "#181c20",
+                    "on-surface-variant": "#414754",
+                    "inverse-surface": "#2d3135",
+                    "inverse-on-surface": "#eef1f7",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-low": "#f1f4fa",
+                    "on-secondary-fixed": "#001a41",
+                    "surface": "#f7f9ff",
+                    "surface-container-highest": "#dfe3e8",
+                    "primary-container": "#1a73e8",
+                    "inverse-primary": "#adc7ff",
+                    "surface-container-high": "#e5e8ee",
+                    "surface-container": "#ebeef4",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "on-background": "#181c20",
+                    "tertiary-container": "#c55500",
+                    "surface-bright": "#f7f9ff",
+                    "tertiary-fixed-dim": "#ffb691"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-max": "1200px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "gutter": "24px",
+                    "xl": "32px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "xxl": "48px",
+                    "unit": "4px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .tab-transition { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-effect { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}[type='text'],input:where(:not([type])),[type='email'],[type='url'],[type='password'],[type='number'],[type='date'],[type='datetime-local'],[type='month'],[type='search'],[type='tel'],[type='time'],[type='week'],[multiple],textarea,select{-webkit-appearance:none;appearance:none;background-color:#fff;border-color:#6b7280;border-width:1px;border-radius:0px;padding-top:0.5rem;padding-right:0.75rem;padding-bottom:0.5rem;padding-left:0.75rem;font-size:1rem;line-height:1.5rem;--tw-shadow:0 0 #0000;}[type='text']:focus, input:where(:not([type])):focus, [type='email']:focus, [type='url']:focus, [type='password']:focus, [type='number']:focus, [type='date']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='week']:focus, [multiple]:focus, textarea:focus, select:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);border-color:#2563eb}input::placeholder,textarea::placeholder{color:#6b7280;opacity:1}::-webkit-datetime-edit-fields-wrapper{padding:0}::-webkit-date-and-time-value{min-height:1.5em;text-align:inherit}::-webkit-datetime-edit{display:inline-flex}::-webkit-datetime-edit,::-webkit-datetime-edit-year-field,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute-field,::-webkit-datetime-edit-second-field,::-webkit-datetime-edit-millisecond-field,::-webkit-datetime-edit-meridiem-field{padding-top:0;padding-bottom:0}select{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");background-position:right 0.5rem center;background-repeat:no-repeat;background-size:1.5em 1.5em;padding-right:2.5rem;print-color-adjust:exact}[multiple],[size]:where(select:not([size="1"])){background-image:initial;background-position:initial;background-repeat:unset;background-size:initial;padding-right:0.75rem;print-color-adjust:unset}[type='checkbox'],[type='radio']{-webkit-appearance:none;appearance:none;padding:0;print-color-adjust:exact;display:inline-block;vertical-align:middle;background-origin:border-box;-webkit-user-select:none;user-select:none;flex-shrink:0;height:1rem;width:1rem;color:#2563eb;background-color:#fff;border-color:#6b7280;border-width:1px;--tw-shadow:0 0 #0000}[type='checkbox']{border-radius:0px}[type='radio']{border-radius:100%}[type='checkbox']:focus,[type='radio']:focus{outline:2px solid transparent;outline-offset:2px;--tw-ring-inset:var(--tw-empty,/*!*/ /*!*/);--tw-ring-offset-width:2px;--tw-ring-offset-color:#fff;--tw-ring-color:#2563eb;--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow)}[type='checkbox']:checked,[type='radio']:checked{border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat}[type='checkbox']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='checkbox']:checked{-webkit-appearance:auto;appearance:auto}}[type='radio']:checked{background-image:url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3ccircle cx='8' cy='8' r='3'/%3e%3c/svg%3e");}@media (forced-colors: active) {[type='radio']:checked{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:checked:hover,[type='checkbox']:checked:focus,[type='radio']:checked:hover,[type='radio']:checked:focus{border-color:transparent;background-color:currentColor}[type='checkbox']:indeterminate{background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3e%3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 8h8'/%3e%3c/svg%3e");border-color:transparent;background-color:currentColor;background-size:100% 100%;background-position:center;background-repeat:no-repeat;}@media (forced-colors: active) {[type='checkbox']:indeterminate{-webkit-appearance:auto;appearance:auto}}[type='checkbox']:indeterminate:hover,[type='checkbox']:indeterminate:focus{border-color:transparent;background-color:currentColor}[type='file']{background:unset;border-color:inherit;border-width:0;border-radius:0;padding:0;font-size:unset;line-height:inherit}[type='file']:focus{outline:1px solid ButtonText;outline:1px auto -webkit-focus-ring-color}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0px}.top-0{top:0px}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.mb-lg{margin-bottom:24px}.mb-md{margin-bottom:16px}.mb-sm{margin-bottom:8px}.mb-xl{margin-bottom:32px}.mb-xs{margin-bottom:4px}.ml-xl{margin-left:32px}.mt-auto{margin-top:auto}.mt-lg{margin-top:24px}.mt-xl{margin-top:32px}.mt-xxl{margin-top:48px}.flex{display:flex}.grid{display:grid}.hidden{display:none}.aspect-square{aspect-ratio:1 / 1}.h-0\.5{height:0.125rem}.h-16{height:4rem}.h-5{height:1.25rem}.h-8{height:2rem}.h-9{height:2.25rem}.h-full{height:100%}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-16{width:4rem}.w-5{width:1.25rem}.w-8{width:2rem}.w-9{width:2.25rem}.w-full{width:100%}.max-w-container-max{max-width:1200px}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.flex-grow{flex-grow:1}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-not-allowed{cursor:not-allowed}.cursor-pointer{cursor:pointer}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-end{align-items:flex-end}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-3{gap:0.75rem}.gap-lg{gap:24px}.gap-md{gap:16px}.gap-sm{gap:8px}.gap-xl{gap:32px}.gap-xs{gap:4px}.space-y-lg > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(24px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(24px * var(--tw-space-y-reverse))}.space-y-md > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(16px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(16px * var(--tw-space-y-reverse))}.space-y-sm > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(8px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(8px * var(--tw-space-y-reverse))}.space-y-xl > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(32px * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(32px * var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-b-2{border-bottom-width:2px}.border-t{border-top-width:1px}.border-outline{--tw-border-opacity:1;border-color:rgb(114 119 133 / var(--tw-border-opacity, 1))}.border-outline-variant{--tw-border-opacity:1;border-color:rgb(193 198 214 / var(--tw-border-opacity, 1))}.border-primary{--tw-border-opacity:1;border-color:rgb(0 91 191 / var(--tw-border-opacity, 1))}.border-transparent{border-color:transparent}.bg-background{--tw-bg-opacity:1;background-color:rgb(247 249 255 / var(--tw-bg-opacity, 1))}.bg-outline-variant{--tw-bg-opacity:1;background-color:rgb(193 198 214 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(0 91 191 / var(--tw-bg-opacity, 1))}.bg-primary-fixed{--tw-bg-opacity:1;background-color:rgb(216 226 255 / var(--tw-bg-opacity, 1))}.bg-primary-fixed\/30{background-color:rgb(216 226 255 / 0.3)}.bg-primary\/10{background-color:rgb(0 91 191 / 0.1)}.bg-surface-container-high{--tw-bg-opacity:1;background-color:rgb(229 232 238 / var(--tw-bg-opacity, 1))}.bg-surface-container-high\/50{background-color:rgb(229 232 238 / 0.5)}.bg-surface-container-low{--tw-bg-opacity:1;background-color:rgb(241 244 250 / var(--tw-bg-opacity, 1))}.bg-surface-container-lowest{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.object-cover{object-fit:cover}.p-lg{padding:24px}.p-md{padding:16px}.p-sm{padding:8px}.p-xl{padding:32px}.p-xs{padding:4px}.px-lg{padding-left:24px;padding-right:24px}.px-xl{padding-left:32px;padding-right:32px}.px-xxl{padding-left:48px;padding-right:48px}.py-lg{padding-top:24px;padding-bottom:24px}.py-md{padding-top:16px;padding-bottom:16px}.py-sm{padding-top:8px;padding-bottom:8px}.py-xl{padding-top:32px;padding-bottom:32px}.pb-1{padding-bottom:0.25rem}.pb-xxl{padding-bottom:48px}.pt-xxl{padding-top:48px}.text-center{text-align:center}.font-headline-md{font-family:Inter}.font-label-md{font-family:Inter}.font-label-sm{font-family:Inter}.text-\[18px\]{font-size:18px}.text-\[32px\]{font-size:32px}.text-body-md{font-size:16px;line-height:24px;font-weight:400}.text-headline-md{font-size:24px;line-height:32px;font-weight:600}.text-label-md{font-size:14px;line-height:20px;letter-spacing:0.01em;font-weight:500}.text-label-sm{font-size:12px;line-height:16px;font-weight:500}.font-bold{font-weight:700}.italic{font-style:italic}.tracking-tight{letter-spacing:-0.025em}.text-on-background{--tw-text-opacity:1;color:rgb(24 28 32 / var(--tw-text-opacity, 1))}.text-on-primary{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-on-surface-variant{--tw-text-opacity:1;color:rgb(65 71 84 / var(--tw-text-opacity, 1))}.text-outline{--tw-text-opacity:1;color:rgb(114 119 133 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(0 91 191 / var(--tw-text-opacity, 1))}.text-primary-container{--tw-text-opacity:1;color:rgb(26 115 232 / var(--tw-text-opacity, 1))}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.ring-2{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-4{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-primary{--tw-ring-opacity:1;--tw-ring-color:rgb(0 91 191 / var(--tw-ring-opacity, 1))}.ring-primary-fixed{--tw-ring-opacity:1;--tw-ring-color:rgb(216 226 255 / var(--tw-ring-opacity, 1))}.ring-opacity-50{--tw-ring-opacity:0.5}.ring-offset-2{--tw-ring-offset-width:2px}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-200{transition-duration:200ms}.hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:border-primary:hover{--tw-border-opacity:1;border-color:rgb(0 91 191 / var(--tw-border-opacity, 1))}.hover\:bg-primary-fixed:hover{--tw-bg-opacity:1;background-color:rgb(216 226 255 / var(--tw-bg-opacity, 1))}.hover\:text-primary:hover{--tw-text-opacity:1;color:rgb(0 91 191 / var(--tw-text-opacity, 1))}.hover\:underline:hover{-webkit-text-decoration-line:underline;text-decoration-line:underline}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:ring-primary:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(0 91 191 / var(--tw-ring-opacity, 1))}.active\:scale-95:active{--tw-scale-x:.95;--tw-scale-y:.95;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.group:hover .group-hover\:text-on-surface{--tw-text-opacity:1;color:rgb(24 28 32 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:inline{display:inline}}@media (min-width: 768px){.md\:block{display:block}.md\:flex{display:flex}.md\:w-24{width:6rem}.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.md\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.md\:gap-6{gap:1.5rem}.md\:px-xl{padding-left:32px;padding-right:32px}.md\:px-xxl{padding-left:48px;padding-right:48px}}</style></head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface-container-lowest shadow-sm docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-lg md:px-xl max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md text-primary tracking-tight">Logo</span>
+<nav class="hidden md:flex gap-md ml-xl">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">내 작업</a>
+<a class="text-primary border-b-2 border-primary pb-1 text-label-md font-label-md" href="#">AI 생성</a>
+
+
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary p-xs">help</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary p-xs">settings</button>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a small business owner in a modern bright office setting, soft professional lighting, high resolution photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU4MD7hOz-85mw5m2x6SQsE01MaFXPPF6KfwHqKc0DFVUkc_d0rn-HODVVp8GblGKlo5EXhBkcmG_6JQfY5LWFzfo-IX4FxRUBjrJMvFA3X7ctKg8F2jqTbPENAZyykT09UY9CcrN0nqGPdKBb6c2f7tgX0Rj01CYHCNn8Iqo3zqBdFHB_3aTGl8pKozePKwOhEL2Zm7yATYIRImbf0G9_3RbHghArA7i7_8_XrZjhG_C0bIr6YT0m">
+</div>
+</div>
+</div>
+</header>
+<!-- Step Indicator -->
+<div class="w-full bg-surface-container-lowest border-b border-outline-variant">
+<div class="max-w-container-max mx-auto px-lg md:px-xl py-lg flex items-center justify-center gap-3 md:gap-6">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant hidden sm:inline">상품 정보</span>
+</div>
+<div class="w-10 md:w-24 h-0.5 bg-primary shrink-0"></div>
+<div class="flex items-center gap-sm">
+<div class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold shrink-0 ring-4 ring-primary-fixed">2</div>
+<span class="text-label-sm font-label-sm text-primary font-bold hidden sm:inline">광고 전략 선택</span>
+</div>
+<div class="w-10 md:w-24 h-0.5 bg-outline-variant shrink-0"></div>
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold shrink-0">3</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant hidden sm:inline">광고 생성</span>
+</div>
+</div>
+</div>
+<div class="flex flex-1 overflow-hidden">
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto px-lg md:px-xxl py-xl">
+<div class="max-w-container-max mx-auto space-y-xl">
+<!-- 1. Top Summary Card -->
+<section class="fade-in">
+<div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-16 rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A gourmet artisan sandwich on rustic sourdough bread, featuring fresh heirloom tomatoes, vibrant green pesto, and melted mozzarella. Professional food photography with soft natural lighting on a clean marble countertop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLZ9g5fgMudawRyzF8YFh59Tan2HFaNwK4blz5-MUeSxTeMzLd_HHE2q0OO-6Gx5aVEMqv_8rl-ITZnFUikvRp59ZNEiEF2jv39qO5W13CJu88_UNOGZi2Ly1uYdWkFSf1_rcmk_u5HZeR9XnJ2FXR3J943sMiPMsad6XetZbXtepGJurqTIFvxZyKsnh0Z7hhJw0mcY7Z2p_5qHKQiXg9gpw_IXyk4FKDK2DhWgTp0_YpWTAFXxJ4">
+</div>
+<div>
+<h3 class="text-body-lg font-bold">카페 시그니처 샌드위치</h3>
+<p class="text-label-md text-on-surface-variant">$12.50 • 수제 베이커리</p>
+</div>
+</div>
+<button class="text-primary font-bold text-label-md flex items-center gap-xs hover:underline">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                        정보 수정
+                    </button>
+</div>
+</section>
+<!-- 2. Mode Selection -->
+<section class="fade-in" style="animation-delay: 0.1s;">
+<h2 class="text-headline-md font-headline-md mb-lg">전략 모드 선택</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Mode Card A -->
+<div class="cursor-pointer bg-surface-container-lowest p-xl rounded-xl border hover:shadow-md transition-all border-primary ring-4 ring-primary-fixed ring-opacity-50 shadow-md" id="mode-faster" onclick="selectMode('faster')">
+<div class="flex justify-between items-start mb-md">
+<div class="bg-primary-fixed p-sm rounded-lg">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div class="check-icon text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs">빠른 추천</h3>
+<p class="text-on-surface-variant text-body-md">AI가 현재 트렌드에 맞춰 가장 적합한 스타일을 제안합니다.</p>
+</div>
+<!-- Mode Card B -->
+<div class="cursor-pointer bg-surface-container-lowest p-xl rounded-xl border-2 transition-all scale-100 border-outline-variant" id="mode-manual" onclick="selectMode('manual')">
+<div class="flex justify-between items-start mb-md">
+<div class="bg-surface-container-high p-sm rounded-lg">
+<span class="material-symbols-outlined text-on-surface-variant">tune</span>
+</div>
+<div class="check-icon text-primary hidden">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+</div>
+<h3 class="text-headline-md font-headline-md mb-xs">직접 설정</h3>
+<p class="text-on-surface-variant text-body-md">광고 목표와 시각적 스타일을 직접 세밀하게 설정합니다.</p>
+</div>
+</div>
+<!-- Reuse Option -->
+<div class="mt-lg flex items-center gap-md">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox">
+<span class="text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">이전 작업물과 비슷한 톤으로</span>
+</label>
+</div>
+</section>
+<!-- 3. Dynamic Interaction Sections -->
+<div id="dynamic-content-area" class="">
+<!-- Platform Section -->
+<section class="fade-in space-y-lg mt-xl" style="animation-delay: 0.2s;">
+<h2 class="text-headline-md font-headline-md">광고 플랫폼 선택</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="platform-btn p-md rounded-xl border border-primary bg-primary-fixed/30 cursor-pointer flex flex-col items-center gap-sm transition-all border-2" data-platform-name="인스타그램" onclick="selectPlatform(this)">
+<span class="material-symbols-outlined text-primary text-[32px]">photo_camera</span>
+<span class="text-label-md font-bold">인스타그램</span>
+</div>
+<div class="platform-btn p-md rounded-xl border border-outline-variant hover:border-primary cursor-pointer flex flex-col items-center gap-sm transition-all" data-platform-name="배달의민족" onclick="selectPlatform(this)">
+<span class="material-symbols-outlined text-on-surface-variant text-[32px]">delivery_dining</span>
+<span class="text-label-md font-bold">배달의민족</span>
+</div>
+<div class="platform-btn p-md rounded-xl border border-outline-variant hover:border-primary cursor-pointer flex flex-col items-center gap-sm transition-all" id="offline-trigger" data-platform-name="오프라인 포스터" onclick="selectPlatform(this); toggleOfflineOptions(true)">
+<span class="material-symbols-outlined text-on-surface-variant text-[32px]">newspaper</span>
+<span class="text-label-md font-bold">오프라인 포스터</span>
+</div>
+</div>
+<!-- Sub-options for Offline Poster -->
+<div class="hidden fade-in bg-surface-container-high/50 p-lg rounded-xl space-y-md" id="offline-options">
+<p class="text-label-md font-bold">포스터 규격 선택</p>
+<div class="flex gap-md">
+<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border-2 border-primary text-primary font-bold transition-all" onclick="selectPosterSize(this)">A4</button>
+<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant font-bold transition-all" onclick="selectPosterSize(this)">A3</button>
+<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant font-bold transition-all" onclick="selectPosterSize(this)">정사각형</button>
+</div>
+</div>
+</section>
+<!-- Manual Only Section -->
+<div class="space-y-xl mt-xl hidden" id="manual-sections">
+<!-- Goal Selection -->
+<section class="fade-in">
+<h2 class="text-headline-md font-headline-md mb-lg">광고 목표</h2>
+<div class="flex flex-wrap gap-md">
+<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border-2 border-primary text-primary font-bold shadow-sm" data-goal-name="신메뉴 홍보" onclick="selectGoal(this)">신메뉴 홍보</button>
+<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant hover:text-primary transition-all" data-goal-name="할인 이벤트" onclick="selectGoal(this)">할인 이벤트</button>
+<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant hover:text-primary transition-all" data-goal-name="브랜드 홍보" onclick="selectGoal(this)">브랜드 홍보</button>
+</div>
+</section>
+<!-- Style Selection -->
+<section class="fade-in">
+<h2 class="text-headline-md font-headline-md mb-lg">시각적 스타일</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+<div class="style-card group cursor-pointer space-y-sm" data-style-name="따뜻함/감성적" onclick="selectStyle(this)">
+<div class="aspect-square rounded-xl overflow-hidden border-4 border-primary ring-2 ring-primary ring-offset-2 relative">
+<img class="w-full h-full object-cover" data-alt="Warm and emotional food photography style featuring soft afternoon sunlight, earthy ceramic textures, and cozy wooden backgrounds. The aesthetic is welcoming and artisanal, reminiscent of a neighborhood cafe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-k5bz12CnrMYtXKI5fHH05Cyep_jiwGokYFZgiL2U1ba6IXqqUt8aiXkJ6Qzg_wRY1N7N7vCXWAW-_NfinfXCPYlHCI3R57zKNd61C7Mt54AX49dTPu8DFav5WP6fazK2HwGHHT-bX7RT-JZ9IJGjegn1k6Qq35Jn6ujjPFnmPsgiDwOQfgOtG3xqL9WsKQ_LYyOOPaNTtckZP6DwObYOPGHldXnauoC5pPSVNqcWbRTH0spk-m1B">
+<div class="absolute inset-0 bg-primary/10"></div>
+</div>
+<p class="text-label-md font-bold text-center">따뜻함/감성적</p>
+</div>
+<div class="style-card group cursor-pointer space-y-sm" data-style-name="강렬함/임팩트" onclick="selectStyle(this)">
+<div class="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary transition-all relative">
+<img class="w-full h-full object-cover" data-alt="High-contrast and impactful food photography with deep shadows, vibrant saturated colors, and dramatic studio lighting. Sharp focus on textures and bold presentation for maximum visual pop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz_TA4gHynJfNkYFpN7TiNHKWwMGIZGlWe3HuvfJQzgIAb6lGLmBplMORwg4BPV0RKvXreY-X4Vbx6PHbj7wyM_FTS0iTk_1Qh1A3RoJCfJHjM62wBNMRJdksaKuQ0l09NAlbqk9rMFl6Rge54R9oEo37JK26yuZuU4XGkwTLuKaA1ekKYaVInvy0Wi4UIg6_H2oPWykaiG7pDQ3YdT7OdM6lIt2h0X9Fy--kc-1gA4k3csB4QNDhE">
+</div>
+<p class="text-label-md font-bold text-center">강렬함/임팩트</p>
+</div>
+<div class="style-card group cursor-pointer space-y-sm" data-style-name="깔끔함/신뢰감" onclick="selectStyle(this)">
+<div class="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary transition-all relative">
+<img class="w-full h-full object-cover" data-alt="Clean and trustworthy food photography with a minimalist aesthetic, bright white backgrounds, and clear, even lighting. Very professional, standard commercial look that focuses on product clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRCSd5xnD7kG0Ejm-Kx8VdeAg94ws3WEs9ycNObaM8dtim8THsfY22XPTc2PzwqR56ENDOHTjThgfD_m_JhYSSHJE-l9NTemwQMa4YKVNQ3ZbJj-0rwDO9z0RrsbFrBfb_w0Uf5U0nW1OHqpSp43L04MboeSXnr70F3_sBtEaBhbMR6v9L_IUmNRcHWK3-alO7jU_X-OadA4Hh-g393olRrvpkqX5cw_xG030o4k6m5HDdtH5POQuf">
+</div>
+<p class="text-label-md font-bold text-center">깔끔함/신뢰감</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Action Button Container -->
+<div class="mt-xxl text-center">
+<button class="bg-primary text-on-primary px-xxl py-lg rounded-xl font-headline-md hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-md mx-auto" id="cta-recommend" onclick="showRecommendations()">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span id="cta-text" class="">AI 추천받기</span>
+</button>
+</div>
+</div>
+<!-- 5. Recommendation Results -->
+<section class="hidden mt-xxl space-y-lg border-t border-outline-variant pt-xxl pb-xxl fade-in" id="results-section">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-headline-md font-headline-md">슬로건 추천 시안</h2>
+<p class="text-on-surface-variant text-body-md" id="results-subtitle">생성된 AI 추천 문구들입니다.</p>
+</div>
+<button class="text-primary text-label-md font-bold hover:underline flex items-center gap-xs">
+<span class="material-symbols-outlined">refresh</span>
+                        다른 추천 보기
+                    </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Slogan Card 1 -->
+<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
+<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
+<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"한 입의 안식, 당신의 오후를 위한 정성스러운 쉼표."</h4>
+<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
+</div>
+<!-- Slogan Card 2 -->
+<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
+<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
+<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"정직한 재료. 진심 어린 맛. 당신의 매일을 채우는 루틴."</h4>
+<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
+</div>
+<!-- Slogan Card 3 -->
+<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
+<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
+<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"장인의 빵과 당신의 미소가 만나는 따뜻한 공간."</h4>
+<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+<!-- 6. Bottom Navigation Shell -->
+<footer class="bg-surface-container-low border-t border-outline-variant z-50">
+<div class="w-full py-lg px-lg flex justify-between items-center max-w-container-max mx-auto">
+<div class="flex items-center gap-xl">
+<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">arrow_back</span>
+<span class="text-label-md font-bold">이전</span>
+</button>
+
+</div>
+<div class="flex gap-lg">
+<button class="px-xl py-md rounded-xl bg-outline-variant text-on-surface-variant cursor-not-allowed font-bold transition-all flex items-center gap-md" disabled="" id="next-btn">
+                광고 시안 생성하기
+                <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</footer>
+<script>
+    // 현재 선택 상태를 저장해두는 변수들.
+    // 아직 AI(OpenAI API)가 연결되지 않았기 때문에, 실제 슬로건 문구 생성은 하드코딩된 예시로 대체하지만
+    // 플랫폼/스타일 선택값은 여기 저장해서 안내 문구에 바로 반영합니다.
+    // AI 연결 후에는 showRecommendations() 안의 "AI 응답 대체 영역"만 실제 API 호출로 교체하면 됩니다.
+    let currentMode = 'faster'; // 'faster' | 'manual'
+    let selectedPlatformName = '인스타그램'; // 기본값(인스타그램 카드가 기본 선택되어 있음)
+    let selectedStyleName = null; // 직접 설정 모드에서 사용자가 고른 스타일 이름
+    let selectedGoalName = '신메뉴 홍보'; // 직접 설정 모드에서 사용자가 고른 광고 목표 (기본값)
+    let selectedPosterSize = 'A4'; // 오프라인 포스터 규격 기본값
+
+    // 빠른 추천 모드에서 "AI가 자동으로 고른 스타일"의 자리표시자.
+    // 실제로는 AI 연결 후 API 응답값으로 대체될 부분입니다.
+    function getAutoRecommendedStyleName() {
+        // TODO: AI 연결 후 이 부분을 API 응답의 추천 스타일명으로 교체
+        return '따뜻함/감성적';
+    }
+
+    function selectMode(mode) {
+        currentMode = mode;
+        const fasterCard = document.getElementById('mode-faster');
+        const manualCard = document.getElementById('mode-manual');
+        const manualSections = document.getElementById('manual-sections');
+        const ctaText = document.getElementById('cta-text');
+
+        if (mode === 'faster') {
+            fasterCard.classList.add('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
+            fasterCard.classList.remove('border-outline-variant');
+            fasterCard.querySelector('.check-icon').classList.remove('hidden');
+
+            manualCard.classList.remove('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
+            manualCard.classList.add('border-outline-variant');
+            manualCard.querySelector('.check-icon').classList.add('hidden');
+
+            manualSections.classList.add('hidden');
+            ctaText.innerText = "AI 추천받기";
+        } else {
+            manualCard.classList.add('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
+            manualCard.classList.remove('border-outline-variant');
+            manualCard.querySelector('.check-icon').classList.remove('hidden');
+
+            fasterCard.classList.remove('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
+            fasterCard.classList.add('border-outline-variant');
+            fasterCard.querySelector('.check-icon').classList.add('hidden');
+
+            manualSections.classList.remove('hidden');
+            ctaText.innerText = "슬로건 추천받기";
+        }
+        
+        // Hide results if mode changes
+        document.getElementById('results-section').classList.add('hidden');
+        document.getElementById('next-btn').disabled = true;
+        document.getElementById('next-btn').classList.add('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+        document.getElementById('next-btn').classList.remove('bg-primary', 'text-on-primary', 'hover:opacity-90');
+    }
+
+    function selectPlatform(element) {
+        document.querySelectorAll('.platform-btn').forEach(btn => {
+            btn.classList.remove('border-primary', 'bg-primary-fixed/30', 'border-2');
+            btn.classList.add('border-outline-variant');
+            btn.querySelector('span:first-child').classList.remove('text-primary');
+            btn.querySelector('span:first-child').classList.add('text-on-surface-variant');
+        });
+        element.classList.add('border-primary', 'bg-primary-fixed/30', 'border-2');
+        element.classList.remove('border-outline-variant');
+        element.querySelector('span:first-child').classList.add('text-primary');
+        element.querySelector('span:first-child').classList.remove('text-on-surface-variant');
+
+        selectedPlatformName = element.dataset.platformName || selectedPlatformName;
+
+        if (element.id !== 'offline-trigger') {
+            toggleOfflineOptions(false);
+        }
+    }
+
+    function selectPosterSize(element) {
+        document.querySelectorAll('.poster-size-btn').forEach(btn => {
+            btn.classList.remove('border-2', 'border-primary', 'text-primary');
+            btn.classList.add('border', 'border-outline-variant', 'text-on-surface-variant');
+        });
+        element.classList.remove('border', 'border-outline-variant', 'text-on-surface-variant');
+        element.classList.add('border-2', 'border-primary', 'text-primary');
+
+        selectedPosterSize = element.innerText.trim();
+    }
+
+    function toggleOfflineOptions(show) {
+        const options = document.getElementById('offline-options');
+        if (show) {
+            options.classList.remove('hidden');
+        } else {
+            options.classList.add('hidden');
+        }
+    }
+
+    function selectGoal(element) {
+        document.querySelectorAll('.goal-btn').forEach(btn => {
+            btn.classList.remove('border-2', 'border-primary', 'text-primary', 'shadow-sm', 'font-bold');
+            btn.classList.add('border', 'border-outline-variant', 'text-on-surface-variant', 'font-bold');
+        });
+        element.classList.remove('border', 'border-outline-variant', 'text-on-surface-variant');
+        element.classList.add('border-2', 'border-primary', 'text-primary', 'shadow-sm');
+
+        selectedGoalName = element.dataset.goalName || selectedGoalName;
+    }
+
+    function selectStyle(element) {
+        document.querySelectorAll('.style-card div').forEach(div => {
+            div.classList.remove('border-4', 'border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
+            div.classList.add('border-transparent');
+            const overlay = div.querySelector('.bg-primary\\/10');
+            if (overlay) overlay.remove();
+        });
+        const targetDiv = element.querySelector('div');
+        targetDiv.classList.add('border-4', 'border-primary', 'ring-2', 'ring-primary', 'ring-offset-2', 'relative');
+        targetDiv.classList.remove('border-transparent');
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'absolute inset-0 bg-primary/10';
+        targetDiv.appendChild(overlay);
+
+        selectedStyleName = element.dataset.styleName || selectedStyleName;
+    }
+
+    function showRecommendations() {
+        // 실제 슬로건 문구 3개는 AI(OpenAI API) 연결 전이라 하드코딩된 예시로 대체합니다.
+        // 다만 안내 문구는 지금 선택된 값(플랫폼/스타일)을 반영해 동적으로 만들 수 있습니다.
+        const appliedStyleName = currentMode === 'faster'
+            ? getAutoRecommendedStyleName()
+            : (selectedStyleName || '기본');
+
+        const subtitle = document.getElementById('results-subtitle');
+        if (currentMode === 'faster') {
+            subtitle.innerText = `${selectedPlatformName} 채널과 상품 정보를 바탕으로 AI가 "${appliedStyleName}" 스타일을 추천했어요.`;
+        } else {
+            subtitle.innerText = `${selectedPlatformName} · "${selectedGoalName}" 목표 · "${appliedStyleName}" 스타일에 맞춰 생성된 AI 추천 문구들입니다.`;
+        }
+
+        const results = document.getElementById('results-section');
+        results.classList.remove('hidden');
+        results.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function selectSlogan(element) {
+        document.querySelectorAll('.slogan-card').forEach(card => {
+            card.classList.remove('border-2', 'border-primary', 'bg-primary-fixed/10');
+            card.classList.add('border-outline-variant');
+            card.querySelector('.select-btn').innerText = '이 슬로건 선택하기';
+            card.querySelector('.select-btn').classList.remove('bg-primary', 'text-on-primary');
+            card.querySelector('.select-btn').classList.add('border-primary', 'text-primary');
+        });
+
+        element.classList.add('border-2', 'border-primary', 'bg-primary-fixed/10');
+        element.classList.remove('border-outline-variant');
+        element.querySelector('.select-btn').innerText = '선택됨 ✓';
+        element.querySelector('.select-btn').classList.add('bg-primary', 'text-on-primary');
+        element.querySelector('.select-btn').classList.remove('border-primary', 'text-primary');
+
+        // Enable Next Button
+        const nextBtn = document.getElementById('next-btn');
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+        nextBtn.classList.add('bg-primary', 'text-on-primary', 'hover:opacity-90', 'cursor-pointer', 'shadow-md');
+    }
+</script>
+</body></html>
