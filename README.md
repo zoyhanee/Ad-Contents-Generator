@@ -310,3 +310,102 @@ Recommend  Recommend
 ```
 
 ---
+
+# ⚙️ Development Environment Setup
+
+## 1. Clone Repository
+
+```bash
+git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
+
+cd Ad-Contents-Generator
+```
+
+---
+
+## 2. Create Virtual Environment
+
+### macOS / Linux
+
+```bash
+python3 -m venv .venv
+
+source .venv/bin/activate
+```
+
+### Windows
+
+```powershell
+python -m venv .venv
+
+.venv\Scripts\activate
+```
+
+---
+
+## 3. Install PyTorch (Required)
+
+PyTorch is **not included** in `requirements.txt` because the installation method depends on the user's environment (CPU or CUDA version).
+
+### CUDA 12.8 (Recommended)
+
+```bash
+pip install torch torchvision torchaudio \
+--index-url https://download.pytorch.org/whl/cu128
+```
+
+### CPU Only
+
+```bash
+pip install torch torchvision torchaudio
+```
+
+---
+
+## 4. Install Project Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 5. Verify Installation
+
+```bash
+python -c "import torch; print(torch.__version__)"
+```
+
+If using an NVIDIA GPU:
+
+```bash
+python -c "import torch; print(torch.cuda.is_available())"
+```
+
+Expected output:
+
+```text
+True
+```
+
+---
+
+# 🚀 Development Workflow
+
+```text
+Clone Repository
+        │
+        ▼
+Create Virtual Environment
+        │
+        ▼
+Install PyTorch
+        │
+        ▼
+Install Project Dependencies
+        │
+        ▼
+Run Backend / Frontend
+```
+
+---
