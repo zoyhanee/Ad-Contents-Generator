@@ -332,9 +332,9 @@
 
 </div>
 <div class="flex gap-lg">
-<button class="px-xl py-md rounded-xl bg-outline-variant text-on-surface-variant cursor-not-allowed font-bold transition-all flex items-center gap-md" disabled="" id="next-btn">
-                광고 시안 생성하기
-                <span class="material-symbols-outlined">chevron_right</span>
+<button class="px-xl py-md rounded-xl bg-outline-variant text-on-surface-variant cursor-not-allowed font-bold transition-all flex items-center gap-md" disabled id="next-btn" onclick="goToNextStep()">
+    광고 시안 생성하기
+    <span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
 </div>
@@ -502,6 +502,13 @@
         nextBtn.disabled = false;
         nextBtn.classList.remove('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
         nextBtn.classList.add('bg-primary', 'text-on-primary', 'hover:opacity-90', 'cursor-pointer', 'shadow-md');
+    }
+    function goToNextStep() {
+        // TODO: 실제 연결 시 여기서 선택값들(platform, mode, goal, style, posterSize, selectedSlogan)을
+        // sessionStorage 등에 저장한 뒤 이동하면, 4번 화면에서 strategyData를 실제 값으로 채울 수 있음
+        // 예: sessionStorage.setItem('strategyData', JSON.stringify({...}));
+        
+        window.location.href = '광고 시안 생성.html';
     }
 </script>
 </body></html>
