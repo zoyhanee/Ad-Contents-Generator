@@ -1,0 +1,780 @@
+import streamlit as st
+
+
+def render_strategy_selection():
+    if "strategy_mode" not in st.session_state:
+        st.session_state.strategy_mode = "faster"
+
+    # 1. 공통 헤더
+    st.html(
+        """
+        <div class="header">
+            <a class="logo" href="?page=landing" target="_self">
+                AdMaker <span>AI</span>
+            </a>
+
+            <div class="nav">
+                <div>서비스 소개</div>
+                <div>기능 안내</div>
+                <div>이용방법</div>
+                <div>요금 안내</div>
+                <div>고객 센터</div>
+            </div>
+
+            <div class="auth">
+                <a class="nav-btn" href="?page=login" target="_self">로그인</a>
+                <a class="nav-btn primary" href="?page=signup" target="_self">
+                    회원가입
+                </a>
+            </div>
+        </div>
+        """
+    )
+
+    # 2. 페이지 제목 + Stepper
+    st.html(
+        """
+        <div class="product-page-head">
+            <div class="page-title-wrap">
+                <div class="step-badge">2</div>
+
+                <div>
+                    <h1>광고 전략 선택</h1>
+                    <p>
+                        광고 목적과 스타일을 선택하면
+                        AI가 최적의 광고 전략을 추천해드려요.
+                    </p>
+                </div>
+            </div>
+
+            <div class="stepper">
+                <div class="step-item done">
+                    <div class="step-dot">✓</div>
+                    <span>상품 정보</span>
+                </div>
+
+                <div class="step-line active"></div>
+
+                <div class="step-item active">
+                    <div class="step-dot">2</div>
+                    <span>광고 전략</span>
+                </div>
+
+                <div class="step-line"></div>
+
+                <div class="step-item">
+                    <div class="step-dot">3</div>
+                    <span>A/B 생성</span>
+                </div>
+
+                <div class="step-line"></div>
+
+                <div class="step-item">
+                    <div class="step-dot">4</div>
+                    <span>결과 선택</span>
+                </div>
+            </div>
+        </div>
+        """
+    )
+
+    # 3. 상품 요약 카드
+    st.html(
+        """
+        <div class="strategy-content">
+            <div class="strategy-container">
+                <section class="strategy-summary-card">
+                    <div class="strategy-product-info">
+                        <div class="strategy-product-image">
+                            <img
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLZ9g5fgMudawRyzF8YFh59Tan2HFaNwK4blz5-MUeSxTeMzLd_HHE2q0OO-6Gx5aVEMqv_8rl-ITZnFUikvRp59ZNEiEF2jv39qO5W13CJu88_UNOGZi2Ly1uYdWkFSf1_rcmk_u5HZeR9XnJ2FXR3J943sMiPMsad6XetZbXtepGJurqTIFvxZyKsnh0Z7hhJw0mcY7Z2p_5qHKQiXg9gpw_IXyk4FKDK2DhWgTp0_YpWTAFXxJ4"
+                                alt="상품 이미지"
+                            >
+                        </div>
+
+                        <div class="strategy-product-text">
+                            <h3>카페 시그니처 샌드위치</h3>
+                            <p>$12.50 · 수제 베이커리</p>
+                        </div>
+                    </div>
+
+                    <a
+                        class="strategy-edit-link"
+                        href="?page=product_input"
+                        target="_self"
+                    >
+                        정보 수정
+                    </a>
+                </section>
+            </div>
+        </div>
+        """
+    )
+
+    # 4. 전략 모드 선택
+    selected_mode = st.session_state.strategy_mode
+
+    st.html(
+        f"""
+        <style>
+        .st-key-strategy_faster button,
+        .st-key-strategy_manual button {{
+            position: relative;
+            height: 176px;
+            padding: 68px 30px 28px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1.5px solid #d9e1dc;
+            color: #17211c;
+            text-align: left;
+            justify-content: flex-start;
+            overflow: hidden;
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
+        }}
+
+        .st-key-strategy_faster button p,
+        .st-key-strategy_manual button p {{
+            width: 100%;
+            margin: 0;
+            font-size: 22px;
+            font-weight: 800;
+            text-align: left;
+        }}
+
+        .st-key-strategy_faster button:hover,
+        .st-key-strategy_manual button:hover {{
+            border-color: #79b79c;
+            background: #ffffff;
+            color: #17211c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(15, 92, 60, 0.08);
+        }}
+
+        .st-key-strategy_faster button::before,
+        .st-key-strategy_manual button::before {{
+            position: absolute;
+            top: 26px;
+            left: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #edf3ef;
+            font-size: 20px;
+        }}
+
+        .st-key-strategy_faster button::before {{
+            content: "⚡";
+        }}
+
+        .st-key-strategy_manual button::before {{
+            content: "⚙";
+        }}
+
+        .st-key-strategy_faster button::after,
+        .st-key-strategy_manual button::after {{
+            position: absolute;
+            left: 30px;
+            bottom: 24px;
+            color: #66736c;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.6;
+        }}
+
+        .st-key-strategy_faster button::after {{
+            content: "AI가 현재 트렌드에 맞춰 가장 적합한 스타일을 제안합니다.";
+        }}
+
+        .st-key-strategy_manual button::after {{
+            content: "광고 목표와 시각적 스타일을 직접 세밀하게 설정합니다.";
+        }}
+
+        .st-key-strategy_{selected_mode} button {{
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #17211c;
+            box-shadow: 0 0 0 3px rgba(15, 138, 95, 0.1);
+        }}
+
+        .st-key-strategy_{selected_mode} button:hover {{
+            background: #f4fbf7;
+        }}
+
+        .st-key-strategy_{selected_mode} button::before {{
+            background: #dff4e9;
+        }}
+
+        /* 선택된 카드 오른쪽 위 체크 표시 */
+        .st-key-strategy_{selected_mode} {{
+            position: relative;
+        }}
+
+        .st-key-strategy_{selected_mode}::after {{
+            content: "✓";
+            position: absolute;
+            top: 24px;
+            right: 28px;
+            z-index: 10;
+
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #0f8a5f;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 900;
+
+            pointer-events: none;
+        }}
+
+        </style>
+        
+        </style>
+        """
+    )
+    
+    st.subheader("전략 모드 선택")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button(
+            "빠른 추천",
+            key="strategy_faster",
+            use_container_width=True,
+        ):
+            st.session_state.strategy_mode = "faster"
+            st.rerun()
+
+    with col2:
+        if st.button(
+            "직접 설정",
+            key="strategy_manual",
+            use_container_width=True,
+        ):
+            st.session_state.strategy_mode = "manual"
+            st.rerun()
+
+    # 5. 이전 작업물 톤 유지
+    reuse_tone = st.checkbox(
+        "이전 작업물과 비슷한 톤으로",
+        key="reuse_previous_tone",
+    )
+
+    # 6. 광고 플랫폼 선택
+    st.subheader("광고 플랫폼 선택")
+
+    platform_options = {
+        "instagram": "📷 Instagram",
+        "facebook": "👥 Facebook",
+        "naver": "🟢 네이버",
+        "offline": "🖼 오프라인 포스터",
+    }
+
+    if "selected_platforms" not in st.session_state:
+        st.session_state.selected_platforms = []
+
+    selected_platforms = st.session_state.selected_platforms
+
+    platform_css = """
+    <style>
+    .st-key-platform_instagram button,
+    .st-key-platform_facebook button,
+    .st-key-platform_naver button,
+    .st-key-platform_offline button {
+        height: 72px;
+        border-radius: 12px;
+        background: #ffffff;
+        border: 1.5px solid #d9e1dc;
+        color: #17211c;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .st-key-platform_instagram button:hover,
+    .st-key-platform_facebook button:hover,
+    .st-key-platform_naver button:hover,
+    .st-key-platform_offline button:hover {
+        border-color: #79b79c;
+        background: #ffffff;
+        color: #17211c;
+    }
+
+    .st-key-platform_instagram button:focus,
+    .st-key-platform_facebook button:focus,
+    .st-key-platform_naver button:focus,
+    .st-key-platform_offline button:focus {
+        outline: none !important;
+    }
+    """
+
+    for platform_id in selected_platforms:
+        platform_css += f"""
+        .st-key-platform_{platform_id} button {{
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f;
+            box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+        }}
+
+        .st-key-platform_{platform_id} button:hover {{
+            background: #f4fbf7;
+            color: #0f8a5f;
+        }}
+        """
+
+    platform_css += "</style>"
+
+    st.html(platform_css)
+
+    platform_cols = st.columns(4)
+
+    for col, (platform_id, platform_label) in zip(
+        platform_cols,
+        platform_options.items(),
+    ):
+        with col:
+            is_selected = platform_id in st.session_state.selected_platforms
+
+            if st.button(
+                platform_label,
+                key=f"platform_{platform_id}",
+                use_container_width=True,
+            ):
+                if is_selected:
+                    st.session_state.selected_platforms.remove(platform_id)
+                else:
+                    st.session_state.selected_platforms.append(platform_id)
+
+                st.rerun()
+
+    # 7. 오프라인 포스터 규격 선택
+    if "offline" in st.session_state.selected_platforms:
+        st.subheader("포스터 규격 선택")
+
+        poster_size_options = {
+            "a4": "A4",
+            "a3": "A3",
+            "a2": "A2",
+            "custom": "직접 입력",
+        }
+
+        if "poster_size" not in st.session_state:
+            st.session_state.poster_size = "a4"
+
+        selected_poster_size = st.session_state.poster_size
+
+        st.html(
+            f"""
+            <style>
+            .st-key-poster_size_a4 button,
+            .st-key-poster_size_a3 button,
+            .st-key-poster_size_a2 button,
+            .st-key-poster_size_custom button {{
+                height: 58px;
+                border-radius: 10px;
+                background: #ffffff;
+                border: 1.5px solid #d9e1dc;
+                color: #17211c;
+                font-size: 15px;
+                font-weight: 700;
+            }}
+
+            .st-key-poster_size_a4 button:hover,
+            .st-key-poster_size_a3 button:hover,
+            .st-key-poster_size_a2 button:hover,
+            .st-key-poster_size_custom button:hover {{
+                border-color: #79b79c;
+                background: #ffffff;
+                color: #17211c;
+            }}
+
+            .st-key-poster_size_{selected_poster_size} button {{
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+                box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            }}
+
+            .st-key-poster_size_{selected_poster_size} button:hover {{
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }}
+            </style>
+            """
+        )
+        poster_cols = st.columns(4)
+
+        for col, (size_id, size_label) in zip(
+            poster_cols,
+            poster_size_options.items(),
+        ):
+            with col:
+                if st.button(
+                    size_label,
+                    key=f"poster_size_{size_id}",
+                    use_container_width=True,
+                ):
+                    st.session_state.poster_size = size_id
+                    st.rerun()
+
+    # 8. 직접 설정: 광고 목표 선택
+    if st.session_state.strategy_mode == "manual":
+        st.subheader("광고 목표 선택")
+
+        goal_options = {
+            "awareness": "📢 브랜드 인지도",
+            "sales": "🛒 판매 전환",
+            "traffic": "🔗 방문 유도",
+            "promotion": "🎁 프로모션 홍보",
+        }
+
+        if "selected_goal" not in st.session_state:
+            st.session_state.selected_goal = "awareness"
+
+        selected_goal = st.session_state.selected_goal
+
+        st.html(
+            f"""
+            <style>
+            .st-key-goal_awareness button,
+            .st-key-goal_sales button,
+            .st-key-goal_traffic button,
+            .st-key-goal_promotion button {{
+                height: 76px;
+                border-radius: 12px;
+                background: #ffffff;
+                border: 1.5px solid #d9e1dc;
+                color: #17211c;
+                font-size: 16px;
+                font-weight: 700;
+            }}
+
+            .st-key-goal_awareness button:hover,
+            .st-key-goal_sales button:hover,
+            .st-key-goal_traffic button:hover,
+            .st-key-goal_promotion button:hover {{
+                border-color: #79b79c;
+                background: #ffffff;
+                color: #17211c;
+            }}
+
+            .st-key-goal_{selected_goal} button {{
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+                box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            }}
+
+            .st-key-goal_{selected_goal} button:hover {{
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }}
+            </style>
+            """
+        )
+
+        goal_cols = st.columns(4)
+
+        for col, (goal_id, goal_label) in zip(
+            goal_cols,
+            goal_options.items(),
+        ):
+            with col:
+                if st.button(
+                    goal_label,
+                    key=f"goal_{goal_id}",
+                    use_container_width=True,
+                ):
+                    st.session_state.selected_goal = goal_id
+                    st.rerun()
+                    
+        # 9. 직접 설정: 시각적 스타일 선택
+        st.subheader("시각적 스타일 선택")
+
+        style_options = {
+            "warm": "☀️ 따뜻한 감성",
+            "modern": "◼️ 모던 & 미니멀",
+            "vivid": "🎨 생동감 있는",
+            "premium": "✨ 프리미엄",
+        }
+
+        if "selected_style" not in st.session_state:
+            st.session_state.selected_style = "warm"
+
+        selected_style = st.session_state.selected_style
+
+        st.html(
+            f"""
+            <style>
+            .st-key-style_warm button,
+            .st-key-style_modern button,
+            .st-key-style_vivid button,
+            .st-key-style_premium button {{
+                height: 76px;
+                border-radius: 12px;
+                background: #ffffff;
+                border: 1.5px solid #d9e1dc;
+                color: #17211c;
+                font-size: 16px;
+                font-weight: 700;
+            }}
+
+            .st-key-style_warm button:hover,
+            .st-key-style_modern button:hover,
+            .st-key-style_vivid button:hover,
+            .st-key-style_premium button:hover {{
+                border-color: #79b79c;
+                background: #ffffff;
+                color: #17211c;
+            }}
+
+            .st-key-style_{selected_style} button {{
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+                box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            }}
+
+            .st-key-style_{selected_style} button:hover {{
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }}
+            </style>
+            """
+        )
+
+        style_cols = st.columns(4)
+
+        for col, (style_id, style_label) in zip(
+            style_cols,
+            style_options.items(),
+        ):
+            with col:
+                if st.button(
+                    style_label,
+                    key=f"style_{style_id}",
+                    use_container_width=True,
+                ):
+                    st.session_state.selected_style = style_id
+                    st.rerun()
+
+    # 10. 현재 전략 데이터 구성
+    strategy_data = {
+        "mode": st.session_state.strategy_mode,
+        "reuse_tone": st.session_state.get(
+            "reuse_previous_tone",
+            False,
+        ),
+        "platforms": st.session_state.get(
+            "selected_platforms",
+            [],
+        ),
+        "poster_size": (
+            st.session_state.get("poster_size")
+            if "offline" in st.session_state.get("selected_platforms", [])
+            else None
+        ),
+        "goal": (
+            st.session_state.get("selected_goal")
+            if st.session_state.strategy_mode == "manual"
+            else None
+        ),
+        "style": (
+            st.session_state.get("selected_style")
+            if st.session_state.strategy_mode == "manual"
+            else None
+        ),
+    }
+
+    # 11. AI 추천받기
+    can_recommend = len(strategy_data["platforms"]) > 0
+
+    st.html(
+        """
+        <style>
+        .st-key-recommend_strategy button {
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+            background: #0f8a5f;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 800;
+            box-shadow: 0 6px 16px rgba(15, 138, 95, 0.18);
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .st-key-recommend_strategy button:hover {
+            border: none;
+            background: #0b7651;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(15, 138, 95, 0.24);
+        }
+
+        .st-key-recommend_strategy button:focus,
+        .st-key-recommend_strategy button:focus-visible {
+            outline: none !important;
+            border: none;
+            color: #ffffff;
+        }
+
+        .st-key-recommend_strategy button:disabled {
+            border: 1px solid #e1e6e3;
+            background: #f1f3f2;
+            color: #a5ada9;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .st-key-recommend_strategy button:disabled:hover {
+            border: 1px solid #e1e6e3;
+            background: #f1f3f2;
+            color: #a5ada9;
+            box-shadow: none;
+            transform: none;
+        }
+        </style>
+        """
+    )
+
+    if st.button(
+        "✨ AI 추천받기",
+        key="recommend_strategy",
+        use_container_width=True,
+        disabled=not can_recommend,
+    ):
+        st.session_state.strategy_data = strategy_data.copy()
+
+        st.session_state.recommendation = {
+            #mock-up 테스트용
+            "strategy_title": "트렌드 기반 맞춤 광고 전략",
+            "strategy_description": (
+                "선택한 플랫폼과 상품 정보를 바탕으로 "
+                "맞춤형 광고 방향을 추천했습니다."
+            ),
+            "slogans": [
+                "AI 추천 문구 후보 1",
+                "AI 추천 문구 후보 2",
+                "AI 추천 문구 후보 3",
+            ],
+        }
+
+        st.session_state.selected_slogan = None
+        st.rerun()
+
+    recommendation = st.session_state.get("recommendation")
+
+    if recommendation:
+        st.subheader("AI 추천 결과")
+
+        st.write(recommendation["strategy_title"])
+        st.caption(recommendation["strategy_description"])
+
+        # 13. 추천 슬로건 선택
+        st.subheader("추천 슬로건 선택")
+
+        slogans = recommendation["slogans"]
+
+        selected_slogan = st.session_state.get("selected_slogan")
+
+        slogan_css = """
+        <style>
+        .st-key-slogan_0 button,
+        .st-key-slogan_1 button,
+        .st-key-slogan_2 button {
+            min-height: 92px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1.5px solid #d9e1dc;
+            color: #17211c;
+            font-size: 16px;
+            font-weight: 700;
+            white-space: normal;
+        }
+
+        .st-key-slogan_0 button:hover,
+        .st-key-slogan_1 button:hover,
+        .st-key-slogan_2 button:hover {
+            border-color: #79b79c;
+            background: #ffffff;
+            color: #17211c;
+        }
+        """
+
+        if selected_slogan is not None:
+            slogan_css += f"""
+            .st-key-slogan_{selected_slogan} button {{
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+                box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            }}
+
+            .st-key-slogan_{selected_slogan} button:hover {{
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }}
+            """
+
+        slogan_css += "</style>"
+
+        st.html(slogan_css)
+
+        slogan_cols = st.columns(len(slogans))
+
+        for index, (col, slogan) in enumerate(
+            zip(slogan_cols, slogans)
+        ):
+            with col:
+                if st.button(
+                    slogan,
+                    key=f"slogan_{index}",
+                    use_container_width=True,
+                ):
+                    st.session_state.selected_slogan = index
+                    st.rerun()
+
+        # 14. 광고 시안 생성
+        selected_slogan = st.session_state.get("selected_slogan")
+
+        final_strategy_data = {
+            **st.session_state.strategy_data,
+            "recommendation": {
+                "strategy_title": recommendation["strategy_title"],
+                "strategy_description": recommendation["strategy_description"],
+            },
+            "selected_slogan": (
+                recommendation["slogans"][selected_slogan]
+                if selected_slogan is not None
+                else None
+            ),
+        }
+
+        if st.button(
+            "광고 시안 생성하기 →",
+            key="generate_ad",
+            use_container_width=True,
+            disabled=selected_slogan is None,
+        ):
+            st.session_state.final_strategy_data = final_strategy_data
+            st.query_params["page"] = "ad_generation"
+            st.rerun()
