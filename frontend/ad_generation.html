@@ -1,7 +1,7 @@
 <!DOCTYPE html><html class="light" lang="ko"><head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>AI 생성 - 광고 전략 선택</title>
+<title>AI 생성 - 시안 생성</title>
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <!-- Google Fonts -->
@@ -116,19 +116,18 @@
 <nav class="hidden md:flex gap-md ml-xl">
 <a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">내 작업</a>
 <a class="text-primary border-b-2 border-primary pb-1 text-label-md font-label-md" href="#">AI 생성</a>
-
-
 </nav>
 </div>
 <div class="flex items-center gap-md">
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary p-xs">help</button>
 <button class="material-symbols-outlined text-on-surface-variant hover:text-primary p-xs">settings</button>
 <div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-high">
-<img class="w-full h-full object-cover" data-alt="A professional headshot of a small business owner in a modern bright office setting, soft professional lighting, high resolution photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU4MD7hOz-85mw5m2x6SQsE01MaFXPPF6KfwHqKc0DFVUkc_d0rn-HODVVp8GblGKlo5EXhBkcmG_6JQfY5LWFzfo-IX4FxRUBjrJMvFA3X7ctKg8F2jqTbPENAZyykT09UY9CcrN0nqGPdKBb6c2f7tgX0Rj01CYHCNn8Iqo3zqBdFHB_3aTGl8pKozePKwOhEL2Zm7yATYIRImbf0G9_3RbHghArA7i7_8_XrZjhG_C0bIr6YT0m">
+<img class="w-full h-full object-cover" alt="사용자 프로필" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBU4MD7hOz-85mw5m2x6SQsE01MaFXPPF6KfwHqKc0DFVUkc_d0rn-HODVVp8GblGKlo5EXhBkcmG_6JQfY5LWFzfo-IX4FxRUBjrJMvFA3X7ctKg8F2jqTbPENAZyykT09UY9CcrN0nqGPdKBb6c2f7tgX0Rj01CYHCNn8Iqo3zqBdFHB_3aTGl8pKozePKwOhEL2Zm7yATYIRImbf0G9_3RbHghArA7i7_8_XrZjhG_C0bIr6YT0m">
 </div>
 </div>
 </div>
 </header>
+
 <!-- Step Indicator -->
 <div class="w-full bg-surface-container-lowest border-b border-outline-variant">
 <div class="max-w-container-max mx-auto px-lg md:px-xl py-lg flex items-center justify-center gap-3 md:gap-6">
@@ -140,375 +139,378 @@
 </div>
 <div class="w-10 md:w-24 h-0.5 bg-primary shrink-0"></div>
 <div class="flex items-center gap-sm">
-<div class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold shrink-0 ring-4 ring-primary-fixed">2</div>
-<span class="text-label-sm font-label-sm text-primary font-bold hidden sm:inline">광고 전략 선택</span>
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">check</span>
 </div>
-<div class="w-10 md:w-24 h-0.5 bg-outline-variant shrink-0"></div>
+<span class="text-label-sm font-label-sm text-on-surface-variant hidden sm:inline">광고 전략 선택</span>
+</div>
+<div class="w-10 md:w-24 h-0.5 bg-primary shrink-0"></div>
 <div class="flex items-center gap-sm">
-<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold shrink-0">3</div>
-<span class="text-label-sm font-label-sm text-on-surface-variant hidden sm:inline">광고 생성</span>
+<div class="w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center font-bold shrink-0 ring-4 ring-primary-fixed">3</div>
+<span class="text-label-sm font-label-sm text-primary font-bold hidden sm:inline">광고 생성</span>
 </div>
 </div>
 </div>
+
 <div class="flex flex-1 overflow-hidden">
-<!-- Main Content Area -->
 <main class="flex-1 overflow-y-auto px-lg md:px-xxl py-xl">
 <div class="max-w-container-max mx-auto space-y-xl">
-<!-- 1. Top Summary Card -->
+
+<!-- 1. Selected Strategy Summary Bar -->
 <section class="fade-in">
-<div class="bg-surface-container-lowest p-md rounded-xl shadow-sm border border-outline-variant flex items-center justify-between">
-<div class="flex items-center gap-lg">
-<div class="w-16 h-16 rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant">
-<img class="w-full h-full object-cover" data-alt="A gourmet artisan sandwich on rustic sourdough bread, featuring fresh heirloom tomatoes, vibrant green pesto, and melted mozzarella. Professional food photography with soft natural lighting on a clean marble countertop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLZ9g5fgMudawRyzF8YFh59Tan2HFaNwK4blz5-MUeSxTeMzLd_HHE2q0OO-6Gx5aVEMqv_8rl-ITZnFUikvRp59ZNEiEF2jv39qO5W13CJu88_UNOGZi2Ly1uYdWkFSf1_rcmk_u5HZeR9XnJ2FXR3J943sMiPMsad6XetZbXtepGJurqTIFvxZyKsnh0Z7hhJw0mcY7Z2p_5qHKQiXg9gpw_IXyk4FKDK2DhWgTp0_YpWTAFXxJ4">
-</div>
-<div>
-<h3 class="text-body-lg font-bold">카페 시그니처 샌드위치</h3>
-<p class="text-label-md text-on-surface-variant">$12.50 • 수제 베이커리</p>
-</div>
-</div>
-<button class="text-primary font-bold text-label-md flex items-center gap-xs hover:underline">
-<span class="material-symbols-outlined text-[18px]">edit</span>
-                        정보 수정
-                    </button>
+<div class="inline-flex flex-wrap items-center gap-sm bg-surface-container-lowest border border-outline-variant rounded-full px-lg py-sm shadow-sm">
+<span class="text-label-md font-bold text-on-surface-variant" id="summary-platform">인스타그램</span>
+<span class="text-outline">|</span>
+<span class="text-label-md font-bold text-on-surface-variant" id="summary-goal">신메뉴 홍보</span>
+<span class="text-outline">|</span>
+<span class="text-label-md font-bold text-on-surface-variant" id="summary-style">따뜻함/감성적</span>
 </div>
 </section>
-<!-- 2. Mode Selection -->
+
+<!-- 2. Generation Progress (visible while generating) -->
+<section class="fade-in" id="progress-section">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg space-y-md">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-body-md font-bold" id="progress-title">시안 완성 중...</span>
+</div>
+<span class="text-body-md font-bold text-primary" id="progress-percent">85%</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-500" id="progress-bar" style="width: 85%;"></div>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm">
+<span class="text-primary font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>이미지 생성 완료
+</span>
+<span class="text-primary font-bold">템플릿 반영 중</span>
+<span class="text-outline">최종 렌더링</span>
+</div>
+</div>
+</section>
+
+<!-- 3. Draft Comparison Grid -->
 <section class="fade-in" style="animation-delay: 0.1s;">
-<h2 class="text-headline-md font-headline-md mb-lg">전략 모드 선택</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-<!-- Mode Card A -->
-<div class="cursor-pointer bg-surface-container-lowest p-xl rounded-xl border hover:shadow-md transition-all border-primary ring-4 ring-primary-fixed ring-opacity-50 shadow-md" id="mode-faster" onclick="selectMode('faster')">
-<div class="flex justify-between items-start mb-md">
-<div class="bg-primary-fixed p-sm rounded-lg">
-<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
-</div>
-<div class="check-icon text-primary">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg" id="draft-grid">
+
+<!-- Draft Card A -->
+<div class="draft-card cursor-pointer bg-surface-container-lowest rounded-xl border-2 border-outline-variant hover:border-primary hover:shadow-md transition-all overflow-hidden flex flex-col" data-draft-id="A" onclick="selectDraft(this)">
+<div class="p-md flex items-center justify-between">
+<span class="draft-label bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">시안 A</span>
+<span class="check-badge hidden text-primary">
 <span class="material-symbols-outlined">check_circle</span>
+</span>
+</div>
+<div class="draft-preview aspect-[4/5] mx-md mb-md rounded-lg overflow-hidden bg-gradient-to-br from-blue-100 to-indigo-200 relative flex items-center justify-center">
+<div class="draft-loading hidden absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-low flex flex-col items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[32px] animate-pulse">auto_awesome</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant text-center px-md">AI가 시안을 재생성 중입니다...</p>
+</div>
+<div class="draft-result w-full h-full flex flex-col items-center justify-center p-lg text-center gap-sm bg-gradient-to-b from-sky-100 via-sky-50 to-indigo-500">
+<h4 class="text-headline-md font-headline-md text-on-primary-fixed-variant">수분 충전, 그 이상의 결과</h4>
+<p class="text-label-md text-on-surface-variant">98% 사용자 만족도가 증명합니다.</p>
+<span class="mt-sm bg-primary text-on-primary text-label-sm font-bold px-md py-xs rounded-full">SALE 20%</span>
 </div>
 </div>
-<h3 class="text-headline-md font-headline-md mb-xs">빠른 추천</h3>
-<p class="text-on-surface-variant text-body-md">AI가 현재 트렌드에 맞춰 가장 적합한 스타일을 제안합니다.</p>
+<div class="px-md pb-md">
+<span class="bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">기능 강조</span>
 </div>
-<!-- Mode Card B -->
-<div class="cursor-pointer bg-surface-container-lowest p-xl rounded-xl border-2 transition-all scale-100 border-outline-variant" id="mode-manual" onclick="selectMode('manual')">
-<div class="flex justify-between items-start mb-md">
-<div class="bg-surface-container-high p-sm rounded-lg">
-<span class="material-symbols-outlined text-on-surface-variant">tune</span>
+<div class="border-t border-outline-variant p-md space-y-xs">
+<p class="text-label-sm font-bold text-primary">AI 시안 분석</p>
+<ul class="text-label-sm text-on-surface-variant space-y-xs list-disc list-inside">
+<li>데이터 지표 활용으로 신뢰도 확보</li>
+<li>구매 유도 장치(할인, CTA) 배치 최적화</li>
+</ul>
 </div>
-<div class="check-icon text-primary hidden">
+</div>
+
+<!-- Draft Card B -->
+<div class="draft-card cursor-pointer bg-surface-container-lowest rounded-xl border-2 border-outline-variant hover:border-primary hover:shadow-md transition-all overflow-hidden flex flex-col" data-draft-id="B" onclick="selectDraft(this)">
+<div class="p-md flex items-center justify-between">
+<span class="draft-label bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">시안 B</span>
+<span class="check-badge hidden text-primary">
 <span class="material-symbols-outlined">check_circle</span>
+</span>
+</div>
+<div class="draft-preview aspect-[4/5] mx-md mb-md rounded-lg overflow-hidden bg-gradient-to-br from-orange-100 to-amber-200 relative flex items-center justify-center">
+<div class="draft-loading hidden absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-low flex flex-col items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[32px] animate-pulse">auto_awesome</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant text-center px-md">AI가 시안을 재생성 중입니다...</p>
+</div>
+<div class="draft-result w-full h-full flex flex-col items-center justify-center p-lg text-center gap-sm">
+<h4 class="text-headline-md font-headline-md text-tertiary-container">오늘부터<br>피부 치트키!</h4>
+<p class="text-label-sm text-on-surface-variant">#스킨케어 #인생템 #데일리</p>
+<span class="mt-sm bg-on-tertiary-fixed-variant text-on-primary text-label-sm font-bold px-md py-xs rounded-full">궁금해? Click!</span>
 </div>
 </div>
-<h3 class="text-headline-md font-headline-md mb-xs">직접 설정</h3>
-<p class="text-on-surface-variant text-body-md">광고 목표와 시각적 스타일을 직접 세밀하게 설정합니다.</p>
+<div class="px-md pb-md">
+<span class="bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">MZ 트렌드</span>
+</div>
+<div class="border-t border-outline-variant p-md space-y-xs">
+<p class="text-label-sm font-bold text-primary">AI 시안 분석</p>
+<ul class="text-label-sm text-on-surface-variant space-y-xs list-disc list-inside">
+<li>팝하고 컬러풀한 톤으로 시선 집중</li>
+<li>숏폼 플랫폼 최적화된 레이아웃</li>
+</ul>
 </div>
 </div>
-<!-- Reuse Option -->
-<div class="mt-lg flex items-center gap-md">
-<label class="flex items-center gap-sm cursor-pointer group">
-<input class="w-5 h-5 rounded border-outline text-primary focus:ring-primary" type="checkbox">
-<span class="text-body-md text-on-surface-variant group-hover:text-on-surface transition-colors">이전 작업물과 비슷한 톤으로</span>
-</label>
+
+<!-- Draft Card C -->
+<div class="draft-card cursor-pointer bg-surface-container-lowest rounded-xl border-2 border-outline-variant hover:border-primary hover:shadow-md transition-all overflow-hidden flex flex-col" data-draft-id="C" onclick="selectDraft(this)">
+<div class="p-md flex items-center justify-between">
+<span class="draft-label bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">시안 C</span>
+<span class="check-badge hidden text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</span>
 </div>
-</section>
-<!-- 3. Dynamic Interaction Sections -->
-<div id="dynamic-content-area" class="">
-<!-- Platform Section -->
-<section class="fade-in space-y-lg mt-xl" style="animation-delay: 0.2s;">
-<h2 class="text-headline-md font-headline-md">광고 플랫폼 선택</h2>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
-<div class="platform-btn p-md rounded-xl border border-primary bg-primary-fixed/30 cursor-pointer flex flex-col items-center gap-sm transition-all border-2" data-platform-name="인스타그램" onclick="selectPlatform(this)">
-<span class="material-symbols-outlined text-primary text-[32px]">photo_camera</span>
-<span class="text-label-md font-bold">인스타그램</span>
+<div class="draft-preview aspect-[4/5] mx-md mb-md rounded-lg overflow-hidden bg-gradient-to-br from-orange-100 to-amber-200 relative flex items-center justify-center">
+<div class="draft-loading hidden absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-low flex flex-col items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[32px] animate-pulse">auto_awesome</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant text-center px-md">AI가 시안을 재생성 중입니다...</p>
 </div>
-<div class="platform-btn p-md rounded-xl border border-outline-variant hover:border-primary cursor-pointer flex flex-col items-center gap-sm transition-all" data-platform-name="배달의민족" onclick="selectPlatform(this)">
-<span class="material-symbols-outlined text-on-surface-variant text-[32px]">delivery_dining</span>
-<span class="text-label-md font-bold">배달의민족</span>
-</div>
-<div class="platform-btn p-md rounded-xl border border-outline-variant hover:border-primary cursor-pointer flex flex-col items-center gap-sm transition-all" id="offline-trigger" data-platform-name="오프라인 포스터" onclick="selectPlatform(this); toggleOfflineOptions(true)">
-<span class="material-symbols-outlined text-on-surface-variant text-[32px]">newspaper</span>
-<span class="text-label-md font-bold">오프라인 포스터</span>
+<div class="draft-result w-full h-full flex flex-col items-center justify-center p-lg text-center gap-sm">
+<h4 class="text-headline-md font-headline-md text-tertiary-container">오늘부터<br>피부 치트키!</h4>
+<p class="text-label-sm text-on-surface-variant">#스킨케어 #인생템 #데일리</p>
+<span class="mt-sm bg-on-tertiary-fixed-variant text-on-primary text-label-sm font-bold px-md py-xs rounded-full">궁금해? Click!</span>
 </div>
 </div>
-<!-- Sub-options for Offline Poster -->
-<div class="hidden fade-in bg-surface-container-high/50 p-lg rounded-xl space-y-md" id="offline-options">
-<p class="text-label-md font-bold">포스터 규격 선택</p>
-<div class="flex gap-md">
-<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border-2 border-primary text-primary font-bold transition-all" onclick="selectPosterSize(this)">A4</button>
-<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant font-bold transition-all" onclick="selectPosterSize(this)">A3</button>
-<button class="poster-size-btn px-xl py-sm rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant font-bold transition-all" onclick="selectPosterSize(this)">정사각형</button>
+<div class="px-md pb-md">
+<span class="bg-surface-container-high text-on-surface-variant text-label-sm font-bold px-md py-xs rounded-full">MZ 트렌드</span>
+</div>
+<div class="border-t border-outline-variant p-md space-y-xs">
+<p class="text-label-sm font-bold text-primary">AI 시안 분석</p>
+<ul class="text-label-sm text-on-surface-variant space-y-xs list-disc list-inside">
+<li>팝하고 컬러풀한 톤으로 시선 집중</li>
+<li>숏폼 플랫폼 최적화된 레이아웃</li>
+</ul>
 </div>
 </div>
-</section>
-<!-- Manual Only Section -->
-<div class="space-y-xl mt-xl hidden" id="manual-sections">
-<!-- Goal Selection -->
-<section class="fade-in">
-<h2 class="text-headline-md font-headline-md mb-lg">광고 목표</h2>
-<div class="flex flex-wrap gap-md">
-<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border-2 border-primary text-primary font-bold shadow-sm" data-goal-name="신메뉴 홍보" onclick="selectGoal(this)">신메뉴 홍보</button>
-<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant hover:text-primary transition-all" data-goal-name="할인 이벤트" onclick="selectGoal(this)">할인 이벤트</button>
-<button class="goal-btn px-lg py-md rounded-full bg-surface-container-lowest border border-outline-variant hover:border-primary text-on-surface-variant hover:text-primary transition-all" data-goal-name="브랜드 홍보" onclick="selectGoal(this)">브랜드 홍보</button>
-</div>
-</section>
-<!-- Style Selection -->
-<section class="fade-in">
-<h2 class="text-headline-md font-headline-md mb-lg">시각적 스타일</h2>
-<div class="grid grid-cols-2 md:grid-cols-4 gap-md">
-<div class="style-card group cursor-pointer space-y-sm" data-style-name="따뜻함/감성적" onclick="selectStyle(this)">
-<div class="aspect-square rounded-xl overflow-hidden border-4 border-primary ring-2 ring-primary ring-offset-2 relative">
-<img class="w-full h-full object-cover" data-alt="Warm and emotional food photography style featuring soft afternoon sunlight, earthy ceramic textures, and cozy wooden backgrounds. The aesthetic is welcoming and artisanal, reminiscent of a neighborhood cafe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-k5bz12CnrMYtXKI5fHH05Cyep_jiwGokYFZgiL2U1ba6IXqqUt8aiXkJ6Qzg_wRY1N7N7vCXWAW-_NfinfXCPYlHCI3R57zKNd61C7Mt54AX49dTPu8DFav5WP6fazK2HwGHHT-bX7RT-JZ9IJGjegn1k6Qq35Jn6ujjPFnmPsgiDwOQfgOtG3xqL9WsKQ_LYyOOPaNTtckZP6DwObYOPGHldXnauoC5pPSVNqcWbRTH0spk-m1B">
-<div class="absolute inset-0 bg-primary/10"></div>
-</div>
-<p class="text-label-md font-bold text-center">따뜻함/감성적</p>
-</div>
-<div class="style-card group cursor-pointer space-y-sm" data-style-name="강렬함/임팩트" onclick="selectStyle(this)">
-<div class="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary transition-all relative">
-<img class="w-full h-full object-cover" data-alt="High-contrast and impactful food photography with deep shadows, vibrant saturated colors, and dramatic studio lighting. Sharp focus on textures and bold presentation for maximum visual pop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBz_TA4gHynJfNkYFpN7TiNHKWwMGIZGlWe3HuvfJQzgIAb6lGLmBplMORwg4BPV0RKvXreY-X4Vbx6PHbj7wyM_FTS0iTk_1Qh1A3RoJCfJHjM62wBNMRJdksaKuQ0l09NAlbqk9rMFl6Rge54R9oEo37JK26yuZuU4XGkwTLuKaA1ekKYaVInvy0Wi4UIg6_H2oPWykaiG7pDQ3YdT7OdM6lIt2h0X9Fy--kc-1gA4k3csB4QNDhE">
-</div>
-<p class="text-label-md font-bold text-center">강렬함/임팩트</p>
-</div>
-<div class="style-card group cursor-pointer space-y-sm" data-style-name="깔끔함/신뢰감" onclick="selectStyle(this)">
-<div class="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-primary transition-all relative">
-<img class="w-full h-full object-cover" data-alt="Clean and trustworthy food photography with a minimalist aesthetic, bright white backgrounds, and clear, even lighting. Very professional, standard commercial look that focuses on product clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRCSd5xnD7kG0Ejm-Kx8VdeAg94ws3WEs9ycNObaM8dtim8THsfY22XPTc2PzwqR56ENDOHTjThgfD_m_JhYSSHJE-l9NTemwQMa4YKVNQ3ZbJj-0rwDO9z0RrsbFrBfb_w0Uf5U0nW1OHqpSp43L04MboeSXnr70F3_sBtEaBhbMR6v9L_IUmNRcHWK3-alO7jU_X-OadA4Hh-g393olRrvpkqX5cw_xG030o4k6m5HDdtH5POQuf">
-</div>
-<p class="text-label-md font-bold text-center">깔끔함/신뢰감</p>
-</div>
+
 </div>
 </section>
+
+<!-- 4. Feedback Input Section -->
+<section class="fade-in" style="animation-delay: 0.2s;">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg space-y-sm">
+<div class="flex items-center gap-sm flex-wrap min-h-[24px]" id="tag-area">
+<!-- 선택된 시안 태그가 여기에 동적으로 추가됨 -->
 </div>
-<!-- Action Button Container -->
-<div class="mt-xxl text-center">
-<button class="bg-primary text-on-primary px-xxl py-lg rounded-xl font-headline-md hover:scale-105 active:scale-95 transition-all shadow-lg flex items-center gap-md mx-auto" id="cta-recommend" onclick="showRecommendations()">
-<span class="material-symbols-outlined">auto_awesome</span>
-<span id="cta-text" class="">AI 추천받기</span>
+<div class="relative">
+<textarea class="w-full border border-outline-variant rounded-xl p-md pr-16 text-body-md resize-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="feedback-input" placeholder="예: 다시 생성, 배경을 조금 더 밝게 해줘, 글씨 크기를 20%만 키워줘, 전반적으로 프리미엄한 느낌을 더 강조해줘." rows="3"></textarea>
+<button class="absolute right-md bottom-md w-10 h-10 rounded-full bg-surface-container-high text-outline flex items-center justify-center cursor-not-allowed transition-all" disabled="" id="send-feedback-btn" onclick="regenerateSelected()">
+<span class="material-symbols-outlined">arrow_upward</span>
 </button>
 </div>
-</div>
-<!-- 5. Recommendation Results -->
-<section class="hidden mt-xxl space-y-lg border-t border-outline-variant pt-xxl pb-xxl fade-in" id="results-section">
-<div class="flex justify-between items-end">
-<div>
-<h2 class="text-headline-md font-headline-md">슬로건 추천 시안</h2>
-<p class="text-on-surface-variant text-body-md" id="results-subtitle">생성된 AI 추천 문구들입니다.</p>
-</div>
-<button class="text-primary text-label-md font-bold hover:underline flex items-center gap-xs">
-<span class="material-symbols-outlined">refresh</span>
-                        다른 추천 보기
-                    </button>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-<!-- Slogan Card 1 -->
-<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
-<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
-<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"한 입의 안식, 당신의 오후를 위한 정성스러운 쉼표."</h4>
-<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
-</div>
-<!-- Slogan Card 2 -->
-<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
-<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
-<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"정직한 재료. 진심 어린 맛. 당신의 매일을 채우는 루틴."</h4>
-<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
-</div>
-<!-- Slogan Card 3 -->
-<div class="slogan-card cursor-pointer bg-surface-container-lowest p-xl rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all flex flex-col h-full" onclick="selectSlogan(this)">
-<span class="material-symbols-outlined text-primary-container mb-sm">format_quote</span>
-<h4 class="text-headline-md font-headline-md mb-xl flex-grow italic">"장인의 빵과 당신의 미소가 만나는 따뜻한 공간."</h4>
-<button class="select-btn mt-auto w-full py-sm border border-primary text-primary font-bold rounded-lg hover:bg-primary-fixed transition-all">이 슬로건 선택하기</button>
+<div class="flex justify-between items-center pt-xs">
+<button class="flex items-center gap-xs text-primary text-label-md font-bold hover:underline" onclick="regenerateAll()">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+전체 재생성
+</button>
+<p class="text-label-sm text-on-surface-variant">전송 버튼은 선택한 시안만, 전체 재생성은 3개 모두 다시 만들어요</p>
 </div>
 </div>
 </section>
+
 </div>
 </main>
 </div>
-<!-- 6. Bottom Navigation Shell -->
+
+<!-- 5. Bottom Navigation -->
 <footer class="bg-surface-container-low border-t border-outline-variant z-50">
 <div class="w-full py-lg px-lg flex justify-between items-center max-w-container-max mx-auto">
-<div class="flex items-center gap-xl">
-<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-all">
+<button class="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-all" onclick="goToPrevStep()">
 <span class="material-symbols-outlined">arrow_back</span>
-<span class="text-label-md font-bold">이전</span>
+<span class="text-label-md font-bold">이전 단계</span>
 </button>
-
-</div>
-<div class="flex gap-lg">
-<button class="px-xl py-md rounded-xl bg-outline-variant text-on-surface-variant cursor-not-allowed font-bold transition-all flex items-center gap-md" disabled id="next-btn" onclick="goToNextStep()">
-    광고 시안 생성하기
-    <span class="material-symbols-outlined">chevron_right</span>
+<div class="flex items-center gap-lg">
+<p class="text-label-md text-on-surface-variant" id="next-hint">시안을 선택한 후 다음 단계로 이동하세요</p>
+<button class="px-xl py-md rounded-xl bg-outline-variant text-on-surface-variant cursor-not-allowed font-bold transition-all flex items-center gap-md" disabled="" id="next-btn">
+선택한 시안으로 진행
+<span class="material-symbols-outlined">chevron_right</span>
 </button>
 </div>
 </div>
 </footer>
+
 <script>
-    // 현재 선택 상태를 저장해두는 변수들.
-    // 아직 AI(OpenAI API)가 연결되지 않았기 때문에, 실제 슬로건 문구 생성은 하드코딩된 예시로 대체하지만
-    // 플랫폼/스타일 선택값은 여기 저장해서 안내 문구에 바로 반영합니다.
-    // AI 연결 후에는 showRecommendations() 안의 "AI 응답 대체 영역"만 실제 API 호출로 교체하면 됩니다.
-    let currentMode = 'faster'; // 'faster' | 'manual'
-    let selectedPlatformName = '인스타그램'; // 기본값(인스타그램 카드가 기본 선택되어 있음)
-    let selectedStyleName = null; // 직접 설정 모드에서 사용자가 고른 스타일 이름
-    let selectedGoalName = '신메뉴 홍보'; // 직접 설정 모드에서 사용자가 고른 광고 목표 (기본값)
-    let selectedPosterSize = 'A4'; // 오프라인 포스터 규격 기본값
+// 3번 화면에서 넘어올 것으로 가정한 전략 데이터 (mock).
+// TODO: 실제 연결 시 세션스토리지/전역state 등으로 3번 화면의 선택값을 받아와 아래 값을 채운다.
+const strategyData = {
+    platform: '인스타그램',
+    goal: '신메뉴 홍보',
+    style: '따뜻함/감성적'
+};
+document.getElementById('summary-platform').innerText = strategyData.platform;
+document.getElementById('summary-goal').innerText = strategyData.goal;
+document.getElementById('summary-style').innerText = strategyData.style;
 
-    // 빠른 추천 모드에서 "AI가 자동으로 고른 스타일"의 자리표시자.
-    // 실제로는 AI 연결 후 API 응답값으로 대체될 부분입니다.
-    function getAutoRecommendedStyleName() {
-        // TODO: AI 연결 후 이 부분을 API 응답의 추천 스타일명으로 교체
-        return '따뜻함/감성적';
+let selectedDraftId = null; // 라디오 방식 단일 선택
+
+// 페이지 최초 진입 시: 진행 상태를 먼저 보여주고, "생성 완료" 후에 시안을 노출한다.
+// TODO: 실제 연결 시 이 부분을 실제 AI 이미지 생성 API 호출 완료 시점에 맞춰 교체
+function runInitialGeneration() {
+    // 1) 카드들을 로딩 상태로 시작
+    document.querySelectorAll('.draft-card').forEach(c => setCardLoading(c, true));
+
+    // 2) 진행 상태 영역 노출 + 단계별 진행률 표시 (목업)
+    showProgress(10, '시안 생성 중...');
+
+    setTimeout(() => showProgress(45, '시안 생성 중...'), 600);
+    setTimeout(() => showProgress(75, '시안 완성 중...'), 1300);
+
+    // 3) 생성 완료 처리: 카드 로딩 해제 + 진행 상태 숨김
+    setTimeout(() => {
+        showProgress(100, '시안 완성 중...');
+        document.querySelectorAll('.draft-card').forEach(c => setCardLoading(c, false));
+        setTimeout(hideProgress, 400);
+    }, 2000);
+}
+
+// 페이지 로드 시 초기 생성 시퀀스 실행
+runInitialGeneration();
+
+function goToPrevStep() {
+    // TODO: 실제 연결 시, 되돌아갔을 때 3번 화면이 기존 선택값(플랫폼/목표/스타일 등)을
+    // 그대로 유지해서 보여주려면 sessionStorage 등에 상태를 저장해두고 복원하는 로직 필요
+    window.location.href = '?page=strategy_selection';
+}
+
+function selectDraft(card) {
+    const draftId = card.dataset.draftId;
+
+    // 이미 재생성 중인 카드는 선택 불가
+    if (card.classList.contains('is-loading')) return;
+
+    document.querySelectorAll('.draft-card').forEach(c => {
+        c.classList.remove('border-primary', 'shadow-md');
+        c.classList.add('border-outline-variant');
+        c.querySelector('.check-badge').classList.add('hidden');
+    });
+
+    card.classList.add('border-primary', 'shadow-md');
+    card.classList.remove('border-outline-variant');
+    card.querySelector('.check-badge').classList.remove('hidden');
+
+    selectedDraftId = draftId;
+    updateTagArea();
+    updateNextButton();
+    updateSendButton();
+}
+
+function updateTagArea() {
+    const tagArea = document.getElementById('tag-area');
+    if (!selectedDraftId) {
+        tagArea.innerHTML = '';
+        return;
     }
+    tagArea.innerHTML = `
+        <span class="inline-flex items-center gap-xs bg-primary-fixed text-on-primary-fixed text-label-md font-bold px-md py-xs rounded-full">
+            시안 ${selectedDraftId}
+            <span class="material-symbols-outlined text-[16px] cursor-pointer" onclick="clearSelection()">close</span>
+        </span>
+    `;
+}
 
-    function selectMode(mode) {
-        currentMode = mode;
-        const fasterCard = document.getElementById('mode-faster');
-        const manualCard = document.getElementById('mode-manual');
-        const manualSections = document.getElementById('manual-sections');
-        const ctaText = document.getElementById('cta-text');
+function clearSelection() {
+    selectedDraftId = null;
+    document.querySelectorAll('.draft-card').forEach(c => {
+        c.classList.remove('border-primary', 'shadow-md');
+        c.classList.add('border-outline-variant');
+        c.querySelector('.check-badge').classList.add('hidden');
+    });
+    updateTagArea();
+    updateNextButton();
+    updateSendButton();
+}
 
-        if (mode === 'faster') {
-            fasterCard.classList.add('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
-            fasterCard.classList.remove('border-outline-variant');
-            fasterCard.querySelector('.check-icon').classList.remove('hidden');
-
-            manualCard.classList.remove('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
-            manualCard.classList.add('border-outline-variant');
-            manualCard.querySelector('.check-icon').classList.add('hidden');
-
-            manualSections.classList.add('hidden');
-            ctaText.innerText = "AI 추천받기";
-        } else {
-            manualCard.classList.add('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
-            manualCard.classList.remove('border-outline-variant');
-            manualCard.querySelector('.check-icon').classList.remove('hidden');
-
-            fasterCard.classList.remove('border-primary', 'ring-4', 'ring-primary-fixed', 'ring-opacity-50', 'shadow-md');
-            fasterCard.classList.add('border-outline-variant');
-            fasterCard.querySelector('.check-icon').classList.add('hidden');
-
-            manualSections.classList.remove('hidden');
-            ctaText.innerText = "슬로건 추천받기";
-        }
-        
-        // Hide results if mode changes
-        document.getElementById('results-section').classList.add('hidden');
-        document.getElementById('next-btn').disabled = true;
-        document.getElementById('next-btn').classList.add('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
-        document.getElementById('next-btn').classList.remove('bg-primary', 'text-on-primary', 'hover:opacity-90');
+function updateSendButton() {
+    const btn = document.getElementById('send-feedback-btn');
+    if (selectedDraftId) {
+        btn.disabled = false;
+        btn.classList.remove('bg-surface-container-high', 'text-outline', 'cursor-not-allowed');
+        btn.classList.add('bg-primary', 'text-on-primary', 'cursor-pointer');
+    } else {
+        btn.disabled = true;
+        btn.classList.add('bg-surface-container-high', 'text-outline', 'cursor-not-allowed');
+        btn.classList.remove('bg-primary', 'text-on-primary', 'cursor-pointer');
     }
+}
 
-    function selectPlatform(element) {
-        document.querySelectorAll('.platform-btn').forEach(btn => {
-            btn.classList.remove('border-primary', 'bg-primary-fixed/30', 'border-2');
-            btn.classList.add('border-outline-variant');
-            btn.querySelector('span:first-child').classList.remove('text-primary');
-            btn.querySelector('span:first-child').classList.add('text-on-surface-variant');
-        });
-        element.classList.add('border-primary', 'bg-primary-fixed/30', 'border-2');
-        element.classList.remove('border-outline-variant');
-        element.querySelector('span:first-child').classList.add('text-primary');
-        element.querySelector('span:first-child').classList.remove('text-on-surface-variant');
-
-        selectedPlatformName = element.dataset.platformName || selectedPlatformName;
-
-        if (element.id !== 'offline-trigger') {
-            toggleOfflineOptions(false);
-        }
-    }
-
-    function selectPosterSize(element) {
-        document.querySelectorAll('.poster-size-btn').forEach(btn => {
-            btn.classList.remove('border-2', 'border-primary', 'text-primary');
-            btn.classList.add('border', 'border-outline-variant', 'text-on-surface-variant');
-        });
-        element.classList.remove('border', 'border-outline-variant', 'text-on-surface-variant');
-        element.classList.add('border-2', 'border-primary', 'text-primary');
-
-        selectedPosterSize = element.innerText.trim();
-    }
-
-    function toggleOfflineOptions(show) {
-        const options = document.getElementById('offline-options');
-        if (show) {
-            options.classList.remove('hidden');
-        } else {
-            options.classList.add('hidden');
-        }
-    }
-
-    function selectGoal(element) {
-        document.querySelectorAll('.goal-btn').forEach(btn => {
-            btn.classList.remove('border-2', 'border-primary', 'text-primary', 'shadow-sm', 'font-bold');
-            btn.classList.add('border', 'border-outline-variant', 'text-on-surface-variant', 'font-bold');
-        });
-        element.classList.remove('border', 'border-outline-variant', 'text-on-surface-variant');
-        element.classList.add('border-2', 'border-primary', 'text-primary', 'shadow-sm');
-
-        selectedGoalName = element.dataset.goalName || selectedGoalName;
-    }
-
-    function selectStyle(element) {
-        document.querySelectorAll('.style-card div').forEach(div => {
-            div.classList.remove('border-4', 'border-primary', 'ring-2', 'ring-primary', 'ring-offset-2');
-            div.classList.add('border-transparent');
-            const overlay = div.querySelector('.bg-primary\\/10');
-            if (overlay) overlay.remove();
-        });
-        const targetDiv = element.querySelector('div');
-        targetDiv.classList.add('border-4', 'border-primary', 'ring-2', 'ring-primary', 'ring-offset-2', 'relative');
-        targetDiv.classList.remove('border-transparent');
-        
-        const overlay = document.createElement('div');
-        overlay.className = 'absolute inset-0 bg-primary/10';
-        targetDiv.appendChild(overlay);
-
-        selectedStyleName = element.dataset.styleName || selectedStyleName;
-    }
-
-    function showRecommendations() {
-        // 실제 슬로건 문구 3개는 AI(OpenAI API) 연결 전이라 하드코딩된 예시로 대체합니다.
-        // 다만 안내 문구는 지금 선택된 값(플랫폼/스타일)을 반영해 동적으로 만들 수 있습니다.
-        const appliedStyleName = currentMode === 'faster'
-            ? getAutoRecommendedStyleName()
-            : (selectedStyleName || '기본');
-
-        const subtitle = document.getElementById('results-subtitle');
-        if (currentMode === 'faster') {
-            subtitle.innerText = `${selectedPlatformName} 채널과 상품 정보를 바탕으로 AI가 "${appliedStyleName}" 스타일을 추천했어요.`;
-        } else {
-            subtitle.innerText = `${selectedPlatformName} · "${selectedGoalName}" 목표 · "${appliedStyleName}" 스타일에 맞춰 생성된 AI 추천 문구들입니다.`;
-        }
-
-        const results = document.getElementById('results-section');
-        results.classList.remove('hidden');
-        results.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function selectSlogan(element) {
-        document.querySelectorAll('.slogan-card').forEach(card => {
-            card.classList.remove('border-2', 'border-primary', 'bg-primary-fixed/10');
-            card.classList.add('border-outline-variant');
-            card.querySelector('.select-btn').innerText = '이 슬로건 선택하기';
-            card.querySelector('.select-btn').classList.remove('bg-primary', 'text-on-primary');
-            card.querySelector('.select-btn').classList.add('border-primary', 'text-primary');
-        });
-
-        element.classList.add('border-2', 'border-primary', 'bg-primary-fixed/10');
-        element.classList.remove('border-outline-variant');
-        element.querySelector('.select-btn').innerText = '선택됨 ✓';
-        element.querySelector('.select-btn').classList.add('bg-primary', 'text-on-primary');
-        element.querySelector('.select-btn').classList.remove('border-primary', 'text-primary');
-
-        // Enable Next Button
-        const nextBtn = document.getElementById('next-btn');
+function updateNextButton() {
+    const nextBtn = document.getElementById('next-btn');
+    const hint = document.getElementById('next-hint');
+    if (selectedDraftId) {
         nextBtn.disabled = false;
         nextBtn.classList.remove('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
-        nextBtn.classList.add('bg-primary', 'text-on-primary', 'hover:opacity-90', 'cursor-pointer', 'shadow-md');
+        nextBtn.classList.add('bg-primary', 'text-on-primary', 'hover:opacity-90', 'shadow-md');
+        hint.classList.add('hidden');
+    } else {
+        nextBtn.disabled = true;
+        nextBtn.classList.add('bg-outline-variant', 'text-on-surface-variant', 'cursor-not-allowed');
+        nextBtn.classList.remove('bg-primary', 'text-on-primary', 'hover:opacity-90', 'shadow-md');
+        hint.classList.remove('hidden');
     }
-    function goToNextStep() {
-        // TODO: 실제 연결 시 여기서 선택값들(platform, mode, goal, style, posterSize, selectedSlogan)을
-        // sessionStorage 등에 저장한 뒤 이동하면, 4번 화면에서 strategyData를 실제 값으로 채울 수 있음
-        // 예: sessionStorage.setItem('strategyData', JSON.stringify({...}));
-        
-        window.location.href = '광고 시안 생성.html';
+}
+
+function setCardLoading(card, isLoading) {
+    const preview = card.querySelector('.draft-preview');
+    const loadingLayer = card.querySelector('.draft-loading');
+    const resultLayer = card.querySelector('.draft-result');
+    if (isLoading) {
+        card.classList.add('is-loading');
+        loadingLayer.classList.remove('hidden');
+        resultLayer.classList.add('opacity-20');
+    } else {
+        card.classList.remove('is-loading');
+        loadingLayer.classList.add('hidden');
+        resultLayer.classList.remove('opacity-20');
     }
+}
+
+function showProgress(percent, label) {
+    const section = document.getElementById('progress-section');
+    section.classList.remove('hidden');
+    document.getElementById('progress-percent').innerText = percent + '%';
+    document.getElementById('progress-bar').style.width = percent + '%';
+    document.getElementById('progress-title').innerText = label;
+}
+
+function hideProgress() {
+    document.getElementById('progress-section').classList.add('hidden');
+}
+
+// 선택된 시안 1개만 재생성 (피드백 입력 있어도/없어도 동작)
+function regenerateSelected() {
+    if (!selectedDraftId) return;
+    // TODO: AI 연결 후 이 부분에서 feedback-input 값을 프롬프트에 실어 해당 시안만 재생성 API 호출
+    const feedbackText = document.getElementById('feedback-input').value;
+
+    const targetCard = document.querySelector(`.draft-card[data-draft-id="${selectedDraftId}"]`);
+    setCardLoading(targetCard, true);
+    showProgress(30, '시안 재생성 중...');
+
+    setTimeout(() => {
+        showProgress(100, '시안 완성 중...');
+        setCardLoading(targetCard, false);
+        document.getElementById('feedback-input').value = '';
+        setTimeout(hideProgress, 500);
+    }, 1800);
+}
+
+// 3개 시안 전체 재생성
+function regenerateAll() {
+    document.querySelectorAll('.draft-card').forEach(c => setCardLoading(c, true));
+    showProgress(20, '시안 전체 재생성 중...');
+
+    clearSelection();
+
+    setTimeout(() => {
+        showProgress(100, '시안 완성 중...');
+        document.querySelectorAll('.draft-card').forEach(c => setCardLoading(c, false));
+        setTimeout(hideProgress, 500);
+    }, 2200);
+}
 </script>
-</body></html>
+</body>
+</html>
