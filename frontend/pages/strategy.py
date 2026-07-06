@@ -1,5 +1,7 @@
+import requests
 import streamlit as st
 
+BACKEND_URL = "http://127.0.0.1:8000"
 
 def render_strategy_selection():
     if "strategy_mode" not in st.session_state:
@@ -663,22 +665,41 @@ def render_strategy_selection():
     ):
         st.session_state.strategy_data = strategy_data.copy()
 
-        st.session_state.recommendation = {
-            #mock-up 테스트용
-            "strategy_title": "트렌드 기반 맞춤 광고 전략",
-            "strategy_description": (
-                "선택한 플랫폼과 상품 정보를 바탕으로 "
-                "맞춤형 광고 방향을 추천했습니다."
-            ),
-            "slogans": [
-                "AI 추천 문구 후보 1",
-                "AI 추천 문구 후보 2",
-                "AI 추천 문구 후보 3",
-            ],
+        product_data = st.session_state.get(
+            "product_data",
+            {
+                "name": "카페 시그니처 샌드위치",
+                "price": "$12.50",
+                "description": "수제 베이커리",
+                "category": "카페",
+            },
+        )
+
+        payload = {
+            "product": product_data,
+            "strategy": strategy_data,
         }
 
-        st.session_state.selected_slogan = None
-        st.rerun()
+        try:
+            response = requests.post(
+                f"{BACKEND_URL}/strategy/recommend",
+                json=payload,
+                timeout=30,
+            )
+            response.raise_for_status()
+
+            st.session_state.recommendation = response.json()
+            st.session_state.selected_slogan = None
+            st.rerun()
+
+        except requests.exceptions.ConnectionError:
+            st.error(
+                "백엔드 서버에 연결할 수 없습니다. "
+                "FastAPI 서버가 실행 중인지 확인해주세요."
+            )
+
+        except Exception as e:
+            st.error(f"AI 추천 요청 중 오류가 발생했습니다: {e}")
 
     recommendation = st.session_state.get("recommendation")
 
