@@ -1,3 +1,5 @@
+import base64
+import html
 import streamlit as st
 
 
@@ -77,24 +79,62 @@ def render_strategy_selection():
         </div>
         """
     )
+    
+    product_data = st.session_state.get("product_data")
+
+    if not product_data:
+        st.warning("상품 정보가 없습니다. 먼저 상품 정보를 입력해주세요.")
+
+        if st.button("상품 정보 입력으로 이동"):
+            st.query_params["page"] = "product_input"
+            st.rerun()
+
+        return
+    
+    image_base64 = base64.b64encode(
+        product_data["image_bytes"]
+    ).decode("utf-8")
+
+    image_src = (
+        f"data:{product_data['image_type']};"
+        f"base64,{image_base64}"
+    )
+    
+    industry_labels = {
+        "restaurant": "음식점",
+        "cafe": "카페",
+        "beauty": "뷰티",
+        "retail": "소매점",
+    }
+
+    industry_label = industry_labels.get(
+        product_data["industry"],
+        product_data["industry"],
+    )
+    product_name = html.escape(product_data["name"])
+    product_price = html.escape(product_data["price"])
 
     # 3. 상품 요약 카드
     st.html(
-        """
+        f"""
         <div class="strategy-content">
             <div class="strategy-container">
                 <section class="strategy-summary-card">
                     <div class="strategy-product-info">
                         <div class="strategy-product-image">
                             <img
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLZ9g5fgMudawRyzF8YFh59Tan2HFaNwK4blz5-MUeSxTeMzLd_HHE2q0OO-6Gx5aVEMqv_8rl-ITZnFUikvRp59ZNEiEF2jv39qO5W13CJu88_UNOGZi2Ly1uYdWkFSf1_rcmk_u5HZeR9XnJ2FXR3J943sMiPMsad6XetZbXtepGJurqTIFvxZyKsnh0Z7hhJw0mcY7Z2p_5qHKQiXg9gpw_IXyk4FKDK2DhWgTp0_YpWTAFXxJ4"
+                                src="{image_src}"
                                 alt="상품 이미지"
                             >
                         </div>
 
                         <div class="strategy-product-text">
-                            <h3>카페 시그니처 샌드위치</h3>
-                            <p>$12.50 · 수제 베이커리</p>
+                            <h3>{product_name}</h3>
+                            <p>
+                                {product_price}
+                                ·
+                                {industry_label}
+                            </p>
                         </div>
                     </div>
 
@@ -238,8 +278,6 @@ def render_strategy_selection():
 
             pointer-events: none;
         }}
-
-        </style>
         
         </style>
         """
@@ -757,6 +795,15 @@ def render_strategy_selection():
         selected_slogan = st.session_state.get("selected_slogan")
 
         final_strategy_data = {
+                "product": {
+                    "name": product_data["name"],
+                    "price": product_data["price"],
+                    "description": product_data["description"],
+                    "industry": product_data["industry"],
+                    "image_name": product_data["image_name"],
+                    "image_type": product_data["image_type"],
+                    "image_bytes": product_data["image_bytes"],
+                },
             **st.session_state.strategy_data,
             "recommendation": {
                 "strategy_title": recommendation["strategy_title"],
@@ -768,6 +815,63 @@ def render_strategy_selection():
                 else None
             ),
         }
+
+        st.html(
+            """
+            <style>
+            .st-key-generate_ad {
+                margin-top: 32px;
+                margin-bottom: 48px;
+            }
+
+            .st-key-generate_ad button {
+                height: 58px;
+                border: none;
+                border-radius: 12px;
+                background: #0f8a5f;
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: 800;
+                box-shadow: 0 8px 20px rgba(15, 138, 95, 0.16);
+                transition:
+                    background 0.2s ease,
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            .st-key-generate_ad button:hover {
+                border: none;
+                background: #0b7651;
+                color: #ffffff;
+                transform: translateY(-1px);
+                box-shadow: 0 10px 24px rgba(15, 138, 95, 0.22);
+            }
+
+            .st-key-generate_ad button:active {
+                transform: translateY(0);
+            }
+
+            .st-key-generate_ad button:focus,
+            .st-key-generate_ad button:focus-visible {
+                border: none;
+                outline: none;
+                box-shadow:
+                    0 0 0 3px rgba(15, 138, 95, 0.16),
+                    0 8px 20px rgba(15, 138, 95, 0.16);
+            }
+
+            .st-key-generate_ad button:disabled {
+                border: none;
+                background: #dce3df;
+                color: #98a39d;
+                box-shadow: none;
+                opacity: 1;
+                cursor: not-allowed;
+                transform: none;
+            }
+            </style>
+            """
+        )
 
         if st.button(
             "광고 시안 생성하기 →",

@@ -1,5 +1,5 @@
 import time
-
+import html
 import streamlit as st
 
 
@@ -103,6 +103,39 @@ def render_ad_generation():
             st.rerun()
 
         return
+    
+    product_data = final_strategy_data.get("product")
+    if not product_data:
+        st.warning(
+            "상품 정보가 없습니다. "
+            "먼저 상품 정보를 입력해주세요."
+        )
+
+        if st.button(
+            "상품 정보 입력으로 이동",
+            key="back_to_product",
+        ):
+            st.query_params["page"] = "product_input"
+            st.rerun()
+
+        return
+    product_name = html.escape(product_data["name"])
+    product_price = html.escape(product_data["price"])
+
+    if not product_data:
+        st.warning(
+            "상품 정보가 없습니다. "
+            "먼저 상품 정보를 입력해주세요."
+        )
+
+        if st.button(
+            "상품 정보 입력으로 이동",
+            key="back_to_product",
+        ):
+            st.query_params["page"] = "product_input"
+            st.rerun()
+
+        return
 
     # 5. 전략 데이터 표시용 변환
     platform_labels = {
@@ -194,7 +227,7 @@ def render_ad_generation():
                     <div class="generation-strategy-head">
                         <div>
                             <span class="generation-strategy-label">
-                                선택한 광고 전략
+                                {product_name} · {product_price}
                             </span>
                             <h3>{selected_slogan or "선택한 전략으로 광고를 생성합니다"}</h3>
                         </div>
@@ -224,6 +257,43 @@ def render_ad_generation():
     if "generated_drafts" not in st.session_state:
         st.session_state.generated_drafts = []
     
+    st.html(
+        """
+        <style>
+        .st-key-start_generation {
+            margin-top: 24px;
+            margin-bottom: 48px;
+        }
+
+        .st-key-start_generation button {
+            height: 58px;
+            border: none;
+            border-radius: 12px;
+            background: #0f8a5f;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(15, 138, 95, 0.16);
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .st-key-start_generation button:hover {
+            border: none;
+            background: #0b7651;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(15, 138, 95, 0.22);
+        }
+
+        .st-key-start_generation button:active {
+            transform: translateY(0);
+        }
+        </style>
+        """
+    )
     # 8. 광고 시안 생성 시작
     if st.session_state.generation_status == "ready":
         st.html(
@@ -362,6 +432,35 @@ def render_ad_generation():
             background: #ffffff;
             color: #17211c;
         }
+        .st-key-draft_feedback_A textarea,
+        .st-key-draft_feedback_B textarea,
+        .st-key-draft_feedback_C textarea {
+            min-height: 120px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #17211c;
+        }
+
+        .st-key-draft_feedback_A textarea:focus,
+        .st-key-draft_feedback_B textarea:focus,
+        .st-key-draft_feedback_C textarea:focus {
+            border-color: #0f8a5f;
+            box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+        }
+
+        .st-key-draft_feedback_A textarea::placeholder,
+        .st-key-draft_feedback_B textarea::placeholder,
+        .st-key-draft_feedback_C textarea::placeholder {
+            color: #a0aaa5;
+        }
+        .st-key-draft_feedback_A label,
+        .st-key-draft_feedback_B label,
+        .st-key-draft_feedback_C label {
+            color: #17211c;
+            font-size: 14px;
+            font-weight: 700;
+        }
         """
 
         if selected_draft is not None:
@@ -415,7 +514,33 @@ def render_ad_generation():
                 ):
                     st.session_state.selected_draft = draft_id
                     st.rerun()
-        
+        st.html(
+            """
+            <style>
+            .st-key-regenerate_selected_draft button {
+                height: 48px;
+                border: 1.5px solid #0f8a5f;
+                border-radius: 10px;
+                background: #ffffff;
+                color: #0f8a5f;
+                font-weight: 800;
+            }
+
+            .st-key-regenerate_selected_draft button:hover {
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }
+
+            .st-key-regenerate_selected_draft button:disabled {
+                border-color: #d9e1dc;
+                background: #f4f6f5;
+                color: #a0aaa5;
+                opacity: 1;
+            }
+            </style>
+            """
+        )
         # 11. 선택 시안 피드백 및 재생성
         selected_draft = st.session_state.selected_draft
 
@@ -489,6 +614,53 @@ def render_ad_generation():
             
         # 13. 하단 액션 버튼
         st.divider()
+        
+        st.html(
+            """
+            <style>
+            .st-key-regenerate_all_drafts button {
+                height: 56px;
+                border: 1.5px solid #d9e1dc;
+                border-radius: 12px;
+                background: #ffffff;
+                color: #17211c;
+                font-size: 15px;
+                font-weight: 800;
+            }
+
+            .st-key-regenerate_all_drafts button:hover {
+                border-color: #79b79c;
+                background: #f8fbf9;
+                color: #17211c;
+            }
+
+            .st-key-proceed_selected_draft button {
+                height: 56px;
+                border: none;
+                border-radius: 12px;
+                background: #0f8a5f;
+                color: #ffffff;
+                font-size: 15px;
+                font-weight: 800;
+                box-shadow: 0 8px 20px rgba(15, 138, 95, 0.16);
+            }
+
+            .st-key-proceed_selected_draft button:hover {
+                border: none;
+                background: #0b7651;
+                color: #ffffff;
+            }
+
+            .st-key-proceed_selected_draft button:disabled {
+                border: none;
+                background: #dce3df;
+                color: #98a39d;
+                box-shadow: none;
+                opacity: 1;
+            }
+            </style>
+            """
+        )
 
         action_col1, action_col2 = st.columns(2)
 

@@ -10,6 +10,27 @@ def render_result():
             "선택된 최종 광고 시안이 없습니다. "
             "광고 시안을 먼저 선택해주세요."
         )
+        
+        st.html(
+            """
+            <style>
+            .st-key-back_to_ad_generation button {
+                height: 48px;
+                border: 1.5px solid #0f8a5f;
+                border-radius: 10px;
+                background: #ffffff;
+                color: #0f8a5f;
+                font-weight: 800;
+            }
+
+            .st-key-back_to_ad_generation button:hover {
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }
+            </style>
+            """
+        )
 
         if st.button(
             "광고 시안 선택으로 돌아가기",
@@ -263,6 +284,75 @@ def render_result():
     # 4. 최종 액션 버튼
     image_path = selected_draft.get("image_path")
 
+    st.html(
+        """
+        <style>
+        /* 결과물 다운로드 */
+        .st-key-download_final_ad button {
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+            background: #0f8a5f;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(15, 138, 95, 0.16);
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .st-key-download_final_ad button:hover {
+            border: none;
+            background: #0b7651;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(15, 138, 95, 0.22);
+        }
+
+        /* 다운로드 비활성화 */
+        .st-key-download_final_ad_disabled button {
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+            background: #dce3df;
+            color: #98a39d;
+            font-size: 15px;
+            font-weight: 800;
+            opacity: 1;
+            cursor: not-allowed;
+        }
+
+        /* 새 광고 만들기 */
+        .st-key-create_new_ad button {
+            height: 56px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #17211c;
+            font-size: 15px;
+            font-weight: 800;
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .st-key-create_new_ad button:hover {
+            border-color: #79b79c;
+            background: #f4fbf7;
+            color: #0f8a5f;
+            transform: translateY(-1px);
+        }
+
+        .st-key-create_new_ad button:active {
+            transform: translateY(0);
+        }
+        </style>
+        """
+    )
+
     action_col1, action_col2 = st.columns(2)
 
     with action_col1:
@@ -296,6 +386,20 @@ def render_result():
     
     if new_ad_clicked:
         keys_to_clear = [
+            # 상품 입력
+            "product_name",
+            "product_price",
+            "product_description",
+            "product_industry",
+            "product_data",
+            "product_image",
+
+            # 상품 입력 위젯
+            "product_name_input",
+            "product_price_input",
+            "product_description_input",
+
+            # 전략 선택
             "strategy_mode",
             "reuse_previous_tone",
             "selected_platforms",
@@ -306,25 +410,32 @@ def render_result():
             "recommendation",
             "selected_slogan",
             "final_strategy_data",
+
+            # 광고 생성
             "generation_status",
             "generated_drafts",
             "selected_draft",
             "regeneration_request",
             "regenerating_draft",
             "regeneration_completed",
+
+            # 최종 결과
             "final_ad_result",
         ]
 
         for key in keys_to_clear:
             st.session_state.pop(key, None)
     
-        feedback_keys = [
+        dynamic_keys = [
             key
-            for key in st.session_state.keys()
-            if key.startswith("draft_feedback_")
+            for key in list(st.session_state.keys())
+            if (
+                key.startswith("draft_feedback_")
+                or key.startswith("industry_")
+            )
         ]
 
-        for key in feedback_keys:
+        for key in dynamic_keys:
             st.session_state.pop(key, None)
 
         st.query_params["page"] = "product_input"
