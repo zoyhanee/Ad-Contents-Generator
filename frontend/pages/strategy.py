@@ -846,17 +846,18 @@ def render_strategy_selection():
 
         # 14. 광고 시안 생성
         selected_slogan = st.session_state.get("selected_slogan")
-
+        project_id = recommendation["project_id"]
         final_strategy_data = {
-                "product": {
-                    "name": product_data["name"],
-                    "price": product_data["price"],
-                    "description": product_data["description"],
-                    "industry": product_data["industry"],
-                    "image_name": product_data["image_name"],
-                    "image_type": product_data["image_type"],
-                    "image_bytes": product_data["image_bytes"],
-                },
+            "project_id": project_id,
+            "product": {
+                "name": product_data["name"],
+                "price": product_data["price"],
+                "description": product_data["description"],
+                "industry": product_data["industry"],
+                "image_name": product_data["image_name"],
+                "image_type": product_data["image_type"],
+                "image_bytes": product_data["image_bytes"],
+            },
             **st.session_state.strategy_data,
             "recommendation": {
                 "strategy_title": recommendation["strategy_title"],

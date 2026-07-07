@@ -24,8 +24,7 @@ def get_or_create_dev_user(db: Session) -> User:
     )
 
     db.add(user)
-    db.commit()
-    db.refresh(user)
+    db.flush()
 
     return user
 

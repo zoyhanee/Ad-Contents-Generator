@@ -17,10 +17,13 @@ def recommend(
 ):
     recommendation = recommend_strategy(request)
 
-    save_strategy_recommendation(
+    saved_strategy = save_strategy_recommendation(
         db=db,
         request=request,
         recommendation=recommendation,
     )
 
-    return recommendation
+    return {
+        **recommendation,
+        "project_id": saved_strategy.project_id,
+    }
