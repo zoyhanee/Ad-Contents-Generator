@@ -354,10 +354,10 @@ def render_strategy_selection():
         "offline": "🖼 오프라인 포스터",
     }
 
-    if "selected_platforms" not in st.session_state:
-        st.session_state.selected_platforms = []
+    if "selected_platform" not in st.session_state:
+        st.session_state.selected_platform = None
 
-    selected_platforms = st.session_state.selected_platforms
+    selected_platform = st.session_state.selected_platform
 
     platform_css = """
     <style>
@@ -391,18 +391,18 @@ def render_strategy_selection():
     }
     """
 
-    for platform_id in selected_platforms:
+    if selected_platform:
         platform_css += f"""
-        .st-key-platform_{platform_id} button {{
+        .st-key-platform_{selected_platform} button {{
             border-color: #0f8a5f;
             background: #f4fbf7;
             color: #0f8a5f;
-            box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            box-shadow: 0 0 0 2px rgba(15,138,95,.1);
         }}
 
-        .st-key-platform_{platform_id} button:hover {{
-            background: #f4fbf7;
-            color: #0f8a5f;
+        .st-key-platform_{selected_platform} button:hover {{
+            background:#f4fbf7;
+            color:#0f8a5f;
         }}
         """
 
@@ -417,22 +417,21 @@ def render_strategy_selection():
         platform_options.items(),
     ):
         with col:
-            is_selected = platform_id in st.session_state.selected_platforms
+            is_selected = (
+                platform_id
+                == st.session_state.selected_platform
+            )
 
             if st.button(
                 platform_label,
                 key=f"platform_{platform_id}",
                 use_container_width=True,
             ):
-                if is_selected:
-                    st.session_state.selected_platforms.remove(platform_id)
-                else:
-                    st.session_state.selected_platforms.append(platform_id)
-
+                st.session_state.selected_platform = platform_id
                 st.rerun()
 
     # 7. 오프라인 포스터 규격 선택
-    if "offline" in st.session_state.selected_platforms:
+    if st.session_state.selected_platform == "offline":
         st.subheader("포스터 규격 선택")
 
         poster_size_options = {
@@ -649,13 +648,14 @@ def render_strategy_selection():
             "reuse_previous_tone",
             False,
         ),
-        "platforms": st.session_state.get(
-            "selected_platforms",
+        "platform": st.session_state.get(
+            "selected_platform",
             [],
         ),
         "poster_size": (
             st.session_state.get("poster_size")
-            if "offline" in st.session_state.get("selected_platforms", [])
+            if st.session_state.get("selected_platform")
+            == "offline"
             else None
         ),
         "goal": (
@@ -671,7 +671,9 @@ def render_strategy_selection():
     }
 
     # 11. AI 추천받기
-    can_recommend = len(strategy_data["platforms"]) > 0
+    can_recommend = (
+        strategy_data["platform"] is not None
+    )
 
     st.html(
         """
