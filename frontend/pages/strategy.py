@@ -351,7 +351,7 @@ def render_strategy_selection():
 
     platform_options = {
         "instagram": "📷 Instagram",
-        "facebook": "🚚 배달의민족",
+        "baemin": "🚚 배달의민족",
         "naver": "🟢 네이버",
         "offline": "🖼 오프라인 포스터",
     }
@@ -364,7 +364,7 @@ def render_strategy_selection():
     platform_css = """
     <style>
     .st-key-platform_instagram button,
-    .st-key-platform_facebook button,
+    .st-key-platform_baemin button,
     .st-key-platform_naver button,
     .st-key-platform_offline button {
         height: 72px;
@@ -377,7 +377,7 @@ def render_strategy_selection():
     }
 
     .st-key-platform_instagram button:hover,
-    .st-key-platform_facebook button:hover,
+    .st-key-platform_baemin button:hover,
     .st-key-platform_naver button:hover,
     .st-key-platform_offline button:hover {
         border-color: #79b79c;
@@ -386,7 +386,7 @@ def render_strategy_selection():
     }
 
     .st-key-platform_instagram button:focus,
-    .st-key-platform_facebook button:focus,
+    .st-key-platform_baemin button:focus,
     .st-key-platform_naver button:focus,
     .st-key-platform_offline button:focus {
         outline: none !important;

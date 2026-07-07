@@ -3,7 +3,7 @@ from app.schemas.strategy_schema import StrategyRecommendRequest
 
 PLATFORM_LABELS = {
     "instagram": "Instagram",
-    "facebook": "Facebook",
+    "baemin": "배달의민족",
     "naver": "네이버",
     "offline": "오프라인 포스터",
 }
@@ -176,7 +176,7 @@ def _strategy_description(
             f"{style_text}짧고 감각적인 문구로 전달하는 방향을 추천했습니다."
         )
 
-    if platform == "facebook":
+    if platform == "baemin":
         return (
             f"{category_label} 고객이 공감할 수 있도록 {product_name}의 장점과 "
             f"이용 상황을 구체적으로 전달하는 방향을 추천했습니다."
@@ -239,8 +239,8 @@ def _platform_category_slogans(
                 f"오늘의 공간을 바꾸는 특별한 아이템",
             ]
 
-    # Facebook
-    if platform == "facebook":
+    # Baemin
+    if platform == "baemin":
         if category == "restaurant":
             return [
                 f"가족, 친구와 함께 즐기기 좋은 {product_name}",
