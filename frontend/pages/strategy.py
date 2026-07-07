@@ -736,18 +736,15 @@ def render_strategy_selection():
     ):
         st.session_state.strategy_data = strategy_data.copy()
 
-        product_data = st.session_state.get(
-            "product_data",
-            {
-                "name": "카페 시그니처 샌드위치",
-                "price": "$12.50",
-                "description": "수제 베이커리",
-                "category": "카페",
-            },
-        )
+        api_product_data = {
+        "name": product_data["name"],
+        "price": product_data["price"],
+        "description": product_data["description"],
+        "category": product_data["industry"],
+    }
 
         payload = {
-            "product": product_data,
+            "product": api_product_data,
             "strategy": strategy_data,
         }
 
