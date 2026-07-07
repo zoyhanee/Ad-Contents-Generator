@@ -1,7 +1,13 @@
-import time
 import html
+import time
+
+import requests
 import streamlit as st
+
 from utils.state import clear_after_strategy
+
+
+BACKEND_URL = "http://127.0.0.1:8000"
 
 
 def render_ad_generation():
@@ -167,7 +173,7 @@ def render_ad_generation():
     # 5. 전략 데이터 표시용 변환
     platform_labels = {
         "instagram": "Instagram",
-        "facebook": "Facebook",
+        "baemin": "배달의민족",
         "naver": "네이버",
         "offline": "오프라인 포스터",
     }
@@ -365,26 +371,35 @@ def render_ad_generation():
             status_text.caption(message)
             time.sleep(0.5)
 
-        st.session_state.generated_drafts = [
-            {
-                "id": "A",
-                "title": "시안 A",
-                "version": 1,
-            },
-            {
-                "id": "B",
-                "title": "시안 B",
-                "version": 1,
-            },
-            {
-                "id": "C",
-                "title": "시안 C",
-                "version": 1,
-            },
-        ]
+        payload = {
+            "project_id": final_strategy_data["project_id"],
+            "selected_slogan": selected_slogan,
+        }
 
-        st.session_state.generation_status = "completed"
-        st.rerun()
+        try:
+            response = requests.post(
+                f"{BACKEND_URL}/generate",
+                json=payload,
+                timeout=30,
+            )
+            response.raise_for_status()
+
+            result = response.json()
+
+            st.session_state.generated_drafts = result["drafts"]
+            st.session_state.generation_status = "completed"
+            st.rerun()
+
+        except requests.exceptions.ConnectionError:
+            st.session_state.generation_status = "ready"
+            st.error(
+                "백엔드 서버에 연결할 수 없습니다. "
+                "FastAPI 서버가 실행 중인지 확인해주세요."
+            )
+
+        except requests.exceptions.RequestException as e:
+            st.session_state.generation_status = "ready"
+            st.error(f"광고 시안 생성 요청 중 오류가 발생했습니다: {e}")
         
     # 10. 광고 시안 생성 완료
     elif st.session_state.generation_status == "completed":
