@@ -1,8 +1,11 @@
+from io import BytesIO
+
 import torch
 from diffusers import (
     PipelineQuantizationConfig,
     QwenImageEditPlusPipeline,
 )
+from PIL import Image
 
 from app.ml.image_clients.base import ImageModelClient
 
@@ -32,11 +35,33 @@ class QwenImageClient(ImageModelClient):
             quantization_config=quantization_config,
         )
 
+        self.pipeline.to("cuda")
+
     def generate(
         self,
         prompt: str,
         source_image_path: str | None = None,
     ) -> bytes:
-        raise NotImplementedError(
-            "Qwen image generation is not implemented yet."
+        if source_image_path is None:
+            raise ValueError(
+                "Qwen image editing requires a source image."
+            )
+
+        self._load_pipeline()
+
+        source_image = Image.open(source_image_path).convert("RGB")
+
+        result = self.pipeline(
+            image=source_image,
+            prompt=prompt,
+            num_inference_steps=50,
+            true_cfg_scale=4.0,
+            output_type="pil",
         )
+
+        generated_image = result.images[0]
+
+        buffer = BytesIO()
+        generated_image.save(buffer, format="PNG")
+
+        return buffer.getvalue()
