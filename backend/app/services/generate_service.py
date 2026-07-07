@@ -40,6 +40,7 @@ def generate_ad_drafts(
         draft_data = generate_drafts(
             product_name=project.product.name,
             product_description=project.product.description,
+            product_image_path=project.product.image_path,
             platform=platform,
             style=project.strategy.selected_style,
             selected_slogan=request.selected_slogan,
@@ -53,6 +54,7 @@ def generate_ad_drafts(
                     title=draft["title"],
                     version=draft["version"],
                     image_path=draft["image_path"],
+                    image_prompt=draft["image_prompt"],
                 )
             )
 

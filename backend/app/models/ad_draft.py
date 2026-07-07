@@ -22,6 +22,10 @@ class AdDraft(Base):
     title: Mapped[str | None] = mapped_column(String(100), nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1)
     image_path: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    image_prompt: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
     feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_selected: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(

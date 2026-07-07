@@ -356,35 +356,33 @@ def render_ad_generation():
             """
         )
 
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        generation_steps = [
-            (20, "상품 정보를 분석하고 있어요..."),
-            (45, "광고 전략을 적용하고 있어요..."),
-            (70, "시각적 콘셉트를 구성하고 있어요..."),
-            (90, "광고 시안을 마무리하고 있어요..."),
-            (100, "생성이 완료되었습니다."),
-        ]
-
-        for progress, message in generation_steps:
-            progress_bar.progress(progress)
-            status_text.caption(message)
-            time.sleep(0.5)
-
         payload = {
             "project_id": final_strategy_data["project_id"],
             "selected_slogan": selected_slogan,
         }
 
         try:
-            response = requests.post(
-                f"{BACKEND_URL}/generate",
-                json=payload,
-                timeout=30,
-            )
-            response.raise_for_status()
+            with st.status(
+                "AI가 광고 콘셉트를 생성하고 있어요...",
+                expanded=True,
+            ) as generation_status:
+                st.write("상품 정보와 광고 전략을 준비했습니다.")
+                st.write("GPT 모델이 서로 다른 A/B/C 광고 콘셉트를 생성하고 있습니다.")
 
-            result = response.json()
+                response = requests.post(
+                    f"{BACKEND_URL}/generate",
+                    json=payload,
+                    timeout=120,
+                )
+                response.raise_for_status()
+
+                result = response.json()
+
+                generation_status.update(
+                    label="광고 콘셉트 생성이 완료되었습니다.",
+                    state="complete",
+                    expanded=False,
+                )
 
             st.session_state.generated_drafts = result["drafts"]
             st.session_state.generation_status = "completed"

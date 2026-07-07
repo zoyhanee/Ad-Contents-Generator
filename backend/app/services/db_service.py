@@ -42,6 +42,7 @@ def save_strategy_recommendation(
             price=int(request.product.price) if request.product.price else None,
             description=request.product.description,
             industry=request.product.category,
+            image_path=request.product.image_path,
         )
         db.add(product)
         db.flush()

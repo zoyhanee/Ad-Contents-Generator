@@ -247,3 +247,6 @@ models/
 # Logs
 logs/
 *.log
+
+# Runtime storage
+backend/storage/*

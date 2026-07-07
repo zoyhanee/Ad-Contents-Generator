@@ -8,6 +8,7 @@ class ProductInfo(BaseModel):
     price: Optional[str] = None
     description: Optional[str] = None
     category: Optional[str] = None
+    image_path: Optional[str] = None
 
 
 class StrategyInfo(BaseModel):

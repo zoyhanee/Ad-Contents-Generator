@@ -738,19 +738,41 @@ def render_strategy_selection():
     ):
         st.session_state.strategy_data = strategy_data.copy()
 
-        api_product_data = {
-        "name": product_data["name"],
-        "price": product_data["price"],
-        "description": product_data["description"],
-        "category": product_data["industry"],
-    }
-
-        payload = {
-            "product": api_product_data,
-            "strategy": strategy_data,
-        }
-
         try:
+            # 이미 업로드한 이미지 경로가 있으면 재사용
+            image_path = st.session_state.get("product_image_path")
+
+            # 아직 업로드하지 않은 경우에만 백엔드로 전송
+            if image_path is None:
+                image_response = requests.post(
+                    f"{BACKEND_URL}/products/image",
+                    files={
+                        "image": (
+                            product_data["image_name"],
+                            product_data["image_bytes"],
+                            product_data["image_type"],
+                        )
+                    },
+                    timeout=30,
+                )
+                image_response.raise_for_status()
+
+                image_path = image_response.json()["image_path"]
+                st.session_state.product_image_path = image_path
+
+            api_product_data = {
+                "name": product_data["name"],
+                "price": product_data["price"],
+                "description": product_data["description"],
+                "category": product_data["industry"],
+                "image_path": image_path,
+            }
+
+            payload = {
+                "product": api_product_data,
+                "strategy": strategy_data,
+            }
+
             response = requests.post(
                 f"{BACKEND_URL}/strategy/recommend",
                 json=payload,
@@ -768,7 +790,7 @@ def render_strategy_selection():
                 "FastAPI 서버가 실행 중인지 확인해주세요."
             )
 
-        except Exception as e:
+        except requests.exceptions.RequestException as e:
             st.error(f"AI 추천 요청 중 오류가 발생했습니다: {e}")
 
     recommendation = st.session_state.get("recommendation")

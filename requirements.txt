@@ -25,3 +25,4 @@ pydantic-settings==2.14.2
 requests==2.34.2
 
 sqlalchemy==2.0.45
+openai==2.44.0
