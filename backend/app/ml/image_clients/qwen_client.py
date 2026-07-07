@@ -35,8 +35,6 @@ class QwenImageClient(ImageModelClient):
             quantization_config=quantization_config,
         )
 
-        self.pipeline.to("cuda")
-
     def generate(
         self,
         prompt: str,
