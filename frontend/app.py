@@ -2,6 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from pages.product_input import render_product_input
 from pages.strategy import render_strategy_selection
 from pages.ad_generation import render_ad_generation
 from pages.result import render_result
@@ -50,7 +51,11 @@ def load_common_css():
 
 current_page = get_current_page()
 
-if current_page == "strategy_selection":
+if current_page == "product_input":
+    load_common_css()
+    render_product_input()
+    
+elif current_page == "strategy_selection":
     load_common_css()
     render_strategy_selection()
 
