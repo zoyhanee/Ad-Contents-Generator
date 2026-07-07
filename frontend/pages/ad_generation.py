@@ -1,6 +1,7 @@
 import time
 import html
 import streamlit as st
+from utils.state import clear_after_strategy
 
 
 def render_ad_generation():
@@ -85,6 +86,47 @@ def render_ad_generation():
         </div>
         """
     )
+    st.html(
+        """
+        <style>
+        .st-key-edit_strategy {
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+
+        .st-key-edit_strategy button {
+            height: 42px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f8a5f;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .st-key-edit_strategy button:hover {
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f;
+        }
+        </style>
+        """
+    )
+    left, right = st.columns([5, 1])
+
+    with left:
+        st.empty()
+
+    with right:
+        if st.button(
+            "전략 수정",
+            key="edit_strategy",
+            use_container_width=True,
+        ):
+            clear_after_strategy()
+            
+            st.query_params["page"] = "strategy_selection"
+            st.rerun()
     
     # 4. 전략 데이터 불러오기
     final_strategy_data = st.session_state.get("final_strategy_data")
@@ -121,21 +163,6 @@ def render_ad_generation():
         return
     product_name = html.escape(product_data["name"])
     product_price = html.escape(product_data["price"])
-
-    if not product_data:
-        st.warning(
-            "상품 정보가 없습니다. "
-            "먼저 상품 정보를 입력해주세요."
-        )
-
-        if st.button(
-            "상품 정보 입력으로 이동",
-            key="back_to_product",
-        ):
-            st.query_params["page"] = "product_input"
-            st.rerun()
-
-        return
 
     # 5. 전략 데이터 표시용 변환
     platform_labels = {
@@ -231,14 +258,6 @@ def render_ad_generation():
                             </span>
                             <h3>{selected_slogan or "선택한 전략으로 광고를 생성합니다"}</h3>
                         </div>
-
-                        <a
-                            class="strategy-edit-link"
-                            href="?page=strategy_selection"
-                            target="_self"
-                        >
-                            전략 수정
-                        </a>
                     </div>
 
                     <div class="generation-strategy-items">

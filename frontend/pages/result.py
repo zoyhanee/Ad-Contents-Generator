@@ -1,4 +1,5 @@
 import streamlit as st
+from utils.state import clear_after_draft
 
 
 def render_result():
@@ -150,20 +151,53 @@ def render_result():
                             </span>
                             <h2>시안 {draft_id}</h2>
                         </div>
-
-                        <a
-                            class="strategy-edit-link"
-                            href="?page=ad_generation"
-                            target="_self"
-                        >
-                            다른 시안 선택
-                        </a>
                     </div>
                 </section>
             </div>
         </div>
         """
     )
+    st.html(
+        """
+        <style>
+        .st-key-back_to_generation {
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+
+        .st-key-back_to_generation button {
+            height: 42px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f8a5f;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .st-key-back_to_generation button:hover {
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f;
+        }
+        </style>
+        """
+    )
+    left, right = st.columns([5, 1])
+
+    with left:
+        st.empty()
+
+    with right:
+        if st.button(
+            "다른 시안 선택",
+            key="back_to_generation",
+            use_container_width=True,
+        ):
+            clear_after_draft()
+
+            st.query_params["page"] = "ad_generation"
+            st.rerun()
 
     # 3. 최종 광고 전략 요약
     strategy = final_ad_result["strategy"]

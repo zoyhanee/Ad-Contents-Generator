@@ -137,19 +137,52 @@ def render_strategy_selection():
                             </p>
                         </div>
                     </div>
-
-                    <a
-                        class="strategy-edit-link"
-                        href="?page=product_input"
-                        target="_self"
-                    >
-                        정보 수정
-                    </a>
                 </section>
             </div>
         </div>
         """
     )
+    st.html(
+        """
+        <style>
+        .st-key-edit_product {
+            margin-top: 10px;
+            margin-bottom: 24px;
+        }
+
+        .st-key-edit_product button {
+            height: 42px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f8a5f;
+            font-size: 14px;
+            font-weight: 700;
+            transition:
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .st-key-edit_product button:hover {
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f;
+        }
+        </style>
+        """
+    )
+    left, right = st.columns([5, 1])
+    with left:
+        st.empty()
+    with right:
+        if st.button(
+            "정보 수정",
+            key="edit_product",
+            use_container_width=True,
+        ):
+            st.query_params["page"] = "product_input"
+            st.rerun()
+    
 
     # 4. 전략 모드 선택
     selected_mode = st.session_state.strategy_mode
