@@ -44,8 +44,7 @@ def recommend_strategy(request: StrategyRecommendRequest):
     category = _normalize_category(product.category)
     category_label = CATEGORY_LABELS.get(category, "상품")
 
-    platforms = strategy.platforms or ["instagram"]
-    main_platform = platforms[0]
+    main_platform = strategy.platform or "instagram"
     platform_label = PLATFORM_LABELS.get(main_platform, main_platform)
 
     goal_label = GOAL_LABELS.get(strategy.goal, "광고 효과 향상")

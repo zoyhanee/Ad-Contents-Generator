@@ -351,7 +351,7 @@ def render_strategy_selection():
 
     platform_options = {
         "instagram": "📷 Instagram",
-        "facebook": "👥 Facebook",
+        "facebook": "🚚 배달의민족",
         "naver": "🟢 네이버",
         "offline": "🖼 오프라인 포스터",
     }

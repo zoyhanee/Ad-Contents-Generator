@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -13,7 +13,7 @@ class ProductInfo(BaseModel):
 class StrategyInfo(BaseModel):
     mode: str
     reuse_tone: bool = False
-    platforms: List[str]
+    platform: str
     poster_size: Optional[str] = None
     goal: Optional[str] = None
     style: Optional[str] = None
