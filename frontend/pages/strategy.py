@@ -1,7 +1,9 @@
 import base64
 import html
+import requests
 import streamlit as st
 
+BACKEND_URL = "http://127.0.0.1:8000"
 
 def render_strategy_selection():
     if "strategy_mode" not in st.session_state:
@@ -349,15 +351,15 @@ def render_strategy_selection():
 
     platform_options = {
         "instagram": "📷 Instagram",
-        "facebook": "👥 Facebook",
+        "facebook": "🚚 배달의민족",
         "naver": "🟢 네이버",
         "offline": "🖼 오프라인 포스터",
     }
 
-    if "selected_platforms" not in st.session_state:
-        st.session_state.selected_platforms = []
+    if "selected_platform" not in st.session_state:
+        st.session_state.selected_platform = None
 
-    selected_platforms = st.session_state.selected_platforms
+    selected_platform = st.session_state.selected_platform
 
     platform_css = """
     <style>
@@ -391,18 +393,18 @@ def render_strategy_selection():
     }
     """
 
-    for platform_id in selected_platforms:
+    if selected_platform:
         platform_css += f"""
-        .st-key-platform_{platform_id} button {{
+        .st-key-platform_{selected_platform} button {{
             border-color: #0f8a5f;
             background: #f4fbf7;
             color: #0f8a5f;
-            box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.1);
+            box-shadow: 0 0 0 2px rgba(15,138,95,.1);
         }}
 
-        .st-key-platform_{platform_id} button:hover {{
-            background: #f4fbf7;
-            color: #0f8a5f;
+        .st-key-platform_{selected_platform} button:hover {{
+            background:#f4fbf7;
+            color:#0f8a5f;
         }}
         """
 
@@ -417,22 +419,21 @@ def render_strategy_selection():
         platform_options.items(),
     ):
         with col:
-            is_selected = platform_id in st.session_state.selected_platforms
+            is_selected = (
+                platform_id
+                == st.session_state.selected_platform
+            )
 
             if st.button(
                 platform_label,
                 key=f"platform_{platform_id}",
                 use_container_width=True,
             ):
-                if is_selected:
-                    st.session_state.selected_platforms.remove(platform_id)
-                else:
-                    st.session_state.selected_platforms.append(platform_id)
-
+                st.session_state.selected_platform = platform_id
                 st.rerun()
 
     # 7. 오프라인 포스터 규격 선택
-    if "offline" in st.session_state.selected_platforms:
+    if st.session_state.selected_platform == "offline":
         st.subheader("포스터 규격 선택")
 
         poster_size_options = {
@@ -649,13 +650,14 @@ def render_strategy_selection():
             "reuse_previous_tone",
             False,
         ),
-        "platforms": st.session_state.get(
-            "selected_platforms",
+        "platform": st.session_state.get(
+            "selected_platform",
             [],
         ),
         "poster_size": (
             st.session_state.get("poster_size")
-            if "offline" in st.session_state.get("selected_platforms", [])
+            if st.session_state.get("selected_platform")
+            == "offline"
             else None
         ),
         "goal": (
@@ -671,7 +673,9 @@ def render_strategy_selection():
     }
 
     # 11. AI 추천받기
-    can_recommend = len(strategy_data["platforms"]) > 0
+    can_recommend = (
+        strategy_data["platform"] is not None
+    )
 
     st.html(
         """
@@ -734,22 +738,38 @@ def render_strategy_selection():
     ):
         st.session_state.strategy_data = strategy_data.copy()
 
-        st.session_state.recommendation = {
-            #mock-up 테스트용
-            "strategy_title": "트렌드 기반 맞춤 광고 전략",
-            "strategy_description": (
-                "선택한 플랫폼과 상품 정보를 바탕으로 "
-                "맞춤형 광고 방향을 추천했습니다."
-            ),
-            "slogans": [
-                "AI 추천 문구 후보 1",
-                "AI 추천 문구 후보 2",
-                "AI 추천 문구 후보 3",
-            ],
+        api_product_data = {
+        "name": product_data["name"],
+        "price": product_data["price"],
+        "description": product_data["description"],
+        "category": product_data["industry"],
+    }
+
+        payload = {
+            "product": api_product_data,
+            "strategy": strategy_data,
         }
 
-        st.session_state.selected_slogan = None
-        st.rerun()
+        try:
+            response = requests.post(
+                f"{BACKEND_URL}/strategy/recommend",
+                json=payload,
+                timeout=30,
+            )
+            response.raise_for_status()
+
+            st.session_state.recommendation = response.json()
+            st.session_state.selected_slogan = None
+            st.rerun()
+
+        except requests.exceptions.ConnectionError:
+            st.error(
+                "백엔드 서버에 연결할 수 없습니다. "
+                "FastAPI 서버가 실행 중인지 확인해주세요."
+            )
+
+        except Exception as e:
+            st.error(f"AI 추천 요청 중 오류가 발생했습니다: {e}")
 
     recommendation = st.session_state.get("recommendation")
 
@@ -826,17 +846,18 @@ def render_strategy_selection():
 
         # 14. 광고 시안 생성
         selected_slogan = st.session_state.get("selected_slogan")
-
+        project_id = recommendation["project_id"]
         final_strategy_data = {
-                "product": {
-                    "name": product_data["name"],
-                    "price": product_data["price"],
-                    "description": product_data["description"],
-                    "industry": product_data["industry"],
-                    "image_name": product_data["image_name"],
-                    "image_type": product_data["image_type"],
-                    "image_bytes": product_data["image_bytes"],
-                },
+            "project_id": project_id,
+            "product": {
+                "name": product_data["name"],
+                "price": product_data["price"],
+                "description": product_data["description"],
+                "industry": product_data["industry"],
+                "image_name": product_data["image_name"],
+                "image_type": product_data["image_type"],
+                "image_bytes": product_data["image_bytes"],
+            },
             **st.session_state.strategy_data,
             "recommendation": {
                 "strategy_title": recommendation["strategy_title"],
