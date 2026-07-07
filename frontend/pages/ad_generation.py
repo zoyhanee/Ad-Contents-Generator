@@ -187,12 +187,12 @@ def render_ad_generation():
     }
 
 
-    platforms = [
-        platform_labels.get(platform, platform)
-        for platform in final_strategy_data.get("platforms", [])
-    ]
+    platform = final_strategy_data.get("platform")
 
-    platform_text = ", ".join(platforms)
+    platform_text = platform_labels.get(
+        platform,
+        platform,
+    ) if platform else ""
 
     goal = final_strategy_data.get("goal")
     style = final_strategy_data.get("style")

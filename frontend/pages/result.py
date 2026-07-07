@@ -229,7 +229,7 @@ def render_result():
     }
 
     mode = strategy.get("mode")
-    platforms = strategy.get("platforms", [])
+    platform = strategy.get("platform")
     goal = strategy.get("goal")
     style = strategy.get("style")
     poster_size = strategy.get("poster_size")
@@ -247,10 +247,10 @@ def render_result():
             """
         )
 
-    if platforms:
-        platform_text = ", ".join(
-            platform_labels.get(platform, platform)
-            for platform in platforms
+    if platform:
+        platform_text = platform_labels.get(
+            platform,
+            platform,
         )
 
         summary_items.append(
@@ -436,7 +436,7 @@ def render_result():
             # 전략 선택
             "strategy_mode",
             "reuse_previous_tone",
-            "selected_platforms",
+            "selected_platform",
             "poster_size",
             "selected_goal",
             "selected_style",
