@@ -10,7 +10,7 @@ INDUSTRY_LABELS = {
 
 PLATFORM_LABELS = {
     "instagram": "인스타그램",
-    "facebook": "페이스북",
+    "baemin": "배달의민족",
     "naver": "네이버",
     "offline": "오프라인 포스터",
 }
