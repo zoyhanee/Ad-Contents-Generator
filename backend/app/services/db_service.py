@@ -7,6 +7,15 @@ from app.schemas.strategy_schema import StrategyRecommendRequest
 DEV_USER_EMAIL = "dev@admaker.local"
 
 
+def parse_price(price: str | None) -> int | None:
+    if not price:
+        return None
+
+    digits = "".join(char for char in price if char.isdigit())
+
+    return int(digits) if digits else None
+
+
 def get_or_create_dev_user(db: Session) -> User:
     user = (
         db.query(User)
@@ -39,7 +48,7 @@ def save_strategy_recommendation(
         product = Product(
             user_id=user.id,
             name=request.product.name,
-            price=int(request.product.price) if request.product.price else None,
+            price=parse_price(request.product.price),
             description=request.product.description,
             industry=request.product.category,
             image_path=request.product.image_path,
