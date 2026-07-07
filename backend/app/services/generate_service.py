@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.models import AdDraft, AdProject
 from app.schemas.generate_schema import GenerateRequest
+from app.ml.generation_pipeline import generate_drafts
 
 
 def generate_ad_drafts(
@@ -30,26 +31,19 @@ def generate_ad_drafts(
     try:
         project.strategy.selected_slogan = request.selected_slogan
 
-        draft_data = [
-            {
-                "id": "A",
-                "title": "시안 A",
-                "version": 1,
-                "image_path": None,
-            },
-            {
-                "id": "B",
-                "title": "시안 B",
-                "version": 1,
-                "image_path": None,
-            },
-            {
-                "id": "C",
-                "title": "시안 C",
-                "version": 1,
-                "image_path": None,
-            },
-        ]
+        platform = (
+            project.strategy.selected_platforms[0]
+            if project.strategy.selected_platforms
+            else "instagram"
+        )
+
+        draft_data = generate_drafts(
+            product_name=project.product.name,
+            product_description=project.product.description,
+            platform=platform,
+            style=project.strategy.selected_style,
+            selected_slogan=request.selected_slogan,
+        )
 
         for draft in draft_data:
             db.add(
