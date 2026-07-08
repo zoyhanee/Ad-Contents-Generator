@@ -370,7 +370,40 @@ pip install -r requirements.txt
 
 ---
 
-## 5. Verify Installation
+## 5. Initialize Database
+
+Before running the backend for the first time, initialize the SQLite database.
+
+Move to the backend directory:
+
+```bash
+cd backend
+```
+
+Create all required database tables:
+
+```bash
+python -m app.db.init_db
+```
+
+Expected output:
+
+Database tables created successfully.
+
+This command creates the SQLite database and all required tables, including:
+
+users
+products
+ad_projects
+ad_strategies
+ad_drafts
+final_results
+
+Run this command once after cloning the repository and installing the project dependencies.
+
+---
+
+## 6. Verify Installation
 
 ```bash
 python -c "import torch; print(torch.__version__)"
@@ -403,6 +436,9 @@ Install PyTorch
         │
         ▼
 Install Project Dependencies
+        │
+        ▼
+Initialize Database
         │
         ▼
 Run Backend / Frontend
