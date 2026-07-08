@@ -1,5 +1,10 @@
+import requests
 import streamlit as st
+
 from utils.state import clear_after_draft
+
+
+BACKEND_URL = "http://127.0.0.1:8000"
 
 
 def render_result():
@@ -78,6 +83,13 @@ def render_result():
     # 선택된 최종 시안
     selected_draft = final_ad_result["selected_draft"]
 
+    image_path = selected_draft.get("image_path")
+    image_url = (
+        f"{BACKEND_URL}/{image_path}"
+        if image_path
+        else None
+    )
+    
     # 1. 페이지 제목 + Stepper
     st.html(
         """
@@ -129,6 +141,49 @@ def render_result():
     draft_id = selected_draft["id"]
     draft_version = selected_draft.get("version", 1)
 
+    image_path = selected_draft.get("image_path")
+    image_url = (
+        f"{BACKEND_URL}/{image_path}"
+        if image_path
+        else None
+    )
+    
+    st.html(
+        """
+        <style>
+        .final-result-preview-image {
+            overflow: hidden;
+            background: #f4f6f5;
+        }
+
+        .final-result-preview-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+        </style>
+        """
+    )
+
+    if image_url:
+        preview_html = f"""
+            <div class="final-result-preview-image">
+                <img
+                    src="{image_url}"
+                    alt="최종 광고 시안 {draft_id}"
+                >
+            </div>
+        """
+    else:
+        preview_html = f"""
+            <div class="final-result-preview">
+                <span>시안 {draft_id}</span>
+                <p>이미지를 불러올 수 없습니다.</p>
+                <small>Version {draft_version}</small>
+            </div>
+        """
+
     st.html(
         f"""
         <div class="result-content">
@@ -138,18 +193,16 @@ def render_result():
                         ✓ 최종 선택
                     </div>
 
-                    <div class="final-result-preview">
-                        <span>시안 {draft_id}</span>
-                        <p>AI 생성 이미지 영역</p>
-                        <small>Version {draft_version}</small>
-                    </div>
+                    {preview_html}
 
                     <div class="final-result-info">
                         <div>
                             <span class="final-result-label">
                                 최종 광고 시안
                             </span>
-                            <h2>시안 {draft_id}</h2>
+                            <h2>
+                                시안 {draft_id} · Version {draft_version}
+                            </h2>
                         </div>
                     </div>
                 </section>
@@ -157,32 +210,7 @@ def render_result():
         </div>
         """
     )
-    st.html(
-        """
-        <style>
-        .st-key-back_to_generation {
-            margin-top: 10px;
-            margin-bottom: 24px;
-        }
-
-        .st-key-back_to_generation button {
-            height: 42px;
-            border: 1.5px solid #d9e1dc;
-            border-radius: 10px;
-            background: #ffffff;
-            color: #0f8a5f;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .st-key-back_to_generation button:hover {
-            border-color: #0f8a5f;
-            background: #f4fbf7;
-            color: #0f8a5f;
-        }
-        </style>
-        """
-    )
+    
     left, right = st.columns([5, 1])
 
     with left:
@@ -391,10 +419,18 @@ def render_result():
 
     with action_col1:
         if image_path:
-            with open(image_path, "rb") as image_file:
+            image_url = f"{BACKEND_URL}/{image_path}"
+
+            try:
+                image_response = requests.get(
+                    image_url,
+                    timeout=30,
+                )
+                image_response.raise_for_status()
+
                 st.download_button(
                     "↓ 결과물 다운로드",
-                    data=image_file,
+                    data=image_response.content,
                     file_name=(
                         f"admaker_draft_{draft_id}"
                         f"_v{draft_version}.png"
@@ -402,6 +438,14 @@ def render_result():
                     mime="image/png",
                     key="download_final_ad",
                     use_container_width=True,
+                )
+
+            except requests.exceptions.RequestException:
+                st.button(
+                    "↓ 결과물 다운로드",
+                    key="download_final_ad_disabled",
+                    use_container_width=True,
+                    disabled=True,
                 )
         else:
             st.button(

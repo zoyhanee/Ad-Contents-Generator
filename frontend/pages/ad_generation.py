@@ -1,5 +1,4 @@
 import html
-import time
 
 import requests
 import streamlit as st
@@ -372,7 +371,7 @@ def render_ad_generation():
                 response = requests.post(
                     f"{BACKEND_URL}/generate",
                     json=payload,
-                    timeout=120,
+                    timeout=300,
                 )
                 response.raise_for_status()
 
@@ -522,21 +521,23 @@ def render_ad_generation():
             st.session_state.generated_drafts,
         ):
             draft_id = draft["id"]
+            
+            image_url = (
+                f"{BACKEND_URL}/"
+                f"{draft['image_path']}"
+            )
             is_selected = (
                 st.session_state.selected_draft == draft_id
             )
 
             with col:
-                st.html(
-                    f"""
-                    <div class="draft-preview-card">
-                        <div class="draft-preview-placeholder">
-                            <span>시안 {draft_id}</span>
-                            <p>AI 생성 이미지 영역</p>
-                            <small>Version {draft["version"]}</small>
-                        </div>
-                    </div>
-                    """
+                st.image(
+                    image_url,
+                    use_container_width=True,
+                )
+
+                st.caption(
+                    f"시안 {draft_id} · Version {draft['version']}"
                 )
 
                 if st.button(
@@ -619,20 +620,58 @@ def render_ad_generation():
         regenerating_draft = st.session_state.get("regenerating_draft")
 
         if regenerating_draft is not None:
-            with st.spinner(
-                f"시안 {regenerating_draft}을 다시 생성하고 있어요..."
-            ):
-                time.sleep(1.5)
+            regeneration_request = st.session_state.get(
+                "regeneration_request"
+            )
 
-            for draft in st.session_state.generated_drafts:
-                if draft["id"] == regenerating_draft:
-                    draft["version"] += 1
-                    break
+            payload = {
+                "project_id": final_strategy_data["project_id"],
+                "draft_id": regeneration_request["draft_id"],
+                "feedback": regeneration_request["feedback"],
+            }
 
-            st.session_state.regenerating_draft = None
-            st.session_state.regeneration_completed = regenerating_draft
+            try:
+                with st.spinner(
+                    f"시안 {regenerating_draft}을 다시 생성하고 있어요..."
+                ):
+                    response = requests.post(
+                        f"{BACKEND_URL}/generate/regenerate",
+                        json=payload,
+                        timeout=300,
+                    )
 
-            st.rerun()
+                    response.raise_for_status()
+                    result = response.json()
+
+                regenerated_draft = result["draft"]
+
+                for index, draft in enumerate(
+                    st.session_state.generated_drafts
+                ):
+                    if draft["id"] == regenerating_draft:
+                        st.session_state.generated_drafts[index] = (
+                            regenerated_draft
+                        )
+                        break
+
+                st.session_state.regenerating_draft = None
+                st.session_state.regeneration_completed = (
+                    regenerating_draft
+                )
+
+                st.session_state.pop(
+                    "regeneration_request",
+                    None,
+                )
+
+                st.rerun()
+
+            except requests.exceptions.RequestException as e:
+                st.session_state.regenerating_draft = None
+
+                st.error(
+                    f"시안 재생성 중 오류가 발생했습니다: {e}"
+                )
             
         regenerated_draft = st.session_state.pop(
             "regeneration_completed",

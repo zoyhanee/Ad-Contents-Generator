@@ -16,3 +16,14 @@ class DraftResponse(BaseModel):
 class GenerateResponse(BaseModel):
     project_id: int
     drafts: list[DraftResponse]
+    
+
+class RegenerateDraftRequest(BaseModel):
+    project_id: int
+    draft_id: str
+    feedback: str
+
+
+class RegenerateDraftResponse(BaseModel):
+    project_id: int
+    draft: dict
