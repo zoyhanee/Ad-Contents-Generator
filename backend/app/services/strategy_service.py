@@ -1,3 +1,5 @@
+from typing import List, Optional
+
 from app.schemas.strategy_schema import StrategyRecommendRequest
 
 
@@ -28,9 +30,9 @@ GOAL_LABELS = {
 
 STYLE_LABELS = {
     "warm": "따뜻한 감성",
-    "modern": "모던하고 미니멀한",
+    "modern": "모던 & 미니멀",
     "vivid": "생동감 있는",
-    "premium": "프리미엄한",
+    "premium": "프리미엄",
 }
 
 
@@ -39,39 +41,72 @@ def recommend_strategy(request: StrategyRecommendRequest):
     strategy = request.strategy
 
     product_name = product.name
-    description = product.description or ""
-
     category = _normalize_category(product.category)
     category_label = CATEGORY_LABELS.get(category, "상품")
 
-    main_platform = strategy.platform or "instagram"
-    platform_label = PLATFORM_LABELS.get(main_platform, main_platform)
+    platforms = strategy.platforms or ["instagram"]
+    platform = platforms[0]
+    platform_label = PLATFORM_LABELS.get(platform, platform)
 
-    goal_label = GOAL_LABELS.get(strategy.goal, "광고 효과 향상")
-    style_label = STYLE_LABELS.get(strategy.style, "트렌디한")
+    goal = strategy.goal or "awareness"
+    style = strategy.style
 
-    if strategy.mode == "faster":
-        return _recommend_fast(
+    goal_label = GOAL_LABELS.get(goal, "브랜드 인지도")
+    style_label = STYLE_LABELS.get(style, "기본")
+
+    print("mode:", strategy.mode)
+    print("platforms:", strategy.platforms)
+    print("platform:", platform)
+    print("goal:", goal)
+    print("style:", style)
+    print("category:", category)
+
+    # 직접 설정
+    if strategy.mode == "manual":
+        slogans = _build_slogans(
             product_name=product_name,
-            description=description,
             category=category,
-            category_label=category_label,
-            platform=main_platform,
-            platform_label=platform_label,
+            platform=platform,
+            goal=goal,
+            style=style,
         )
 
-    return _recommend_manual(
+        return {
+            "strategy_title": (
+                f"{platform_label} {category_label} "
+                f"{goal_label} 전략"
+            ),
+            "strategy_description": (
+                f"{product_name}을 {style_label} 스타일로 표현하여 "
+                f"{platform_label}에서 {goal_label}을 높일 수 있는 "
+                "광고 방향을 추천했습니다."
+            ),
+            "slogans": slogans,
+        }
+
+    # 빠른 추천
+    # 빠른 추천에서는 사용자가 스타일을 직접 고르지 않으므로 style=None 사용
+    # 단, _apply_style_tone()에서 빠른 추천 전용 톤을 적용함
+    slogans = _build_slogans(
         product_name=product_name,
         category=category,
-        category_label=category_label,
-        platform=main_platform,
-        platform_label=platform_label,
-        goal_label=goal_label,
-        style_label=style_label,
+        platform=platform,
+        goal="awareness",
+        style=None,
     )
 
+    return {
+        "strategy_title": f"{platform_label} {category_label} 빠른 추천 전략",
+        "strategy_description": (
+            f"{category_label} 업종과 {platform_label} 플랫폼에 맞춰 "
+            f"{product_name}의 핵심 매력을 빠르게 전달하는 "
+            "광고 방향을 추천했습니다."
+        ),
+        "slogans": slogans,
+    }
 
-def _normalize_category(category: str | None):
+
+def _normalize_category(category: Optional[str]):
     if category is None:
         return "product"
 
@@ -92,241 +127,151 @@ def _normalize_category(category: str | None):
     return mapping.get(category, category)
 
 
-def _recommend_fast(
+def _build_slogans(
     product_name: str,
-    description: str,
     category: str,
-    category_label: str,
     platform: str,
-    platform_label: str,
+    goal: str,
+    style: Optional[str] = None,
 ):
-    slogans = _platform_category_slogans(
+    base_slogans = _get_goal_slogans(
         product_name=product_name,
         category=category,
+        goal=goal,
+    )
+
+    platform_slogans = _apply_platform_tone(
+        slogans=base_slogans,
         platform=platform,
     )
 
-    strategy_title = f"{platform_label} {category_label} 맞춤 광고 전략"
-
-    strategy_description = _strategy_description(
-        product_name=product_name,
-        category_label=category_label,
-        platform=platform,
-        platform_label=platform_label,
-        style_label=None,
-        goal_label=None,
+    styled_slogans = _apply_style_tone(
+        slogans=platform_slogans,
+        style=style,
     )
 
-    return {
-        "strategy_title": strategy_title,
-        "strategy_description": strategy_description,
-        "slogans": slogans,
-    }
+    return styled_slogans
 
 
-def _recommend_manual(
+def _get_goal_slogans(
     product_name: str,
     category: str,
-    category_label: str,
-    platform: str,
-    platform_label: str,
-    goal_label: str,
-    style_label: str,
+    goal: str,
 ):
-    slogans = _platform_category_slogans(
-        product_name=product_name,
-        category=category,
-        platform=platform,
-        style_label=style_label,
-        goal_label=goal_label,
-    )
-
-    strategy_title = f"{platform_label} {category_label} {goal_label} 광고 전략"
-
-    strategy_description = _strategy_description(
-        product_name=product_name,
-        category_label=category_label,
-        platform=platform,
-        platform_label=platform_label,
-        style_label=style_label,
-        goal_label=goal_label,
-    )
-
-    return {
-        "strategy_title": strategy_title,
-        "strategy_description": strategy_description,
-        "slogans": slogans,
-    }
-
-
-def _strategy_description(
-    product_name: str,
-    category_label: str,
-    platform: str,
-    platform_label: str,
-    style_label: str | None = None,
-    goal_label: str | None = None,
-):
-    style_text = f"{style_label} 분위기로 " if style_label else ""
-    goal_text = f"{goal_label}을 높일 수 있도록 " if goal_label else ""
-
-    if platform == "instagram":
-        return (
-            f"{category_label} 업종에 맞춰 {product_name}의 매력을 "
-            f"{style_text}짧고 감각적인 문구로 전달하는 방향을 추천했습니다."
-        )
-
-    if platform == "baemin":
-        return (
-            f"{category_label} 고객이 공감할 수 있도록 {product_name}의 장점과 "
-            f"이용 상황을 구체적으로 전달하는 방향을 추천했습니다."
-        )
-
-    if platform == "naver":
-        return (
-            f"검색 사용자가 빠르게 이해할 수 있도록 {product_name}의 특징과 "
-            f"{category_label} 업종의 핵심 정보를 명확하게 전달하는 방향을 추천했습니다."
-        )
-
-    if platform == "offline":
-        return (
-            f"매장 앞이나 오프라인 홍보물에서 한눈에 기억될 수 있도록 "
-            f"{product_name}을 짧고 강하게 강조하는 방향을 추천했습니다."
-        )
-
-    return (
-        f"{platform_label} 플랫폼에서 {goal_text}{product_name}의 매력을 "
-        f"효과적으로 전달하는 방향을 추천했습니다."
-    )
-
-
-def _platform_category_slogans(
-    product_name: str,
-    category: str,
-    platform: str,
-    style_label: str | None = None,
-    goal_label: str | None = None,
-):
-    style_prefix = f"{style_label} 무드로 " if style_label else ""
-
-    # Instagram
-    if platform == "instagram":
-        if category == "restaurant":
+    if category == "restaurant":
+        if goal == "awareness":
             return [
-                f"보기만 해도 배고픈 한 접시, {product_name}",
-                f"오늘 피드에 남기고 싶은 든든한 한 끼",
-                f"한 입에 담긴 풍미, {product_name}",
+                f"{product_name}의 맛을 기억하게 만드는 한 끼",
+                "오늘의 식사 시간을 특별하게 만드는 메뉴",
+                f"한 번 보면 먹고 싶어지는 {product_name}",
             ]
 
-        if category == "cafe":
+        if goal == "sales":
             return [
-                f"커피와 함께 완성되는 오늘의 여유, {product_name}",
-                f"감성 카페 타임에 어울리는 {product_name}",
-                f"피드에 남기고 싶은 달콤한 순간",
+                f"지금 주문하고 싶은 메뉴, {product_name}",
+                f"오늘 한 끼 고민 끝, {product_name}",
+                "든든하게 즐기는 프리미엄 한 접시",
             ]
 
-        if category == "beauty":
+        if goal == "traffic":
             return [
-                f"오늘의 나를 더 빛나게 하는 {product_name}",
-                f"거울 앞에서 먼저 느껴지는 변화",
-                f"{style_prefix}완성하는 나만의 뷰티 루틴",
+                f"오늘 방문하고 싶은 맛, {product_name}",
+                "가까운 곳에서 만나는 든든한 한 끼",
+                f"매장에서 직접 즐기기 좋은 {product_name}",
             ]
 
-        if category == "retail":
+        if goal == "promotion":
             return [
-                f"일상에 감각을 더하는 {product_name}",
-                f"작지만 확실한 취향의 발견",
-                f"오늘의 공간을 바꾸는 특별한 아이템",
+                f"지금 놓치기 아쉬운 {product_name} 혜택",
+                "맛있는 순간을 더 특별하게 만드는 이벤트",
+                "오늘만 더 특별한 추천 메뉴",
             ]
 
-    # Baemin
-    if platform == "baemin":
-        if category == "restaurant":
+    if category == "cafe":
+        if goal == "awareness":
             return [
-                f"가족, 친구와 함께 즐기기 좋은 {product_name}",
-                f"든든한 식사가 필요할 때 추천하는 한 끼",
-                f"오늘 메뉴 고민된다면 {product_name}",
+                f"{product_name}로 기억되는 카페의 순간",
+                "커피와 함께 떠오르는 시그니처 메뉴",
+                f"감성적인 하루를 완성하는 {product_name}",
             ]
 
-        if category == "cafe":
+        if goal == "sales":
             return [
-                f"잠깐의 휴식이 필요할 때, {product_name}",
-                f"함께 나누기 좋은 카페 메뉴",
-                f"오늘의 여유를 채워주는 {product_name}",
+                f"오늘 카페 메뉴는 {product_name}",
+                "커피와 함께 주문하기 좋은 메뉴",
+                "지금 먹기 좋은 달콤한 선택",
             ]
 
-        if category == "beauty":
+        if goal == "traffic":
             return [
-                f"나를 위한 관리가 필요할 때, {product_name}",
-                f"일상 속 자신감을 더하는 뷰티 케어",
-                f"편안하게 시작하는 오늘의 관리 루틴",
+                "잠깐의 여유가 필요할 때 들러보세요",
+                f"오늘의 카페 코스, {product_name}",
+                "머물고 싶은 공간에서 즐기는 메뉴",
             ]
 
-        if category == "retail":
+        if goal == "promotion":
             return [
-                f"생활에 꼭 필요한 실용적인 선택",
-                f"가까운 곳에서 만나는 추천 상품, {product_name}",
-                f"오늘의 일상을 더 편하게 만드는 아이템",
+                f"오늘의 카페 혜택, {product_name}",
+                "달콤한 시간을 더 특별하게",
+                "지금 즐기기 좋은 카페 프로모션",
             ]
 
-    # Naver
-    if platform == "naver":
-        if category == "restaurant":
+    if category == "beauty":
+        if goal == "awareness":
             return [
-                f"{product_name} 맛집 찾는다면 지금 확인하세요",
-                f"든든한 한 끼가 필요할 때 추천하는 메뉴",
-                f"음식점 인기 메뉴, {product_name}",
+                f"{product_name}로 완성하는 나만의 관리 루틴",
+                "오늘의 나를 더 빛나게 하는 선택",
+                "변화를 기대하게 만드는 뷰티 케어",
             ]
 
-        if category == "cafe":
+        if goal == "sales":
             return [
-                f"카페 추천 메뉴, {product_name}",
-                f"커피와 잘 어울리는 인기 메뉴",
-                f"분위기 좋은 카페에서 즐기는 {product_name}",
+                f"지금 시작하는 나를 위한 관리, {product_name}",
+                "오늘 예약하고 싶은 뷰티 케어",
+                "나에게 투자하는 가장 쉬운 방법",
             ]
 
-        if category == "beauty":
+        if goal == "traffic":
             return [
-                f"뷰티 관리가 필요할 때 추천하는 {product_name}",
-                f"나에게 맞는 뷰티 케어를 찾고 있다면",
-                f"관리 전후가 기대되는 뷰티 서비스",
+                "오늘, 나를 위한 관리 시간을 예약하세요",
+                "가까운 곳에서 시작하는 뷰티 케어",
+                f"관리받고 싶은 날 찾게 되는 {product_name}",
             ]
 
-        if category == "retail":
+        if goal == "promotion":
             return [
-                f"소매점 추천 상품, {product_name}",
-                f"실용적인 상품을 찾는다면 지금 확인하세요",
-                f"일상에 필요한 아이템, {product_name}",
+                "놓치기 아쉬운 뷰티 케어 혜택",
+                "오늘 더 빛나는 나를 위한 이벤트",
+                "지금 만나보는 특별 관리 프로모션",
             ]
 
-    # Offline Poster
-    if platform == "offline":
-        if category == "restaurant":
+    if category == "retail":
+        if goal == "awareness":
             return [
-                f"오늘의 추천 메뉴! {product_name}",
-                f"든든한 한 끼, 지금 바로 만나보세요",
-                f"맛있는 시간이 시작되는 곳",
+                f"{product_name}로 완성하는 감각적인 일상",
+                "취향을 보여주는 특별한 아이템",
+                "일상에 새로운 분위기를 더하는 선택",
             ]
 
-        if category == "cafe":
+        if goal == "sales":
             return [
-                f"오늘의 카페 메뉴, {product_name}",
-                f"잠깐의 여유가 필요할 때",
-                f"커피와 함께 즐겨보세요",
+                f"지금 장바구니에 담고 싶은 {product_name}",
+                "오늘 구매하기 좋은 추천 아이템",
+                "실용성과 감각을 모두 담은 선택",
             ]
 
-        if category == "beauty":
+        if goal == "traffic":
             return [
-                f"오늘, 더 빛나는 나를 만나보세요",
-                f"나를 위한 뷰티 케어 시작",
-                f"지금 관리가 필요한 순간",
+                f"매장에서 직접 만나보는 {product_name}",
+                "가까운 곳에서 발견하는 취향 아이템",
+                "오늘 들러서 확인해보세요",
             ]
 
-        if category == "retail":
+        if goal == "promotion":
             return [
-                f"오늘의 추천 상품! {product_name}",
-                f"지금 매장에서 만나보세요",
-                f"일상을 바꾸는 작은 선택",
+                "지금 놓치면 아쉬운 추천 상품 혜택",
+                f"오늘의 특별 프로모션, {product_name}",
+                "합리적인 선택을 위한 이벤트",
             ]
 
     return [
@@ -334,3 +279,86 @@ def _platform_category_slogans(
         f"지금 만나보는 특별한 {product_name}",
         f"고객의 시선을 사로잡는 {product_name}",
     ]
+
+
+def _apply_platform_tone(
+    slogans: List[str],
+    platform: str,
+):
+    if platform == "instagram":
+        return [
+            f"피드에 남기고 싶은 순간, {slogans[0]}",
+            f"오늘 공유하고 싶은 선택, {slogans[1]}",
+            f"감각적인 하루를 위한 {slogans[2]}",
+        ]
+
+    if platform == "baemin":
+        return [
+            f"지금 주문하기 좋은 {slogans[0]}",
+            f"오늘 메뉴 고민 끝! {slogans[1]}",
+            f"배달로 편하게 즐기는 {slogans[2]}",
+        ]
+
+    if platform == "naver":
+        return [
+            f"찾고 있다면 확인하세요, {slogans[0]}",
+            f"검색으로 만나는 추천 정보, {slogans[1]}",
+            f"선택 전에 꼭 봐야 할 {slogans[2]}",
+        ]
+
+    if platform == "offline":
+        return [
+            f"오늘의 추천! {slogans[0]}",
+            f"지금 매장에서 만나보세요, {slogans[1]}",
+            f"한눈에 기억되는 {slogans[2]}",
+        ]
+
+    return slogans
+
+
+def _apply_style_tone(
+    slogans: List[str],
+    style: Optional[str],
+):
+    # 빠른 추천 전용 톤
+    # style=None이면 사용자가 직접 선택한 스타일이 없는 상태
+    if style is None:
+        return [
+            f"오늘 바로 떠오르는 {slogans[0]}",
+            f"쉽게 기억되는 {slogans[1]}",
+            f"한눈에 끌리는 {slogans[2]}",
+        ]
+
+    # 따뜻한 감성
+    if style == "warm":
+        return [
+            f"마음까지 따뜻해지는 {slogans[0]}",
+            f"오늘의 분위기를 부드럽게 채우는 {slogans[1]}",
+            f"편안한 하루에 어울리는 {slogans[2]}",
+        ]
+
+    # 모던 & 미니멀
+    if style == "modern":
+        return [
+            f"군더더기 없이 선명한 {slogans[0]}",
+            f"깔끔한 감각으로 완성한 {slogans[1]}",
+            f"모던한 분위기로 전달하는 {slogans[2]}",
+        ]
+
+    # 생동감 있는
+    if style == "vivid":
+        return [
+            f"생생한 매력이 느껴지는 {slogans[0]}",
+            f"눈길을 사로잡는 활기찬 {slogans[1]}",
+            f"기분 좋게 살아나는 {slogans[2]}",
+        ]
+
+    # 프리미엄
+    if style == "premium":
+        return [
+            f"한층 더 고급스럽게 전하는 {slogans[0]}",
+            f"특별한 가치를 담아낸 {slogans[1]}",
+            f"프리미엄 감성으로 완성한 {slogans[2]}",
+        ]
+
+    return slogans

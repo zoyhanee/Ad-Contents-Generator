@@ -5,6 +5,12 @@ import streamlit as st
 
 BACKEND_URL = "http://127.0.0.1:8000"
 
+
+def clear_recommendation_state():
+    st.session_state.pop("recommendation", None)
+    st.session_state.pop("selected_slogan", None)
+
+
 def render_strategy_selection():
     if "strategy_mode" not in st.session_state:
         st.session_state.strategy_mode = "faster"
@@ -81,7 +87,7 @@ def render_strategy_selection():
         </div>
         """
     )
-    
+
     product_data = st.session_state.get("product_data")
 
     if not product_data:
@@ -92,7 +98,7 @@ def render_strategy_selection():
             st.rerun()
 
         return
-    
+
     image_base64 = base64.b64encode(
         product_data["image_bytes"]
     ).decode("utf-8")
@@ -101,7 +107,7 @@ def render_strategy_selection():
         f"data:{product_data['image_type']};"
         f"base64,{image_base64}"
     )
-    
+
     industry_labels = {
         "restaurant": "음식점",
         "cafe": "카페",
@@ -113,8 +119,9 @@ def render_strategy_selection():
         product_data["industry"],
         product_data["industry"],
     )
-    product_name = html.escape(product_data["name"])
-    product_price = html.escape(product_data["price"])
+
+    product_name = html.escape(str(product_data.get("name", "")))
+    product_price = html.escape(str(product_data.get("price", "")))
 
     # 3. 상품 요약 카드
     st.html(
@@ -144,6 +151,7 @@ def render_strategy_selection():
         </div>
         """
     )
+
     st.html(
         """
         <style>
@@ -173,18 +181,21 @@ def render_strategy_selection():
         </style>
         """
     )
+
     left, right = st.columns([5, 1])
+
     with left:
         st.empty()
+
     with right:
         if st.button(
             "정보 수정",
             key="edit_product",
             use_container_width=True,
         ):
+            clear_recommendation_state()
             st.query_params["page"] = "product_input"
             st.rerun()
-    
 
     # 4. 전략 모드 선택
     selected_mode = st.session_state.strategy_mode
@@ -286,7 +297,6 @@ def render_strategy_selection():
             background: #dff4e9;
         }}
 
-        /* 선택된 카드 오른쪽 위 체크 표시 */
         .st-key-strategy_{selected_mode} {{
             position: relative;
         }}
@@ -313,11 +323,10 @@ def render_strategy_selection():
 
             pointer-events: none;
         }}
-        
         </style>
         """
     )
-    
+
     st.subheader("전략 모드 선택")
 
     col1, col2 = st.columns(2)
@@ -329,6 +338,7 @@ def render_strategy_selection():
             use_container_width=True,
         ):
             st.session_state.strategy_mode = "faster"
+            clear_recommendation_state()
             st.rerun()
 
     with col2:
@@ -338,10 +348,11 @@ def render_strategy_selection():
             use_container_width=True,
         ):
             st.session_state.strategy_mode = "manual"
+            clear_recommendation_state()
             st.rerun()
 
     # 5. 이전 작업물 톤 유지
-    reuse_tone = st.checkbox(
+    st.checkbox(
         "이전 작업물과 비슷한 톤으로",
         key="reuse_previous_tone",
     )
@@ -419,17 +430,13 @@ def render_strategy_selection():
         platform_options.items(),
     ):
         with col:
-            is_selected = (
-                platform_id
-                == st.session_state.selected_platform
-            )
-
             if st.button(
                 platform_label,
                 key=f"platform_{platform_id}",
                 use_container_width=True,
             ):
                 st.session_state.selected_platform = platform_id
+                clear_recommendation_state()
                 st.rerun()
 
     # 7. 오프라인 포스터 규격 선택
@@ -487,6 +494,7 @@ def render_strategy_selection():
             </style>
             """
         )
+
         poster_cols = st.columns(4)
 
         for col, (size_id, size_label) in zip(
@@ -500,6 +508,7 @@ def render_strategy_selection():
                     use_container_width=True,
                 ):
                     st.session_state.poster_size = size_id
+                    clear_recommendation_state()
                     st.rerun()
 
     # 8. 직접 설정: 광고 목표 선택
@@ -571,8 +580,9 @@ def render_strategy_selection():
                     use_container_width=True,
                 ):
                     st.session_state.selected_goal = goal_id
+                    clear_recommendation_state()
                     st.rerun()
-                    
+
         # 9. 직접 설정: 시각적 스타일 선택
         st.subheader("시각적 스타일 선택")
 
@@ -641,23 +651,29 @@ def render_strategy_selection():
                     use_container_width=True,
                 ):
                     st.session_state.selected_style = style_id
+                    clear_recommendation_state()
                     st.rerun()
 
     # 10. 현재 전략 데이터 구성
+    selected_platform = st.session_state.get(
+        "selected_platform",
+        None,
+    )
+
     strategy_data = {
         "mode": st.session_state.strategy_mode,
         "reuse_tone": st.session_state.get(
             "reuse_previous_tone",
             False,
         ),
-        "platform": st.session_state.get(
-            "selected_platform",
-            [],
+        "platforms": (
+            [selected_platform]
+            if selected_platform is not None
+            else []
         ),
         "poster_size": (
             st.session_state.get("poster_size")
-            if st.session_state.get("selected_platform")
-            == "offline"
+            if selected_platform == "offline"
             else None
         ),
         "goal": (
@@ -673,9 +689,7 @@ def render_strategy_selection():
     }
 
     # 11. AI 추천받기
-    can_recommend = (
-        strategy_data["platform"] is not None
-    )
+    can_recommend = len(strategy_data["platforms"]) > 0
 
     st.html(
         """
@@ -808,11 +822,16 @@ def render_strategy_selection():
 
         selected_slogan = st.session_state.get("selected_slogan")
 
-        slogan_css = """
+        slogan_selector_list = [
+            f".st-key-slogan_{index} button"
+            for index in range(len(slogans))
+        ]
+
+        slogan_selector = ",\n".join(slogan_selector_list)
+
+        slogan_css = f"""
         <style>
-        .st-key-slogan_0 button,
-        .st-key-slogan_1 button,
-        .st-key-slogan_2 button {
+        {slogan_selector} {{
             min-height: 92px;
             padding: 20px;
             border-radius: 12px;
@@ -822,15 +841,13 @@ def render_strategy_selection():
             font-size: 16px;
             font-weight: 700;
             white-space: normal;
-        }
+        }}
 
-        .st-key-slogan_0 button:hover,
-        .st-key-slogan_1 button:hover,
-        .st-key-slogan_2 button:hover {
+        {slogan_selector}:hover {{
             border-color: #79b79c;
             background: #ffffff;
             color: #17211c;
-        }
+        }}
         """
 
         if selected_slogan is not None:
@@ -868,7 +885,8 @@ def render_strategy_selection():
 
         # 14. 광고 시안 생성
         selected_slogan = st.session_state.get("selected_slogan")
-        project_id = recommendation["project_id"]
+        project_id = recommendation.get("project_id")
+
         final_strategy_data = {
             "project_id": project_id,
             "product": {
@@ -879,11 +897,14 @@ def render_strategy_selection():
                 "image_name": product_data["image_name"],
                 "image_type": product_data["image_type"],
                 "image_bytes": product_data["image_bytes"],
+                "image_path": st.session_state.get("product_image_path"),
             },
             **st.session_state.strategy_data,
             "recommendation": {
                 "strategy_title": recommendation["strategy_title"],
-                "strategy_description": recommendation["strategy_description"],
+                "strategy_description": recommendation[
+                    "strategy_description"
+                ],
             },
             "selected_slogan": (
                 recommendation["slogans"][selected_slogan]
