@@ -1,5 +1,10 @@
-import streamlit as st
+from io import BytesIO
+
 import requests
+import streamlit as st
+from PIL import Image, ImageOps
+from pillow_heif import register_heif_opener
+from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 from api.client import APIError
 from api.product import (
@@ -8,6 +13,37 @@ from api.product import (
 )
 from components.header import render_header
 
+
+register_heif_opener()
+
+
+def normalize_uploaded_image(
+    uploaded_file: UploadedFile,
+) -> BytesIO:
+    image = Image.open(uploaded_file)
+    image = ImageOps.exif_transpose(image)
+
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
+    buffer = BytesIO()
+    image.save(
+        buffer,
+        format="JPEG",
+        quality=95,
+    )
+
+    buffer.seek(0)
+
+    buffer.name = (
+        uploaded_file.name.rsplit(".", 1)[0]
+        + ".jpg"
+    )
+    buffer.type = "image/jpeg"
+
+    return buffer
+    
+    
 def render_product_input():
     # 1. 상품 입력 상태 초기화
     if "product_name" not in st.session_state:
@@ -89,7 +125,7 @@ def render_product_input():
                     대표 상품 사진을 올려주세요
                 </p>
                 <p class="upload-sub">
-                    JPG, PNG, WebP 파일 지원 (최대 10MB)
+                    JPG, PNG, WebP, HEIC 파일 지원 (최대 10MB)
                 </p>
             </div>
             """
@@ -134,21 +170,50 @@ def render_product_input():
 
         uploaded_image = st.file_uploader(
             "상품 이미지 선택",
-            type=["jpg", "jpeg", "png", "webp"],
+            type=["jpg", "jpeg", "png", "webp", "heic", "heif"],
             key="product_image",
             label_visibility="collapsed",
         )
+        
+        normalized_image = None
 
         if uploaded_image is not None:
-            st.image(
-                uploaded_image,
-                caption="업로드된 상품 이미지",
-                use_container_width=True,
-            )
+            try:
+                normalized_image = normalize_uploaded_image(
+                    uploaded_image
+                )
+
+                st.image(
+                    normalized_image,
+                    caption="업로드된 상품 이미지",
+                    use_container_width=True,
+                )
+
+            except Exception:
+                st.error(
+                    "이미지를 처리할 수 없습니다. "
+                    "지원되는 이미지 파일인지 확인해주세요."
+                )
 
         st.html(
             """
-            <div class="upload-tip">
+            <div class="upload-tif uploaded_image is not None:
+    try:
+        normalized_image = normalize_uploaded_image(
+            uploaded_image
+        )
+
+        st.image(
+            normalized_image,
+            caption="업로드된 상품 이미지",
+            use_container_width=True,
+        )
+
+    except Exception:
+        st.error(
+            "이미지를 처리할 수 없습니다. "
+            "지원되는 이미지 파일인지 확인해주세요."
+        )ip">
                 <strong>TIP</strong>
                 <span>
                     상품이 잘 보이도록 밝고 선명한 사진을
@@ -318,7 +383,7 @@ def render_product_input():
                     
     # 7. 필수 입력 검증
     can_continue = (
-        uploaded_image is not None
+        normalized_image is not None
         and product_name.strip()
         and product_price.strip()
         and product_description.strip()
@@ -377,7 +442,7 @@ def render_product_input():
             price = int(product_price.replace(",", "").strip())
             
             # 1. 이미지 업로드
-            image_result = upload_product_image(uploaded_image)
+            image_result = upload_product_image(normalized_image)
 
             # 2. 상품 저장
             product = create_product(

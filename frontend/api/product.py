@@ -1,9 +1,10 @@
-from api.client import post, get, get_bytes
-from streamlit.runtime.uploaded_file_manager import UploadedFile
+from io import BytesIO
+
+from api.client import get, get_bytes, post
 
 
 def upload_product_image(
-    uploaded_file: UploadedFile,
+    uploaded_file: BytesIO,
 ) -> dict:
     return post(
         "/products/image",
