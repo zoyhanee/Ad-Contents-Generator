@@ -2,6 +2,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from fastapi import APIRouter, File, Depends, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
 from app.crud.product import (
@@ -107,3 +108,31 @@ def get_product(
         )
 
     return product
+
+@router.get("/{product_id}/image")
+def get_product_image(
+    product_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    product = get_product_by_id(
+        db=db,
+        product_id=product_id,
+        user_id=current_user.id,
+    )
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found.",
+        )
+
+    image_path = Path(product.image_path)
+
+    if not image_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="Product image not found.",
+        )
+
+    return FileResponse(image_path)

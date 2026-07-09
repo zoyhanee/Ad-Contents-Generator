@@ -30,12 +30,17 @@ def _get_headers() -> dict:
     }
 
 
-def _request(method: str, endpoint: str, **kwargs):
+def _request(
+    method: str,
+    endpoint: str,
+    timeout: int = DEFAULT_TIMEOUT,
+    **kwargs,
+):
     response = requests.request(
         method=method,
         url=f"{API_BASE_URL}{endpoint}",
         headers=_get_headers(),
-        timeout=DEFAULT_TIMEOUT,
+        timeout=timeout,
         **kwargs,
     )
 
@@ -45,9 +50,36 @@ def _request(method: str, endpoint: str, **kwargs):
     return response.json()
 
 
-def post(endpoint: str, **kwargs):
-    return _request("POST", endpoint, **kwargs)
+def post(
+    endpoint: str,
+    timeout: int = DEFAULT_TIMEOUT,
+    **kwargs,
+):
+    return _request(
+        "POST",
+        endpoint,
+        timeout=timeout,
+        **kwargs,
+    )
 
 
 def get(endpoint: str):
     return _request("GET", endpoint)
+
+
+def get_bytes(endpoint: str) -> tuple[bytes, str]:
+    response = requests.get(
+        url=f"{API_BASE_URL}{endpoint}",
+        headers=_get_headers(),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    if not response.ok:
+        raise APIError(_get_error_message(response))
+
+    content_type = response.headers.get(
+        "Content-Type",
+        "application/octet-stream",
+    )
+
+    return response.content, content_type

@@ -1,7 +1,7 @@
 import base64
 import html
 import streamlit as st
-from api.product import get_product
+from api.product import get_product, get_product_image
 from api.project import create_project
 from api.strategy import recommend_strategy
 from api.client import APIError
@@ -96,12 +96,16 @@ def render_strategy_selection():
         st.error(str(e))
         return
     
+    image_bytes, image_type = get_product_image(
+        product_id
+    )
+
     image_base64 = base64.b64encode(
-        product["image_bytes"]
+        image_bytes
     ).decode("utf-8")
 
     image_src = (
-        f"data:{product['image_type']};"
+        f"data:{image_type};"
         f"base64,{image_base64}"
     )
     

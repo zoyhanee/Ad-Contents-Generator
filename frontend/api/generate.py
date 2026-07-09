@@ -5,12 +5,12 @@ from config import API_BASE_URL
 
 
 def generate_ad(
-    *,
     project_id: int,
     selected_slogan: str,
 ) -> dict:
     return post(
         "/generate",
+        timeout=300,
         json={
             "project_id": project_id,
             "selected_slogan": selected_slogan,

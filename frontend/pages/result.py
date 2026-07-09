@@ -217,6 +217,46 @@ def render_result():
     with left:
         st.empty()
 
+    st.html(
+        """
+        <style>
+        .st-key-back_to_generation button {
+            height: 48px;
+            border: 1.5px solid #0f8a5f;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #0f8a5f;
+            font-size: 14px;
+            font-weight: 700;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .st-key-back_to_generation button:hover {
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(15, 138, 95, 0.12);
+        }
+
+        .st-key-back_to_generation button:active {
+            transform: translateY(0);
+        }
+
+        .st-key-back_to_generation button:focus,
+        .st-key-back_to_generation button:focus-visible {
+            border-color: #0f8a5f;
+            outline: none !important;
+            color: #0f8a5f;
+            box-shadow: 0 0 0 3px rgba(15, 138, 95, 0.12);
+        }
+        </style>
+        """
+    )
     with right:
         if st.button(
             "다른 시안 선택",

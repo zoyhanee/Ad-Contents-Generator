@@ -1,4 +1,4 @@
-from api.client import post, get
+from api.client import post, get, get_bytes
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
 
@@ -42,3 +42,11 @@ def get_products():
 
 def get_product(product_id: int):
     return get(f"/products/{product_id}")
+
+
+def get_product_image(
+    product_id: int,
+) -> tuple[bytes, str]:
+    return get_bytes(
+        f"/products/{product_id}/image"
+    )

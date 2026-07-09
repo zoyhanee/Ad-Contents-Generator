@@ -391,23 +391,10 @@ def render_ad_generation():
         )
 
         try:
-            with st.status(
-                "AI가 광고 콘셉트를 생성하고 있어요...",
-                expanded=True,
-            ) as generation_status:
-                st.write("상품 정보와 광고 전략을 준비했습니다.")
-                st.write("GPT 모델이 서로 다른 A/B/C 광고 콘셉트를 생성하고 있습니다.")
-
-                result = generate_ad(
-                    project_id=project_id,
-                    selected_slogan=selected_slogan,
-                )
-
-                generation_status.update(
-                    label="광고 콘셉트 생성이 완료되었습니다.",
-                    state="complete",
-                    expanded=False,
-                )
+            result = generate_ad(
+                project_id=project_id,
+                selected_slogan=selected_slogan,
+            )
 
             st.session_state.generated_drafts = result["drafts"]
             st.session_state.generation_status = "completed"
