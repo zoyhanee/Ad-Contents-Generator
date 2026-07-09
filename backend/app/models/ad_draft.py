@@ -26,6 +26,14 @@ class AdDraft(Base):
         Text,
         nullable=True,
     )
+    post_copy: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+    feedback: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
     feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_selected: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(

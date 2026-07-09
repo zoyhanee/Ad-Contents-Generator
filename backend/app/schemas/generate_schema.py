@@ -11,6 +11,8 @@ class DraftResponse(BaseModel):
     title: str
     version: int
     image_path: str | None = None
+    image_prompt: str | None = None
+    post_copy: str | None = None
 
 
 class GenerateResponse(BaseModel):

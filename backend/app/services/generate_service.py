@@ -8,6 +8,8 @@ from app.schemas.generate_schema import GenerateRequest, RegenerateDraftRequest
 from app.ml.generation_pipeline import generate_drafts
 from app.ml.image_clients.factory import create_image_model_client
 from app.crud.project import get_project_by_id
+from app.ml.clients.factory import create_text_model_client
+from app.ml.post_copy_generator import generate_post_copy
 
 
 def generate_ad_drafts(
@@ -49,6 +51,7 @@ def generate_ad_drafts(
                     "version": draft.version,
                     "image_path": draft.image_path,
                     "image_prompt": draft.image_prompt,
+                    "post_copy": draft.post_copy,
                 }
                 for draft in existing_drafts
             ],
@@ -81,6 +84,7 @@ def generate_ad_drafts(
                     version=draft["version"],
                     image_path=draft["image_path"],
                     image_prompt=draft["image_prompt"],
+                    post_copy=draft["post_copy"],
                 )
             )
 
@@ -132,6 +136,7 @@ def regenerate_ad_draft(
 
     try:
         image_client = create_image_model_client()
+        text_client = create_text_model_client()
 
         regenerate_prompt = f"""
 Edit the provided advertising image according to the user's feedback.
@@ -154,9 +159,48 @@ User feedback:
         )
 
         image_path.write_bytes(image_bytes)
+        platform = (
+            project.strategy.selected_platforms[0]
+            if project.strategy.selected_platforms
+            else "instagram"
+        )
 
+        concepts = {
+            "A": (
+                "제품 중심형: 제품의 형태, 소재, "
+                "기능적 특징을 강하게 강조"
+            ),
+            "B": (
+                "라이프스타일형: 고객이 제품을 실제로 사용하는 "
+                "자연스러운 일상 장면을 강조"
+            ),
+            "C": (
+                "캠페인형: 광고 슬로건과 브랜드 메시지가 "
+                "강하게 느껴지는 상징적인 비주얼을 강조"
+            ),
+        }
+
+        concept = concepts.get(
+            draft.draft_label,
+            "상품의 매력을 효과적으로 전달하는 광고",
+        )
+
+        post_copy = generate_post_copy(
+            client=text_client,
+            product_name=project.product.name,
+            product_description=project.product.description,
+            platform=platform,
+            selected_slogan=(
+                project.strategy.selected_slogan or ""
+            ),
+            concept=concept,
+            feedback=request.feedback,
+        )
+        
         draft.image_path = str(image_path)
         draft.image_prompt = regenerate_prompt
+        draft.post_copy = post_copy
+        draft.feedback = request.feedback
         draft.version += 1
 
         db.commit()
@@ -170,6 +214,7 @@ User feedback:
                 "version": draft.version,
                 "image_path": draft.image_path,
                 "image_prompt": draft.image_prompt,
+                "post_copy": draft.post_copy,
             },
         }
 

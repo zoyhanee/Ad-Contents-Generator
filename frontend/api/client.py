@@ -5,7 +5,7 @@ import streamlit as st
 from config import API_BASE_URL
 
 
-DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 60
 
 
 class APIError(Exception):

@@ -22,6 +22,15 @@ def render_ad_generation():
 
     if "drafts" not in st.session_state:
         st.session_state.drafts = []
+        
+    if "selected_draft" not in st.session_state:
+        st.session_state.selected_draft = None
+
+    if "selected_post_copy" not in st.session_state:
+        st.session_state.selected_post_copy = None
+
+    if "drafts" not in st.session_state:
+        st.session_state.drafts = []
 
     # 2. 공통 헤더
     render_header()
@@ -529,6 +538,160 @@ def render_ad_generation():
                 ):
                     st.session_state.selected_draft = draft_id
                     st.rerun()
+                    
+        # 11. AI 게시글 문구 선택
+        st.divider()
+
+        st.subheader("AI 게시글 문구 선택")
+
+        st.caption(
+            "광고 이미지와 함께 사용할 게시글 문구를 선택해주세요. "
+            "이미지와 다른 시안의 문구를 조합할 수도 있어요."
+        )
+
+        selected_post_copy = st.session_state.selected_post_copy
+
+        post_copy_css = """
+        <style>
+        .post-copy-preview {
+            min-height: 330px;
+            padding: 22px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 16px;
+            background: #ffffff;
+        }
+
+        .post-copy-preview-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .post-copy-preview-label {
+            color: #0f8a5f;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .post-copy-preview-platform {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #f4fbf7;
+            color: #0f8a5f;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .post-copy-preview-text {
+            color: #36423c;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.75;
+            white-space: pre-wrap;
+            word-break: keep-all;
+        }
+
+        .st-key-select_post_copy_A button,
+        .st-key-select_post_copy_B button,
+        .st-key-select_post_copy_C button {
+            height: 52px;
+            margin-top: 10px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #17211c;
+            font-weight: 700;
+        }
+
+        .st-key-select_post_copy_A button:hover,
+        .st-key-select_post_copy_B button:hover,
+        .st-key-select_post_copy_C button:hover {
+            border-color: #79b79c;
+            background: #f8fbf9;
+            color: #17211c;
+        }
+        """
+
+        if selected_post_copy is not None:
+            post_copy_css += f"""
+            .st-key-select_post_copy_{selected_post_copy} button {{
+                border-color: #0f8a5f;
+                background: #f4fbf7;
+                color: #0f8a5f;
+                box-shadow:
+                    0 0 0 2px rgba(15, 138, 95, 0.1);
+            }}
+
+            .st-key-select_post_copy_{selected_post_copy} button:hover {{
+                background: #f4fbf7;
+                color: #0f8a5f;
+            }}
+            """
+
+        post_copy_css += "</style>"
+
+        st.html(post_copy_css)
+
+        post_copy_cols = st.columns(3)
+
+        for col, draft in zip(
+            post_copy_cols,
+            st.session_state.generated_drafts,
+        ):
+            draft_id = draft["id"]
+            post_copy = draft.get("post_copy")
+
+            with col:
+                if post_copy:
+                    safe_post_copy = html.escape(post_copy)
+
+                    st.html(
+                        f"""
+                        <div class="post-copy-preview">
+                            <div class="post-copy-preview-head">
+                                <span class="post-copy-preview-label">
+                                    문구 {draft_id}
+                                </span>
+
+                                <span class="post-copy-preview-platform">
+                                    {platform_text}
+                                </span>
+                            </div>
+
+                            <div class="post-copy-preview-text">
+                                {safe_post_copy}
+                            </div>
+                        </div>
+                        """
+                    )
+                else:
+                    st.html(
+                        f"""
+                        <div class="post-copy-preview">
+                            <div class="post-copy-preview-head">
+                                <span class="post-copy-preview-label">
+                                    문구 {draft_id}
+                                </span>
+                            </div>
+
+                            <div class="post-copy-preview-text">
+                                생성된 게시글 문구가 없습니다.
+                            </div>
+                        </div>
+                        """
+                    )
+
+                if st.button(
+                    f"문구 {draft_id} 선택",
+                    key=f"select_post_copy_{draft_id}",
+                    use_container_width=True,
+                    disabled=not post_copy,
+                ):
+                    st.session_state.selected_post_copy = draft_id
+                    st.rerun()
+            
         st.html(
             """
             <style>
@@ -714,16 +877,20 @@ def render_ad_generation():
 
         with action_col2:
             proceed_clicked = st.button(
-                "선택한 시안으로 진행 →",
+                "선택한 광고로 진행 →",
                 key="proceed_selected_draft",
                 use_container_width=True,
-                disabled=st.session_state.selected_draft is None,
+                disabled=(
+                    st.session_state.selected_draft is None
+                    or st.session_state.selected_post_copy is None
+                ),
             )
             
         if regenerate_all_clicked:
             st.session_state.generation_status = "generating"
             st.session_state.generated_drafts = []
             st.session_state.selected_draft = None
+            st.session_state.selected_post_copy = None
 
             st.session_state.pop("regeneration_request", None)
             st.session_state.pop("regenerating_draft", None)
@@ -742,6 +909,19 @@ def render_ad_generation():
                 ),
                 None,
             )
+            
+            selected_post_copy_id = (
+                st.session_state.selected_post_copy
+            )
+
+            selected_post_copy_data = next(
+                (
+                    draft
+                    for draft in st.session_state.generated_drafts
+                    if draft["id"] == selected_post_copy_id
+                ),
+                None,
+            )
 
             st.session_state.final_ad_result = {
                 "strategy": {
@@ -755,6 +935,11 @@ def render_ad_generation():
                     "selected_slogan": selected_slogan,
                 },
                 "selected_draft": selected_draft_data,
+                "selected_post_copy": (
+                    selected_post_copy_data.get("post_copy")
+                    if selected_post_copy_data
+                    else None
+                ),
             }
 
             st.query_params["page"] = "result"

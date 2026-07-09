@@ -4,6 +4,7 @@ from uuid import uuid4
 from app.ml.clients.factory import create_text_model_client
 from app.ml.image_clients.factory import create_image_model_client
 from app.ml.prompt_generator import generate_image_prompt
+from app.ml.post_copy_generator import generate_post_copy
 
 
 CONCEPTS = {
@@ -43,6 +44,14 @@ def generate_drafts(
             selected_slogan=selected_slogan,
             concept=concept,
         )
+        post_copy = generate_post_copy(
+            client=text_client,
+            product_name=product_name,
+            product_description=product_description,
+            platform=platform,
+            selected_slogan=selected_slogan,
+            concept=concept,
+        )
 
         image_bytes = image_client.generate(
             prompt=image_prompt,
@@ -63,6 +72,7 @@ def generate_drafts(
                 "version": 1,
                 "image_path": str(image_path),
                 "image_prompt": image_prompt,
+                "post_copy": post_copy,
             }
         )
 

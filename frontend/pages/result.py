@@ -4,6 +4,7 @@ from components.header import render_header
 from api.client import APIError
 from api.generate import download_generated_image
 from utils.state import clear_after_draft
+from components.copy_button import render_copy_button
 
 
 BACKEND_URL = "http://127.0.0.1:8000"
@@ -249,7 +250,7 @@ def render_result():
 
     platform_labels = {
         "instagram": "Instagram",
-        "facebook": "Facebook",
+        "baemin": "배달의민족",
         "naver": "네이버",
         "offline": "오프라인 포스터",
     }
@@ -355,7 +356,136 @@ def render_result():
         """
     )
     
-    # 4. 최종 액션 버튼
+    # 4. 게시글 문구
+    post_copy = (
+        final_ad_result.get("selected_post_copy")
+        or selected_draft.get("post_copy")
+    )
+
+    platform_text = platform_labels.get(
+        platform,
+        platform,
+    ) if platform else "선택한 플랫폼"
+
+    if post_copy:
+        st.html(
+            f"""
+            <div class="result-content">
+                <div class="result-container">
+                    <section class="post-copy-card">
+                        <div class="post-copy-head">
+                            <div>
+                                <span class="post-copy-label">
+                                    ✨ AI 게시글 문구
+                                </span>
+                                <h3>{platform_text}에 바로 활용해보세요</h3>
+                            </div>
+
+                            <span class="post-copy-platform">
+                                {platform_text}
+                            </span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <style>
+            .post-copy-card {{
+                margin-top: 8px;
+                padding: 22px 24px 18px;
+                border: 1.5px solid #cfe7da;
+                border-bottom: none;
+                border-radius: 16px 16px 0 0;
+                background: linear-gradient(
+                    135deg,
+                    #f4fbf7 0%,
+                    #ffffff 100%
+                );
+            }}
+
+            .post-copy-head {{
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 16px;
+            }}
+
+            .post-copy-label {{
+                display: block;
+                margin-bottom: 7px;
+                color: #0f8a5f;
+                font-size: 13px;
+                font-weight: 800;
+            }}
+
+            .post-copy-head h3 {{
+                margin: 0;
+                color: #17211c;
+                font-size: 20px;
+                font-weight: 800;
+                line-height: 1.45;
+            }}
+
+            .post-copy-platform {{
+                flex-shrink: 0;
+                padding: 7px 11px;
+                border-radius: 999px;
+                background: #dff4e9;
+                color: #0f8a5f;
+                font-size: 12px;
+                font-weight: 800;
+            }}
+
+            .st-key-final_post_copy {{
+                margin-top: -1px;
+            }}
+
+            .st-key-final_post_copy textarea {{
+                min-height: 220px;
+                padding: 20px 24px;
+                border: 1.5px solid #cfe7da;
+                border-top: 1px solid #e4eee8;
+                border-radius: 0;
+                background: #ffffff;
+                color: #26322c;
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 1.8;
+                resize: vertical;
+                box-shadow: none;
+                transition:
+                    border-color 0.2s ease,
+                    box-shadow 0.2s ease;
+            }}
+
+            .st-key-final_post_copy textarea:hover {{
+                border-color: #9fcbb7;
+            }}
+
+            .st-key-final_post_copy textarea:focus {{
+                border-color: #0f8a5f;
+                outline: none !important;
+                box-shadow:
+                    inset 0 0 0 1px #0f8a5f;
+            }}
+            </style>
+            """
+        )
+
+        edited_post_copy = st.text_area(
+            "생성된 게시글 문구",
+            value=post_copy,
+            height=220,
+            key="final_post_copy",
+            label_visibility="collapsed",
+        )
+        
+        render_copy_button(
+            edited_post_copy,
+            label="게시글 문구 복사",
+        )
+        
+    # 5. 최종 액션 버튼
     image_path = selected_draft.get("image_path")
 
     st.html(

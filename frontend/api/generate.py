@@ -26,6 +26,7 @@ def regenerate_draft(
 ) -> dict:
     return post(
         "/generate/regenerate",
+        timeout=300,
         json={
             "project_id": project_id,
             "draft_id": draft_id,
