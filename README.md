@@ -1,25 +1,31 @@
 # Ad-Contents-Generator
 
-> AI-powered platform-specific advertising content generation service for small businesses.
+> AI-powered platform-specific advertising content generation service
+> for small businesses.
 
-Ad-Contents-Generator is an AI marketing assistant that analyzes products, recommends marketing strategies, and automatically generates advertising content optimized for different marketing platforms.
+Ad-Contents-Generator is an AI marketing assistant that analyzes
+products, recommends marketing strategies, and automatically generates
+advertising content optimized for different marketing platforms.
 
----
+------------------------------------------------------------------------
 
 # 📌 Project Overview
 
-Creating advertisements for multiple platforms is a time-consuming task for small business owners.
+Creating advertisements for multiple platforms is a time-consuming task
+for small business owners.
 
-Even for the same product, advertising strategies differ depending on the platform.
+Even for the same product, advertising strategies differ depending on
+the platform.
 
 For example,
 
-- **Instagram** focuses on branding and storytelling.
-- **Baemin** focuses on promotions and increasing customer orders.
+-   **Instagram** focuses on branding and storytelling.
+-   **Baemin** focuses on promotions and increasing customer orders.
 
-This project leverages Generative AI to recommend marketing strategies and generate platform-specific advertisements automatically.
+This project leverages Generative AI to recommend marketing strategies
+and generate platform-specific advertisements automatically.
 
----
+------------------------------------------------------------------------
 
 # 🎯 Problem Statement
 
@@ -29,21 +35,21 @@ However, effective marketing requires much more than generation.
 
 It requires:
 
-- Product analysis
-- Platform selection
-- Marketing strategy
-- Advertisement style
-- Platform-specific optimization
+-   Product analysis
+-   Platform selection
+-   Marketing strategy
+-   Advertisement style
+-   Platform-specific optimization
 
 Our goal is to automate this entire planning process.
 
----
+------------------------------------------------------------------------
 
 # 💡 Solution
 
 Instead of
 
-```text
+``` text
 Product
 
 ↓
@@ -53,7 +59,7 @@ Advertisement
 
 Ad-Contents-Generator provides
 
-```text
+``` text
 Product
 
 ↓
@@ -77,7 +83,7 @@ Advertisement Style Selection
 Platform-specific Advertisement Generation
 ```
 
----
+------------------------------------------------------------------------
 
 # 🎯 Supported Platforms
 
@@ -85,43 +91,43 @@ Platform-specific Advertisement Generation
 
 Purpose
 
-- Brand Awareness
-- Social Media Marketing
+-   Brand Awareness
+-   Social Media Marketing
 
 Generated Contents
 
-- Feed Advertisement Image
-- Caption
-- Hashtags
+-   Feed Advertisement Image
+-   Caption
+-   Hashtags
 
 Advertising Characteristics
 
-- Emotional
-- Storytelling
-- Lifestyle Branding
+-   Emotional
+-   Storytelling
+-   Lifestyle Branding
 
----
+------------------------------------------------------------------------
 
 ## 🍽️ Baemin
 
 Purpose
 
-- Increase Orders
-- Promotion
+-   Increase Orders
+-   Promotion
 
 Generated Contents
 
-- Promotional Advertisement Image
-- Event Copy
-- Call-To-Action (CTA)
+-   Promotional Advertisement Image
+-   Event Copy
+-   Call-To-Action (CTA)
 
 Advertising Characteristics
 
-- Discount Promotion
-- Order Conversion
-- Event Marketing
+-   Discount Promotion
+-   Order Conversion
+-   Event Marketing
 
----
+------------------------------------------------------------------------
 
 # ✨ Core Features
 
@@ -131,19 +137,19 @@ Analyze uploaded products using AI.
 
 Input
 
-- Product Image
-- Product Name
-- Product Description
-- Price
+-   Product Image
+-   Product Name
+-   Product Description
+-   Price
 
 Output
 
-- Product Category
-- Product Characteristics
-- Target Customers
-- Marketing Highlights
+-   Product Category
+-   Product Characteristics
+-   Target Customers
+-   Marketing Highlights
 
----
+------------------------------------------------------------------------
 
 ## 📱 Platform Recommendation
 
@@ -157,7 +163,7 @@ Reason
 
 This product has strong visual appeal and is suitable for SNS marketing.
 
----
+------------------------------------------------------------------------
 
 ## 📈 Marketing Strategy Recommendation
 
@@ -165,18 +171,18 @@ Recommend multiple advertising strategies.
 
 Examples
 
-- Emotional Marketing
-- Promotion Event
-- New Product Launch
-- Brand Marketing
+-   Emotional Marketing
+-   Promotion Event
+-   New Product Launch
+-   Brand Marketing
 
 Each strategy includes
 
-- Recommendation Score
-- Expected Effect
-- Recommendation Reason
+-   Recommendation Score
+-   Expected Effect
+-   Recommendation Reason
 
----
+------------------------------------------------------------------------
 
 ## 🎨 Advertisement Style Selection
 
@@ -184,13 +190,13 @@ Users can customize advertisements by selecting different styles.
 
 Supported Styles
 
-- Emotional
-- Premium
-- Friendly
-- Humorous
-- Event Promotion
+-   Emotional
+-   Premium
+-   Friendly
+-   Humorous
+-   Event Promotion
 
----
+------------------------------------------------------------------------
 
 ## 🖼 Platform-specific Advertisement Generation
 
@@ -198,23 +204,23 @@ Supported Styles
 
 Generate
 
-- Feed Image
-- Caption
-- Hashtags
+-   Feed Image
+-   Caption
+-   Hashtags
 
 ### Baemin
 
 Generate
 
-- Promotional Image
-- Event Copy
-- Call-To-Action
+-   Promotional Image
+-   Event Copy
+-   Call-To-Action
 
----
+------------------------------------------------------------------------
 
 # 🚀 Service Flow
 
-```text
+``` text
 Product Information
 (Image, Name, Description, Price)
 
@@ -257,11 +263,11 @@ Advertisement Generation
 Download
 ```
 
----
+------------------------------------------------------------------------
 
 # 🤖 AI Pipeline
 
-```text
+``` text
              Product
 
                 │
@@ -309,25 +315,25 @@ Recommend  Recommend
  Advertisement Image
 ```
 
----
+------------------------------------------------------------------------
 
 # ⚙️ Development Environment Setup
 
 ## 1. Clone Repository
 
-```bash
+``` bash
 git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
 
 cd Ad-Contents-Generator
 ```
 
----
+------------------------------------------------------------------------
 
 ## 2. Create Virtual Environment
 
 ### macOS / Linux
 
-```bash
+``` bash
 python3 -m venv .venv
 
 source .venv/bin/activate
@@ -335,97 +341,114 @@ source .venv/bin/activate
 
 ### Windows
 
-```powershell
+``` powershell
 python -m venv .venv
 
 .venv\Scripts\activate
 ```
 
----
+------------------------------------------------------------------------
 
 ## 3. Install PyTorch (Required)
 
-PyTorch is **not included** in `requirements.txt` because the installation method depends on the user's environment (CPU or CUDA version).
+PyTorch is **not included** in `requirements.txt` because the
+installation method depends on the user's environment (CPU or CUDA
+version).
 
 ### CUDA 12.8 (Recommended)
 
-```bash
+``` bash
 pip install torch torchvision torchaudio \
 --index-url https://download.pytorch.org/whl/cu128
 ```
 
 ### CPU Only
 
-```bash
+``` bash
 pip install torch torchvision torchaudio
 ```
 
----
+------------------------------------------------------------------------
 
 ## 4. Install Project Dependencies
 
-```bash
+``` bash
 pip install -r requirements.txt
 ```
 
----
+------------------------------------------------------------------------
 
-## 5. Initialize Database
+## 5. Configure Environment Variables
 
-Before running the backend for the first time, initialize the SQLite database.
+Create a `.env` file in the project root and add the environment
+variables required by the application.
+
+``` bash
+cp .env.example .env
+```
+
+Then add the required API keys and configuration values to `.env`.
+
+> Do not commit `.env` or API keys to Git.
+
+------------------------------------------------------------------------
+
+## 6. Initialize and Migrate Database
+
+Database schema changes are managed with Alembic.
 
 Move to the backend directory:
 
-```bash
+``` bash
 cd backend
 ```
 
-Create all required database tables:
+Create or upgrade the SQLite database to the latest schema:
 
-```bash
-python -m app.db.init_db
+``` bash
+alembic upgrade head
 ```
 
-Expected output:
+This command creates all required tables for a new database and applies
+every migration up to the latest revision.
 
-Database tables created successfully.
+The database includes:
 
-This command creates the SQLite database and all required tables, including:
+-   `users`
+-   `products`
+-   `ad_projects`
+-   `ad_strategies`
+-   `ad_drafts`
+-   `final_results`
 
-users
-products
-ad_projects
-ad_strategies
-ad_drafts
-final_results
+Do not create or alter tables manually. Use Alembic migrations for all
+database schema changes.
 
-Run this command once after cloning the repository and installing the project dependencies.
+------------------------------------------------------------------------
 
----
+## 7. Verify Installation
 
-## 6. Verify Installation
-
-```bash
+``` bash
 python -c "import torch; print(torch.__version__)"
 ```
 
 If using an NVIDIA GPU:
 
-```bash
+``` bash
 python -c "import torch; print(torch.cuda.is_available())"
 ```
 
 Expected output:
 
-```text
+``` text
 True
 ```
 
----
+------------------------------------------------------------------------
 
 # 🚀 Development Workflow
 
-```text
+``` text
 Clone Repository
         │
         ▼
@@ -444,4 +467,4 @@ Initialize Database
 Run Backend / Frontend
 ```
 
----
+------------------------------------------------------------------------
