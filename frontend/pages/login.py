@@ -1,4 +1,7 @@
+import requests
 import streamlit as st
+
+from api.auth import AuthAPIError, login
 
 
 def render_login():
@@ -224,9 +227,31 @@ def render_login():
     if login_clicked:
         if not email.strip() or not password.strip():
             st.warning("이메일과 비밀번호를 모두 입력해주세요.")
+
         else:
-            st.query_params["page"] = "product_input"
-            st.rerun()
+            try:
+                result = login(
+                    email=email,
+                    password=password,
+                )
+
+                st.session_state["access_token"] = result["access_token"]
+                st.session_state["user"] = result["user"]
+                st.session_state["is_authenticated"] = True
+
+                st.success("로그인되었습니다.")
+
+                st.query_params["page"] = "product_input"
+                st.rerun()
+
+            except AuthAPIError as e:
+                st.error(str(e))
+
+            except requests.exceptions.ConnectionError:
+                st.error("백엔드 서버에 연결할 수 없습니다.")
+
+            except Exception:
+                st.error("로그인 중 오류가 발생했습니다.")
             
     st.html(
         """

@@ -7,16 +7,18 @@ from app.models import AdDraft, AdProject
 from app.schemas.generate_schema import GenerateRequest, RegenerateDraftRequest
 from app.ml.generation_pipeline import generate_drafts
 from app.ml.image_clients.factory import create_image_model_client
+from app.crud.project import get_project_by_id
 
 
 def generate_ad_drafts(
     db: Session,
+    user_id: int,
     request: GenerateRequest,
 ) -> dict:
-    project = (
-        db.query(AdProject)
-        .filter(AdProject.id == request.project_id)
-        .first()
+    project = get_project_by_id(
+        db=db,
+        project_id=request.project_id,
+        user_id=user_id,
     )
 
     if project is None:
@@ -98,12 +100,13 @@ def generate_ad_drafts(
 
 def regenerate_ad_draft(
     db: Session,
+    user_id: int,
     request: RegenerateDraftRequest,
 ) -> dict:
-    project = (
-        db.query(AdProject)
-        .filter(AdProject.id == request.project_id)
-        .first()
+    project = get_project_by_id(
+        db=db,
+        project_id=request.project_id,
+        user_id=user_id,
     )
 
     if project is None:

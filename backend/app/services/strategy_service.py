@@ -1,4 +1,5 @@
-from app.schemas.strategy_schema import StrategyRecommendRequest
+from app.models.product import Product
+from app.schemas.strategy_schema import StrategyInfo
 
 
 PLATFORM_LABELS = {
@@ -34,14 +35,15 @@ STYLE_LABELS = {
 }
 
 
-def recommend_strategy(request: StrategyRecommendRequest):
-    product = request.product
-    strategy = request.strategy
+def recommend_strategy(
+    product: Product,
+    strategy: StrategyInfo,
+):
 
     product_name = product.name
     description = product.description or ""
 
-    category = _normalize_category(product.category)
+    category = _normalize_category(product.industry)
     category_label = CATEGORY_LABELS.get(category, "상품")
 
     main_platform = strategy.platform or "instagram"

@@ -1,6 +1,7 @@
-import requests
 import streamlit as st
 
+from api.client import APIError
+from api.generate import download_generated_image
 from utils.state import clear_after_draft
 
 
@@ -422,15 +423,11 @@ def render_result():
             image_url = f"{BACKEND_URL}/{image_path}"
 
             try:
-                image_response = requests.get(
-                    image_url,
-                    timeout=30,
-                )
-                image_response.raise_for_status()
+                image_bytes = download_generated_image(image_path)
 
                 st.download_button(
                     "↓ 결과물 다운로드",
-                    data=image_response.content,
+                    data=image_bytes,
                     file_name=(
                         f"admaker_draft_{draft_id}"
                         f"_v{draft_version}.png"
@@ -440,7 +437,7 @@ def render_result():
                     use_container_width=True,
                 )
 
-            except requests.exceptions.RequestException:
+            except APIError:
                 st.button(
                     "↓ 결과물 다운로드",
                     key="download_final_ad_disabled",
@@ -469,13 +466,17 @@ def render_result():
             "product_price",
             "product_description",
             "product_industry",
-            "product_data",
             "product_image",
+            "product_image_path",
+            "product_id",
 
             # 상품 입력 위젯
             "product_name_input",
             "product_price_input",
             "product_description_input",
+
+            # 프로젝트
+            "project_id",
 
             # 전략 선택
             "strategy_mode",
@@ -487,11 +488,11 @@ def render_result():
             "strategy_data",
             "recommendation",
             "selected_slogan",
-            "final_strategy_data",
 
             # 광고 생성
             "generation_status",
             "generated_drafts",
+            "drafts",
             "selected_draft",
             "regeneration_request",
             "regenerating_draft",

@@ -12,6 +12,8 @@ from app.services.generate_service import (
     generate_ad_drafts,
     regenerate_ad_draft,
 )
+from app.dependencies import get_current_user
+from app.models.user import User
 
 
 router = APIRouter()
@@ -25,9 +27,11 @@ router = APIRouter()
 def generate(
     request: GenerateRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return generate_ad_drafts(
         db=db,
+        user_id=current_user.id,
         request=request,
     )
 
@@ -40,8 +44,10 @@ def generate(
 def regenerate(
     request: RegenerateDraftRequest,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return regenerate_ad_draft(
         db=db,
+        user_id=current_user.id,
         request=request,
     )

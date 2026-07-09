@@ -3,14 +3,6 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class ProductInfo(BaseModel):
-    name: str
-    price: Optional[str] = None
-    description: Optional[str] = None
-    category: Optional[str] = None
-    image_path: Optional[str] = None
-
-
 class StrategyInfo(BaseModel):
     mode: str
     reuse_tone: bool = False
@@ -21,5 +13,5 @@ class StrategyInfo(BaseModel):
 
 
 class StrategyRecommendRequest(BaseModel):
-    product: ProductInfo
+    project_id: int
     strategy: StrategyInfo

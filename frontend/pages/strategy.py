@@ -1,9 +1,11 @@
 import base64
 import html
-import requests
 import streamlit as st
+from api.product import get_product
+from api.project import create_project
+from api.strategy import recommend_strategy
+from api.client import APIError
 
-BACKEND_URL = "http://127.0.0.1:8000"
 
 def render_strategy_selection():
     if "strategy_mode" not in st.session_state:
@@ -82,23 +84,24 @@ def render_strategy_selection():
         """
     )
     
-    product_data = st.session_state.get("product_data")
+    product_id = st.session_state.get("product_id")
 
-    if not product_data:
-        st.warning("상품 정보가 없습니다. 먼저 상품 정보를 입력해주세요.")
-
-        if st.button("상품 정보 입력으로 이동"):
-            st.query_params["page"] = "product_input"
-            st.rerun()
-
+    if product_id is None:
+        st.error("상품 정보를 찾을 수 없습니다.")
+        st.stop()
+        
+    try:
+        product = get_product(product_id)
+    except APIError as e:
+        st.error(str(e))
         return
     
     image_base64 = base64.b64encode(
-        product_data["image_bytes"]
+        product["image_bytes"]
     ).decode("utf-8")
 
     image_src = (
-        f"data:{product_data['image_type']};"
+        f"data:{product['image_type']};"
         f"base64,{image_base64}"
     )
     
@@ -110,11 +113,11 @@ def render_strategy_selection():
     }
 
     industry_label = industry_labels.get(
-        product_data["industry"],
-        product_data["industry"],
+        product["industry"],
+        product["industry"],
     )
-    product_name = html.escape(product_data["name"])
-    product_price = html.escape(product_data["price"])
+    product_name = html.escape(product["name"])
+    product_price = html.escape(str(product["price"]))
 
     # 3. 상품 요약 카드
     st.html(
@@ -651,8 +654,7 @@ def render_strategy_selection():
             False,
         ),
         "platform": st.session_state.get(
-            "selected_platform",
-            [],
+            "selected_platform"
         ),
         "poster_size": (
             st.session_state.get("poster_size")
@@ -736,62 +738,30 @@ def render_strategy_selection():
         use_container_width=True,
         disabled=not can_recommend,
     ):
-        st.session_state.strategy_data = strategy_data.copy()
-
         try:
-            # 이미 업로드한 이미지 경로가 있으면 재사용
-            image_path = st.session_state.get("product_image_path")
+            project = create_project(product_id)
 
-            # 아직 업로드하지 않은 경우에만 백엔드로 전송
-            if image_path is None:
-                image_response = requests.post(
-                    f"{BACKEND_URL}/products/image",
-                    files={
-                        "image": (
-                            product_data["image_name"],
-                            product_data["image_bytes"],
-                            product_data["image_type"],
-                        )
-                    },
-                    timeout=30,
-                )
-                image_response.raise_for_status()
+            project_id = project["id"]
+            st.session_state.project_id = project_id
+            st.session_state.strategy_data = strategy_data.copy()
 
-                image_path = image_response.json()["image_path"]
-                st.session_state.product_image_path = image_path
-
-            api_product_data = {
-                "name": product_data["name"],
-                "price": product_data["price"],
-                "description": product_data["description"],
-                "category": product_data["industry"],
-                "image_path": image_path,
-            }
-
-            payload = {
-                "product": api_product_data,
-                "strategy": strategy_data,
-            }
-
-            response = requests.post(
-                f"{BACKEND_URL}/strategy/recommend",
-                json=payload,
-                timeout=30,
+            recommendation = recommend_strategy(
+                project_id=project_id,
+                mode=strategy_data["mode"],
+                reuse_tone=strategy_data["reuse_tone"],
+                platform=strategy_data["platform"],
+                poster_size=strategy_data["poster_size"],
+                goal=strategy_data["goal"],
+                style=strategy_data["style"],
             )
-            response.raise_for_status()
 
-            st.session_state.recommendation = response.json()
+            st.session_state.recommendation = recommendation
             st.session_state.selected_slogan = None
+
             st.rerun()
 
-        except requests.exceptions.ConnectionError:
-            st.error(
-                "백엔드 서버에 연결할 수 없습니다. "
-                "FastAPI 서버가 실행 중인지 확인해주세요."
-            )
-
-        except requests.exceptions.RequestException as e:
-            st.error(f"AI 추천 요청 중 오류가 발생했습니다: {e}")
+        except APIError as e:
+            st.error(str(e))
 
     recommendation = st.session_state.get("recommendation")
 
@@ -868,29 +838,7 @@ def render_strategy_selection():
 
         # 14. 광고 시안 생성
         selected_slogan = st.session_state.get("selected_slogan")
-        project_id = recommendation["project_id"]
-        final_strategy_data = {
-            "project_id": project_id,
-            "product": {
-                "name": product_data["name"],
-                "price": product_data["price"],
-                "description": product_data["description"],
-                "industry": product_data["industry"],
-                "image_name": product_data["image_name"],
-                "image_type": product_data["image_type"],
-                "image_bytes": product_data["image_bytes"],
-            },
-            **st.session_state.strategy_data,
-            "recommendation": {
-                "strategy_title": recommendation["strategy_title"],
-                "strategy_description": recommendation["strategy_description"],
-            },
-            "selected_slogan": (
-                recommendation["slogans"][selected_slogan]
-                if selected_slogan is not None
-                else None
-            ),
-        }
+        project_id = st.session_state.project_id
 
         st.html(
             """
@@ -955,6 +903,5 @@ def render_strategy_selection():
             use_container_width=True,
             disabled=selected_slogan is None,
         ):
-            st.session_state.final_strategy_data = final_strategy_data
             st.query_params["page"] = "ad_generation"
             st.rerun()

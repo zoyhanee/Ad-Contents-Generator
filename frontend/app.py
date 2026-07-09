@@ -29,6 +29,18 @@ PAGES = {
     "result": None,
 }
 
+def is_authenticated() -> bool:
+    return (
+        st.session_state.get("is_authenticated", False)
+        and "access_token" in st.session_state
+    )
+    
+PROTECTED_PAGES = {
+    "product_input",
+    "strategy_selection",
+    "ad_generation",
+    "result",
+}
 
 def get_current_page():
     page = st.query_params.get("page", "landing")
@@ -52,6 +64,15 @@ def load_common_css():
 
 
 current_page = get_current_page()
+
+if (
+    current_page in PROTECTED_PAGES
+    and not is_authenticated()
+):
+    st.warning("로그인이 필요한 서비스입니다.")
+
+    st.query_params["page"] = "login"
+    st.rerun()
 
 if current_page == "login":
     load_common_css()

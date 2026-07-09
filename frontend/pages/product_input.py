@@ -1,5 +1,11 @@
 import streamlit as st
+import requests
 
+from api.client import APIError
+from api.product import (
+    create_product,
+    upload_product_image,
+)
 
 def render_product_input():
     # 1. 상품 입력 상태 초기화
@@ -390,15 +396,39 @@ def render_product_input():
         use_container_width=True,
         disabled=not can_continue,
     ):
-        st.session_state.product_data = {
-            "name": product_name.strip(),
-            "price": product_price.strip(),
-            "description": product_description.strip(),
-            "industry": st.session_state.product_industry,
-            "image_name": uploaded_image.name,
-            "image_type": uploaded_image.type,
-            "image_bytes": uploaded_image.getvalue(),
-        }
+        try:
+            # 가격 문자열 → 숫자 변환
+            price = int(product_price.replace(",", "").strip())
+            
+            # 1. 이미지 업로드
+            image_result = upload_product_image(uploaded_image)
 
-        st.query_params["page"] = "strategy_selection"
-        st.rerun()
+            # 2. 상품 저장
+            product = create_product(
+                name=product_name.strip(),
+                price=int(product_price.replace(",", "")),
+                description=product_description.strip(),
+                industry=st.session_state.product_industry,
+                image_path=image_result["image_path"],
+            )
+
+            # 3. product_id 저장
+            st.session_state.product_id = product["id"]
+            
+            # (선택) 이후 화면에서 사용할 수 있도록 상품 정보도 저장
+            st.session_state.product = product
+
+            st.query_params["page"] = "strategy_selection"
+            st.rerun()
+
+        except ValueError:
+            st.error("상품 가격은 숫자로 입력해주세요.")
+
+        except APIError as e:
+            st.error(str(e))
+
+        except requests.exceptions.ConnectionError:
+            st.error("백엔드 서버에 연결할 수 없습니다.")
+
+        except Exception as e:
+            st.exception(e)

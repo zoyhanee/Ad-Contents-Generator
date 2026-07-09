@@ -1,69 +1,30 @@
 from sqlalchemy.orm import Session
-
-from app.models import AdProject, AdStrategy, Product, User
+from fastapi import HTTPException
+from app.models import AdProject, AdStrategy
 from app.schemas.strategy_schema import StrategyRecommendRequest
+from app.crud.project import get_project_by_id
 
-
-DEV_USER_EMAIL = "dev@admaker.local"
-
-
-def parse_price(price: str | None) -> int | None:
-    if not price:
-        return None
-
-    digits = "".join(char for char in price if char.isdigit())
-
-    return int(digits) if digits else None
-
-
-def get_or_create_dev_user(db: Session) -> User:
-    user = (
-        db.query(User)
-        .filter(User.email == DEV_USER_EMAIL)
-        .first()
-    )
-
-    if user:
-        return user
-
-    user = User(
-        email=DEV_USER_EMAIL,
-        password_hash="dev-only",
-        store_name="개발용 스토어",
-    )
-
-    db.add(user)
-    db.flush()
-
-    return user
 
 def save_strategy_recommendation(
     db: Session,
+    *,
+    user_id: int,
     request: StrategyRecommendRequest,
     recommendation: dict,
 ) -> AdStrategy:
-    user = get_or_create_dev_user(db)
+    project = get_project_by_id(
+        db=db,
+        project_id=request.project_id,
+        user_id=user_id,
+    )
+
+    if project is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Project not found.",
+        )
 
     try:
-        product = Product(
-            user_id=user.id,
-            name=request.product.name,
-            price=parse_price(request.product.price),
-            description=request.product.description,
-            industry=request.product.category,
-            image_path=request.product.image_path,
-        )
-        db.add(product)
-        db.flush()
-
-        project = AdProject(
-            user_id=user.id,
-            product_id=product.id,
-            status="strategy_created",
-        )
-        db.add(project)
-        db.flush()
-
         strategy = AdStrategy(
             project_id=project.id,
             strategy_mode=request.strategy.mode,
@@ -76,8 +37,8 @@ def save_strategy_recommendation(
             strategy_description=recommendation["strategy_description"],
             slogans=recommendation["slogans"],
         )
+        
         db.add(strategy)
-
         db.commit()
         db.refresh(strategy)
 

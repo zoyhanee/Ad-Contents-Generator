@@ -1,8 +1,13 @@
 import html
 
-import requests
 import streamlit as st
 
+from api.client import APIError
+from api.generate import (
+    generate_ad,
+    regenerate_draft,
+)
+from api.product import get_product
 from utils.state import clear_after_strategy
 
 
@@ -134,28 +139,16 @@ def render_ad_generation():
             st.rerun()
     
     # 4. 전략 데이터 불러오기
-    final_strategy_data = st.session_state.get("final_strategy_data")
-
-    if final_strategy_data is None:
-        st.warning(
-            "선택된 광고 전략 정보가 없습니다. "
-            "광고 전략을 먼저 선택해주세요."
-        )
-
-        if st.button(
-            "광고 전략 선택으로 돌아가기",
-            key="back_to_strategy",
-        ):
-            st.query_params["page"] = "strategy_selection"
-            st.rerun()
-
-        return
+    project_id = st.session_state.get("project_id")
+    product_id = st.session_state.get("product_id")
+    strategy_data = st.session_state.get("strategy_data")
+    recommendation = st.session_state.get("recommendation")
+    selected_slogan_index = st.session_state.get("selected_slogan")
     
-    product_data = final_strategy_data.get("product")
-    if not product_data:
+    if project_id is None:
         st.warning(
-            "상품 정보가 없습니다. "
-            "먼저 상품 정보를 입력해주세요."
+            "프로젝트 정보를 찾을 수 없습니다. "
+            "상품 정보부터 다시 입력해주세요."
         )
 
         if st.button(
@@ -166,8 +159,51 @@ def render_ad_generation():
             st.rerun()
 
         return
+    
+    if product_id is None:
+        st.warning(
+            "상품 정보를 찾을 수 없습니다. "
+            "상품 정보부터 다시 입력해주세요."
+        )
+
+        if st.button(
+            "상품 정보 입력으로 이동",
+            key="back_to_product",
+        ):
+            st.query_params["page"] = "product_input"
+            st.rerun()
+
+        return
+    
+    if strategy_data is None or recommendation is None:
+        st.warning(
+            "광고 전략 정보를 찾을 수 없습니다. "
+            "전략을 먼저 선택해주세요."
+        )
+
+        if st.button(
+            "광고 전략 선택으로 이동",
+            key="back_to_strategy",
+        ):
+            st.query_params["page"] = "strategy"
+            st.rerun()
+
+        return
+    
+    selected_slogan = (
+        recommendation["slogans"][selected_slogan_index]
+        if selected_slogan_index is not None
+        else None
+    )
+    
+    try:
+        product_data = get_product(product_id)
+    except APIError as e:
+        st.error(str(e))
+        return
+    
     product_name = html.escape(product_data["name"])
-    product_price = html.escape(product_data["price"])
+    product_price = html.escape(str(product_data["price"]))
 
     # 5. 전략 데이터 표시용 변환
     platform_labels = {
@@ -192,24 +228,23 @@ def render_ad_generation():
     }
 
 
-    platform = final_strategy_data.get("platform")
+    platform = strategy_data.get("platform")
 
     platform_text = platform_labels.get(
         platform,
         platform,
     ) if platform else ""
 
-    goal = final_strategy_data.get("goal")
-    style = final_strategy_data.get("style")
-    selected_slogan = final_strategy_data.get("selected_slogan")
+    goal = strategy_data.get("goal")
+    style = strategy_data.get("style")
 
     mode_labels = {
         "faster": "빠른 추천",
         "manual": "직접 설정",
     }
 
-    mode = final_strategy_data.get("mode")
-    poster_size = final_strategy_data.get("poster_size")
+    mode = strategy_data.get("mode")
+    poster_size = strategy_data.get("poster_size")
 
     summary_items = []
 
@@ -355,11 +390,6 @@ def render_ad_generation():
             """
         )
 
-        payload = {
-            "project_id": final_strategy_data["project_id"],
-            "selected_slogan": selected_slogan,
-        }
-
         try:
             with st.status(
                 "AI가 광고 콘셉트를 생성하고 있어요...",
@@ -368,14 +398,10 @@ def render_ad_generation():
                 st.write("상품 정보와 광고 전략을 준비했습니다.")
                 st.write("GPT 모델이 서로 다른 A/B/C 광고 콘셉트를 생성하고 있습니다.")
 
-                response = requests.post(
-                    f"{BACKEND_URL}/generate",
-                    json=payload,
-                    timeout=300,
+                result = generate_ad(
+                    project_id=project_id,
+                    selected_slogan=selected_slogan,
                 )
-                response.raise_for_status()
-
-                result = response.json()
 
                 generation_status.update(
                     label="광고 콘셉트 생성이 완료되었습니다.",
@@ -387,16 +413,9 @@ def render_ad_generation():
             st.session_state.generation_status = "completed"
             st.rerun()
 
-        except requests.exceptions.ConnectionError:
+        except APIError as e:
             st.session_state.generation_status = "ready"
-            st.error(
-                "백엔드 서버에 연결할 수 없습니다. "
-                "FastAPI 서버가 실행 중인지 확인해주세요."
-            )
-
-        except requests.exceptions.RequestException as e:
-            st.session_state.generation_status = "ready"
-            st.error(f"광고 시안 생성 요청 중 오류가 발생했습니다: {e}")
+            st.error(str(e))
         
     # 10. 광고 시안 생성 완료
     elif st.session_state.generation_status == "completed":
@@ -624,24 +643,15 @@ def render_ad_generation():
                 "regeneration_request"
             )
 
-            payload = {
-                "project_id": final_strategy_data["project_id"],
-                "draft_id": regeneration_request["draft_id"],
-                "feedback": regeneration_request["feedback"],
-            }
-
             try:
                 with st.spinner(
                     f"시안 {regenerating_draft}을 다시 생성하고 있어요..."
                 ):
-                    response = requests.post(
-                        f"{BACKEND_URL}/generate/regenerate",
-                        json=payload,
-                        timeout=300,
+                    result = regenerate_draft(
+                        project_id=project_id,
+                        draft_id=regeneration_request["draft_id"],
+                        feedback=regeneration_request["feedback"],
                     )
-
-                    response.raise_for_status()
-                    result = response.json()
 
                 regenerated_draft = result["draft"]
 
@@ -649,15 +659,11 @@ def render_ad_generation():
                     st.session_state.generated_drafts
                 ):
                     if draft["id"] == regenerating_draft:
-                        st.session_state.generated_drafts[index] = (
-                            regenerated_draft
-                        )
+                        st.session_state.generated_drafts[index] = regenerated_draft
                         break
 
                 st.session_state.regenerating_draft = None
-                st.session_state.regeneration_completed = (
-                    regenerating_draft
-                )
+                st.session_state.regeneration_completed = regenerating_draft
 
                 st.session_state.pop(
                     "regeneration_request",
@@ -666,12 +672,13 @@ def render_ad_generation():
 
                 st.rerun()
 
-            except requests.exceptions.RequestException as e:
+            except APIError as e:
                 st.session_state.regenerating_draft = None
-
-                st.error(
-                    f"시안 재생성 중 오류가 발생했습니다: {e}"
+                st.session_state.pop(
+                    "regeneration_request",
+                    None,
                 )
+                st.error(str(e))            
             
         regenerated_draft = st.session_state.pop(
             "regeneration_completed",
@@ -774,7 +781,16 @@ def render_ad_generation():
             )
 
             st.session_state.final_ad_result = {
-                "strategy": st.session_state.final_strategy_data,
+                "strategy": {
+                    **strategy_data,
+                    "recommendation": {
+                        "strategy_title": recommendation["strategy_title"],
+                        "strategy_description": recommendation[
+                            "strategy_description"
+                        ],
+                    },
+                    "selected_slogan": selected_slogan,
+                },
                 "selected_draft": selected_draft_data,
             }
 

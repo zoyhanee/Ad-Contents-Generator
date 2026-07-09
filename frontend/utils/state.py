@@ -3,10 +3,10 @@ import streamlit as st
 
 def clear_after_product():
     keys = [
+        "project_id",
         "strategy_data",
         "recommendation",
         "selected_slogan",
-        "final_strategy_data",
         "generation_status",
         "generated_drafts",
         "selected_draft",

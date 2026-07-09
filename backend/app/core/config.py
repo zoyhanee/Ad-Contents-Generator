@@ -12,11 +12,16 @@ class Settings(BaseSettings):
 
     TEXT_MODEL_PROVIDER: str = "openai"
     TEXT_MODEL_NAME: str = "gpt-5-mini"
-    
+
     IMAGE_MODEL_PROVIDER: str = "openai"
     IMAGE_MODEL_NAME: str = "gpt-image-1.5"
-    
+
     OPENAI_API_KEY: str
+
+    # Authentication
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",

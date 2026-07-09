@@ -1,5 +1,7 @@
 import streamlit as st
+import requests
 
+from api.auth import AuthAPIError, signup
 
 def render_signup():
     # 1. 회원가입 상태 초기화
@@ -262,9 +264,32 @@ def render_signup():
                     st.warning("비밀번호가 일치하지 않습니다.")
 
                 else:
-                    st.success("회원가입이 완료되었습니다.")
-                    st.query_params["page"] = "login"
-                    st.rerun()
+                    try:
+                        signup(
+                            email=email,
+                            password=password,
+                            store_name=store_name,
+                        )
+
+                        # 입력값 초기화
+                        st.session_state.signup_email = ""
+                        st.session_state.signup_password = ""
+                        st.session_state.signup_password_confirm = ""
+                        st.session_state.signup_store_name = ""
+
+                        st.success("회원가입이 완료되었습니다. 로그인해주세요.")
+
+                        st.query_params["page"] = "login"
+                        st.rerun()
+
+                    except AuthAPIError as e:
+                        st.error(str(e))
+
+                    except requests.exceptions.ConnectionError:
+                        st.error("백엔드 서버에 연결할 수 없습니다.")
+
+                    except Exception:
+                        st.error(f"회원가입 중 오류가 발생했습니다.\n{e}")
         
         st.html(
             """

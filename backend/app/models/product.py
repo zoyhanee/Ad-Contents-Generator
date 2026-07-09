@@ -30,5 +30,15 @@ class Product(Base):
         onupdate=utc_now,
     )
 
-    user = relationship("User", back_populates="products")
-    ad_projects = relationship("AdProject", back_populates="product")
+    user: Mapped["User"] = relationship(
+        back_populates="products",
+    )
+    
+    ad_projects: Mapped[list["AdProject"]] = relationship(
+        back_populates="product",
+    )
+    
+    ad_projects: Mapped[list["AdProject"]] = relationship(
+        back_populates="product",
+        cascade="all, delete-orphan",
+    )

@@ -14,7 +14,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     store_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
@@ -27,5 +27,10 @@ class User(Base):
         onupdate=utc_now,
     )
 
-    products = relationship("Product", back_populates="user")
-    ad_projects = relationship("AdProject", back_populates="user")
+    products: Mapped[list["Product"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    ad_projects: Mapped[list["AdProject"]] = relationship(
+        back_populates="user"
+    )
