@@ -36,9 +36,5 @@ class Product(Base):
     
     ad_projects: Mapped[list["AdProject"]] = relationship(
         back_populates="product",
-    )
-    
-    ad_projects: Mapped[list["AdProject"]] = relationship(
-        back_populates="product",
         cascade="all, delete-orphan",
     )
