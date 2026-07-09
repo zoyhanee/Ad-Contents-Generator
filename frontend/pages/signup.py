@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 
+from components.header import render_header
 from api.auth import AuthAPIError, signup
 
 def render_signup():
@@ -18,32 +19,7 @@ def render_signup():
         st.session_state.signup_store_name = ""
 
     # 2. 공통 헤더
-    st.html(
-        """
-        <div class="header">
-            <a class="logo" href="?page=landing" target="_self">
-                AdMaker <span>AI</span>
-            </a>
-
-            <div class="nav">
-                <div>서비스 소개</div>
-                <div>기능 안내</div>
-                <div>이용방법</div>
-                <div>요금 안내</div>
-                <div>고객 센터</div>
-            </div>
-
-            <div class="auth">
-                <a class="nav-btn" href="?page=login" target="_self">
-                    로그인
-                </a>
-                <a class="nav-btn primary" href="?page=signup" target="_self">
-                    회원가입
-                </a>
-            </div>
-        </div>
-        """
-    )
+    render_header()
     
     left_col, right_col = st.columns(
         [1, 1],

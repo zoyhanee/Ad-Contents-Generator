@@ -2,6 +2,7 @@ from pathlib import Path
 
 import streamlit as st
 
+from utils.state import clear_auth_state, is_authenticated
 from pages.login import render_login
 from pages.signup import render_signup
 from pages.product_input import render_product_input
@@ -23,17 +24,13 @@ PAGES = {
     "landing": "landing.html",
     "login": "login.html",
     "signup": "signup.html",
+    "logout": None,
     "product_input": "product_input.html",
     "strategy_selection": "strategy_selection.html",
     "ad_generation": "ad_generation.html",
     "result": None,
 }
 
-def is_authenticated() -> bool:
-    return (
-        st.session_state.get("is_authenticated", False)
-        and "access_token" in st.session_state
-    )
     
 PROTECTED_PAGES = {
     "product_input",
@@ -65,6 +62,19 @@ def load_common_css():
 
 current_page = get_current_page()
 
+if current_page == "logout":
+    clear_auth_state()
+
+    st.query_params["page"] = "landing"
+    st.rerun()
+    
+if (
+    current_page in {"login", "signup"}
+    and is_authenticated()
+):
+    st.query_params["page"] = "product_input"
+    st.rerun()
+    
 if (
     current_page in PROTECTED_PAGES
     and not is_authenticated()

@@ -1,6 +1,26 @@
 import streamlit as st
 
 
+def is_authenticated() -> bool:
+    return (
+        st.session_state.get("is_authenticated", False)
+        and "access_token" in st.session_state
+    )
+    
+    
+def clear_auth_state():
+    keys = [
+        "access_token",
+        "user",
+        "is_authenticated",
+        "login_email",
+        "login_password",
+    ]
+
+    for key in keys:
+        st.session_state.pop(key, None)
+        
+        
 def clear_after_product():
     keys = [
         "project_id",

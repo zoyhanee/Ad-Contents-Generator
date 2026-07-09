@@ -1,5 +1,6 @@
 import streamlit as st
 
+from components.header import render_header
 from api.client import APIError
 from api.generate import download_generated_image
 from utils.state import clear_after_draft
@@ -49,37 +50,7 @@ def render_result():
         return
 
     # 공통 헤더
-    st.html(
-        """
-        <div class="header">
-            <a class="logo" href="?page=landing" target="_self">
-                AdMaker <span>AI</span>
-            </a>
-
-            <div class="nav">
-                <div>서비스 소개</div>
-                <div>기능 안내</div>
-                <div>이용방법</div>
-                <div>요금 안내</div>
-                <div>고객 센터</div>
-            </div>
-
-            <div class="auth">
-                <a class="nav-btn" href="?page=login" target="_self">
-                    로그인
-                </a>
-
-                <a
-                    class="nav-btn primary"
-                    href="?page=signup"
-                    target="_self"
-                >
-                    회원가입
-                </a>
-            </div>
-        </div>
-        """
-    )
+    render_header()
 
     # 선택된 최종 시안
     selected_draft = final_ad_result["selected_draft"]
