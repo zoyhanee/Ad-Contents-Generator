@@ -1,4 +1,7 @@
+from io import BytesIO
+
 import streamlit as st
+from PIL import Image
 
 from components.header import render_header
 from api.client import APIError
@@ -10,6 +13,26 @@ from components.copy_button import render_copy_button
 BACKEND_URL = "http://127.0.0.1:8000"
 
 
+def resize_image_bytes(
+    image_bytes: bytes,
+    width: int,
+    height: int,
+) -> bytes:
+    with Image.open(BytesIO(image_bytes)) as image:
+        resized_image = image.resize(
+            (width, height),
+            Image.Resampling.LANCZOS,
+        )
+
+        output_buffer = BytesIO()
+        resized_image.save(
+            output_buffer,
+            format="PNG",
+        )
+
+        return output_buffer.getvalue()
+    
+    
 def render_result():
     # 최종 결과 데이터 확인
     final_ad_result = st.session_state.get("final_ad_result")
@@ -275,6 +298,26 @@ def render_result():
     style = strategy.get("style")
     poster_size = strategy.get("poster_size")
     selected_slogan = strategy.get("selected_slogan")
+    
+    image_width = strategy.get(
+        "image_width",
+        1024,
+    )
+
+    image_height = strategy.get(
+        "image_height",
+        1024,
+    )
+
+    output_width = strategy.get(
+        "output_width",
+        image_width,
+    )
+
+    output_height = strategy.get(
+        "output_height",
+        image_height,
+    )
     
     summary_items = []
 
@@ -565,7 +608,20 @@ def render_result():
 
             try:
                 image_bytes = download_generated_image(image_path)
-
+                
+                if (
+                    poster_size == "custom"
+                    and (
+                        output_width != image_width
+                        or output_height != image_height
+                    )
+                ):
+                    image_bytes = resize_image_bytes(
+                        image_bytes=image_bytes,
+                        width=output_width,
+                        height=output_height,
+                    )
+                    
                 st.download_button(
                     "↓ 결과물 다운로드",
                     data=image_bytes,
@@ -621,7 +677,6 @@ def render_result():
 
             # 전략 선택
             "strategy_mode",
-            "reuse_previous_tone",
             "selected_platform",
             "poster_size",
             "selected_goal",

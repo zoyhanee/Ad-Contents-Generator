@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from app.models.product import Product
-from app.schemas.product import ProductCreate
+from app.schemas.product import ProductCreate, ProductUpdate
 
 
 def create_product(
@@ -53,3 +53,21 @@ def get_product_by_id(
         )
         .first()
     )
+    
+def update_product(
+    db: Session,
+    *,
+    product: Product,
+    product_update: ProductUpdate,
+) -> Product:
+    update_data = product_update.model_dump(
+        exclude_unset=True,
+    )
+
+    for field, value in update_data.items():
+        setattr(product, field, value)
+
+    db.commit()
+    db.refresh(product)
+
+    return product

@@ -9,9 +9,12 @@ from streamlit.runtime.uploaded_file_manager import UploadedFile
 from api.client import APIError
 from api.product import (
     create_product,
+    get_product_image,
+    update_product,
     upload_product_image,
 )
 from components.header import render_header
+from utils.state import clear_after_product
 
 
 register_heif_opener()
@@ -42,22 +45,32 @@ def normalize_uploaded_image(
     buffer.type = "image/jpeg"
 
     return buffer
+
+
+def format_product_price():
+    value = st.session_state.get(
+        "product_price_input",
+        "",
+    )
+
+    digits = value.replace(",", "").strip()
+
+    if digits.isdigit():
+        st.session_state.product_price_input = (
+            f"{int(digits):,}"
+        )
     
     
 def render_product_input():
     # 1. 상품 입력 상태 초기화
-    if "product_name" not in st.session_state:
-        st.session_state.product_name = ""
-
-    if "product_price" not in st.session_state:
-        st.session_state.product_price = ""
-
-    if "product_description" not in st.session_state:
-        st.session_state.product_description = ""
-
     if "product_industry" not in st.session_state:
         st.session_state.product_industry = "restaurant"
-
+    
+    is_editing = st.session_state.get(
+        "editing_product",
+        False,
+    )
+    
     # 2. 공통 헤더
     render_header()
 
@@ -194,26 +207,25 @@ def render_product_input():
                     "이미지를 처리할 수 없습니다. "
                     "지원되는 이미지 파일인지 확인해주세요."
                 )
+        
+        elif is_editing:
+            try:
+                image_bytes, _ = get_product_image(
+                    st.session_state.product_id
+                )
+
+                st.image(
+                    image_bytes,
+                    caption="현재 상품 이미지",
+                    use_container_width=True,
+                )
+
+            except APIError as e:
+                st.error(str(e))
 
         st.html(
             """
-            <div class="upload-tif uploaded_image is not None:
-    try:
-        normalized_image = normalize_uploaded_image(
-            uploaded_image
-        )
-
-        st.image(
-            normalized_image,
-            caption="업로드된 상품 이미지",
-            use_container_width=True,
-        )
-
-    except Exception:
-        st.error(
-            "이미지를 처리할 수 없습니다. "
-            "지원되는 이미지 파일인지 확인해주세요."
-        )ip">
+            <div class="upload-tip">
                 <strong>TIP</strong>
                 <span>
                     상품이 잘 보이도록 밝고 선명한 사진을
@@ -278,7 +290,6 @@ def render_product_input():
 
         product_name = st.text_input(
             "상품명 *",
-            value=st.session_state.product_name,
             placeholder="예: 프리미엄 수제 함박스테이크",
             max_chars=50,
             key="product_name_input",
@@ -286,15 +297,14 @@ def render_product_input():
 
         product_price = st.text_input(
             "상품 가격 *",
-            value=st.session_state.product_price,
             placeholder="예: 12,900",
             max_chars=20,
             key="product_price_input",
+            on_change=format_product_price,
         )
 
         product_description = st.text_area(
             "상품 설명 *",
-            value=st.session_state.product_description,
             placeholder=(
                 "예: 신선한 재료로 정성껏 만든 수제 함박스테이크입니다.\n"
                 "상품의 특징과 장점을 자세히 입력해주세요."
@@ -303,10 +313,6 @@ def render_product_input():
             height=150,
             key="product_description_input",
         )
-            
-        st.session_state.product_name = product_name
-        st.session_state.product_price = product_price
-        st.session_state.product_description = product_description
         
         st.html(
             """
@@ -382,8 +388,16 @@ def render_product_input():
                     st.rerun()
                     
     # 7. 필수 입력 검증
-    can_continue = (
+    has_image = (
         normalized_image is not None
+        or (
+            is_editing
+            and st.session_state.get("product") is not None
+        )
+    )
+    
+    can_continue = (
+        has_image
         and product_name.strip()
         and product_price.strip()
         and product_description.strip()
@@ -441,24 +455,42 @@ def render_product_input():
             # 가격 문자열 → 숫자 변환
             price = int(product_price.replace(",", "").strip())
             
-            # 1. 이미지 업로드
-            image_result = upload_product_image(normalized_image)
+            # 1. 이미지 경로 결정
+            if normalized_image is not None:
+                image_result = upload_product_image(normalized_image)
+                image_path = image_result["image_path"]
+            else:
+                image_path = st.session_state.product["image_path"]
 
-            # 2. 상품 저장
-            product = create_product(
-                name=product_name.strip(),
-                price=int(product_price.replace(",", "")),
-                description=product_description.strip(),
-                industry=st.session_state.product_industry,
-                image_path=image_result["image_path"],
-            )
-
-            # 3. product_id 저장
-            st.session_state.product_id = product["id"]
+            # 2. 신규 생성 / 기존 상품 수정
+            if is_editing:
+                product = update_product(
+                    product_id=st.session_state.product_id,
+                    name=product_name.strip(),
+                    price=price,
+                    description=product_description.strip(),
+                    industry=st.session_state.product_industry,
+                    image_path=image_path,
+                )
+            else:
+                product = create_product(
+                    name=product_name.strip(),
+                    price=price,
+                    description=product_description.strip(),
+                    industry=st.session_state.product_industry,
+                    image_path=image_path,
+                )
             
-            # (선택) 이후 화면에서 사용할 수 있도록 상품 정보도 저장
-            st.session_state.product = product
+            # 3. 이전 상품 기준의 이후 단계 상태 초기화
+            clear_after_product()
 
+            # 4. 현재 상품 정보 저장
+            st.session_state.product_id = product["id"]
+            st.session_state.product = product
+            
+            # 5. 수정 모드 종료
+            st.session_state.pop("editing_product", None)
+            
             st.query_params["page"] = "strategy_selection"
             st.rerun()
 

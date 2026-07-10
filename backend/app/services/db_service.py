@@ -28,7 +28,6 @@ def save_strategy_recommendation(
         strategy = AdStrategy(
             project_id=project.id,
             strategy_mode=request.strategy.mode,
-            reuse_tone=request.strategy.reuse_tone,
             selected_platforms=[request.strategy.platform],
             poster_size=request.strategy.poster_size,
             selected_goal=request.strategy.goal,

@@ -7,11 +7,6 @@ from api.auth import AuthAPIError, login
 
 def render_login():
     # 1. 로그인 상태 초기화
-    if "login_email" not in st.session_state:
-        st.session_state.login_email = ""
-
-    if "login_password" not in st.session_state:
-        st.session_state.login_password = ""
 
     # 2. 공통 헤더
     render_header()
@@ -178,21 +173,16 @@ def render_login():
 
         email = st.text_input(
             "이메일",
-            value=st.session_state.login_email,
             placeholder="example@email.com",
             key="login_email_input",
         )
 
         password = st.text_input(
             "비밀번호",
-            value=st.session_state.login_password,
             type="password",
             placeholder="비밀번호를 입력하세요",
             key="login_password_input",
         )
-        
-        st.session_state.login_email = email
-        st.session_state.login_password = password
 
         login_clicked = st.button(
             "로그인",
