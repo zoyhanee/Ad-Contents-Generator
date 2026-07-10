@@ -69,24 +69,32 @@ def render_strategy_selection():
         st.error("상품 정보를 찾을 수 없습니다.")
         st.stop()
         
+    product_cache_key = f"strategy_product_{product_id}"
+    image_cache_key = f"strategy_product_image_src_{product_id}"
+
     try:
-        product = get_product(product_id)
+        if product_cache_key not in st.session_state:
+            st.session_state[product_cache_key] = get_product(product_id)
+
+        product = st.session_state[product_cache_key]
+
+        if image_cache_key not in st.session_state:
+            image_bytes, image_type = get_product_image(product_id)
+
+            image_base64 = base64.b64encode(
+                image_bytes
+            ).decode("utf-8")
+
+            st.session_state[image_cache_key] = (
+                f"data:{image_type};"
+                f"base64,{image_base64}"
+            )
+
+        image_src = st.session_state[image_cache_key]
+
     except APIError as e:
         st.error(str(e))
         return
-    
-    image_bytes, image_type = get_product_image(
-        product_id
-    )
-
-    image_base64 = base64.b64encode(
-        image_bytes
-    ).decode("utf-8")
-
-    image_src = (
-        f"data:{image_type};"
-        f"base64,{image_base64}"
-    )
     
     industry_labels = {
         "restaurant": "음식점",

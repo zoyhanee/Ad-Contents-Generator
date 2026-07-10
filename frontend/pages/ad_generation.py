@@ -181,8 +181,14 @@ def render_ad_generation():
         else None
     )
     
+    product_cache_key = f"ad_generation_product_{product_id}"
+
     try:
-        product_data = get_product(product_id)
+        if product_cache_key not in st.session_state:
+            st.session_state[product_cache_key] = get_product(product_id)
+
+        product_data = st.session_state[product_cache_key]
+
     except APIError as e:
         st.error(str(e))
         return
