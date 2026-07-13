@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from uuid import uuid4
 
@@ -34,9 +35,10 @@ def generate_drafts(
         exist_ok=True,
     )
 
-    drafts = []
-
-    for draft_id, concept in CONCEPTS.items():
+    def process_concept(
+        draft_id: str,
+        concept: str,
+    ) -> dict:
         image_prompt = generate_image_prompt(
             client=text_client,
             product_name=product_name,
@@ -46,6 +48,7 @@ def generate_drafts(
             selected_slogan=selected_slogan,
             concept=concept,
         )
+
         post_copy = generate_post_copy(
             client=text_client,
             product_name=product_name,
@@ -69,15 +72,35 @@ def generate_drafts(
 
         image_path.write_bytes(image_bytes)
 
-        drafts.append(
-            {
-                "id": draft_id,
-                "title": f"시안 {draft_id}",
-                "version": 1,
-                "image_path": str(image_path),
-                "image_prompt": image_prompt,
-                "post_copy": post_copy,
-            }
-        )
+        return {
+            "id": draft_id,
+            "title": f"시안 {draft_id}",
+            "version": 1,
+            "image_path": str(image_path),
+            "image_prompt": image_prompt,
+            "post_copy": post_copy,
+        }
 
-    return drafts
+    results: dict[str, dict] = {}
+
+    with ThreadPoolExecutor(
+        max_workers=len(CONCEPTS)
+    ) as executor:
+        futures = {
+            executor.submit(
+                process_concept,
+                draft_id,
+                concept,
+            ): draft_id
+            for draft_id, concept in CONCEPTS.items()
+        }
+
+        for future in as_completed(futures):
+            draft_id = futures[future]
+            results[draft_id] = future.result()
+
+    return [
+        results[draft_id]
+        for draft_id in CONCEPTS
+        if draft_id in results
+    ]
