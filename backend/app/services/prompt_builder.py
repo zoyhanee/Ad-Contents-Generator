@@ -86,8 +86,7 @@ def build_slogan_prompt(prompt_input: SloganPromptInput) -> str:
 - 플랫폼: {platform}
 - 플랫폼 작성 방향: {platform_guide}
 - 광고 목표: {goal}
-- 광고 스타일: {style}
-- 이전 작업물 톤 유지: {"예" if strategy.reuse_tone else "아니오"}{custom_theme}
+- 광고 스타일: {style}{custom_theme}
 
 [작성 방향]
 광고 설정을 단순히 문구에 넣지 말고, 각 조건이 문장의 목적과 표현 방식에 반영되도록 작성해주세요.

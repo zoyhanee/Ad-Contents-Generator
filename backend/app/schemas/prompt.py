@@ -16,7 +16,6 @@ class StrategyPromptInput(BaseModel):
     goal: str | None = Field(default=None, description="Selected advertising goal")
     style: str | None = Field(default=None, description="Selected visual style")
     poster_size: str | None = Field(default=None, description="Offline poster size")
-    reuse_tone: bool = Field(default=False, description="Whether to reuse previous tone")
     custom_theme: str | None = Field(default=None, description="Optional custom theme")
 
 

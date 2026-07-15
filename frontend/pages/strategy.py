@@ -7,7 +7,26 @@ from api.product import get_product, get_product_image
 from api.project import create_project
 from api.strategy import recommend_strategy
 from api.client import APIError
+from utils.state import clear_recommendation_state
 
+
+def handle_custom_size_change():
+    clear_recommendation_state()
+
+
+def get_generation_image_size(
+    width: int,
+    height: int,
+) -> tuple[int, int]:
+    aspect_ratio = width / height
+
+    if aspect_ratio < 0.8:
+        return 1024, 1536
+
+    if aspect_ratio > 1.25:
+        return 1536, 1024
+
+    return 1024, 1024
 
 def render_strategy_selection():
     if "strategy_mode" not in st.session_state:
@@ -176,6 +195,19 @@ def render_strategy_selection():
             key="edit_product",
             use_container_width=True,
         ):
+            st.session_state.editing_product = True
+            
+            st.session_state.product_name_input = product["name"]
+            st.session_state.product_price_input = (
+                f"{product['price']:,}"
+                if product["price"] is not None
+                else ""
+            )
+            st.session_state.product_description_input = (
+                product["description"] or ""
+            )
+            st.session_state.product_industry = product["industry"]
+            
             st.query_params["page"] = "product_input"
             st.rerun()
     
@@ -322,7 +354,10 @@ def render_strategy_selection():
             key="strategy_faster",
             use_container_width=True,
         ):
-            st.session_state.strategy_mode = "faster"
+            if st.session_state.strategy_mode != "faster":
+                st.session_state.strategy_mode = "faster"
+                clear_recommendation_state()
+            
             st.rerun()
 
     with col2:
@@ -331,16 +366,12 @@ def render_strategy_selection():
             key="strategy_manual",
             use_container_width=True,
         ):
-            st.session_state.strategy_mode = "manual"
+            if st.session_state.strategy_mode != "manual":
+                st.session_state.strategy_mode = "manual"
+                clear_recommendation_state()
             st.rerun()
 
-    # 5. 이전 작업물 톤 유지
-    reuse_tone = st.checkbox(
-        "이전 작업물과 비슷한 톤으로",
-        key="reuse_previous_tone",
-    )
-
-    # 6. 광고 플랫폼 선택
+    # 5. 광고 플랫폼 선택
     st.subheader("광고 플랫폼 선택")
 
     platform_options = {
@@ -413,20 +444,18 @@ def render_strategy_selection():
         platform_options.items(),
     ):
         with col:
-            is_selected = (
-                platform_id
-                == st.session_state.selected_platform
-            )
-
             if st.button(
                 platform_label,
                 key=f"platform_{platform_id}",
                 use_container_width=True,
             ):
-                st.session_state.selected_platform = platform_id
+                if st.session_state.selected_platform != platform_id:
+                    st.session_state.selected_platform = platform_id
+                    clear_recommendation_state()
+                
                 st.rerun()
 
-    # 7. 오프라인 포스터 규격 선택
+    # 6. 오프라인 포스터 규격 선택
     if st.session_state.selected_platform == "offline":
         st.subheader("포스터 규격 선택")
 
@@ -493,10 +522,113 @@ def render_strategy_selection():
                     key=f"poster_size_{size_id}",
                     use_container_width=True,
                 ):
-                    st.session_state.poster_size = size_id
+                    if st.session_state.poster_size != size_id:
+                        st.session_state.poster_size = size_id
+                        clear_recommendation_state()
                     st.rerun()
 
-    # 8. 직접 설정: 광고 목표 선택
+        if st.session_state.poster_size == "custom":
+            st.html(
+                """
+                <style>
+                .custom-size-section {
+                    margin-top: 18px;
+                    margin-bottom: 8px;
+                    padding: 20px 22px;
+                    border: 1.5px solid #d9e1dc;
+                    border-radius: 14px;
+                    background: #f8fbf9;
+                }
+
+                .custom-size-title {
+                    margin: 0 0 4px;
+                    color: #17211c;
+                    font-size: 16px;
+                    font-weight: 800;
+                }
+
+                .custom-size-description {
+                    margin: 0 0 16px;
+                    color: #66736c;
+                    font-size: 13px;
+                    line-height: 1.6;
+                }
+
+                .st-key-custom_image_width label,
+                .st-key-custom_image_height label {
+                    color: #36423c;
+                    font-size: 14px;
+                    font-weight: 700;
+                }
+
+                .st-key-custom_image_width input,
+                .st-key-custom_image_height input {
+                    min-height: 48px;
+                    border: 1.5px solid #d9e1dc;
+                    border-radius: 10px;
+                    background: #ffffff;
+                    color: #17211c;
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+
+                .st-key-custom_image_width input:focus,
+                .st-key-custom_image_height input:focus {
+                    border-color: #0f8a5f;
+                    box-shadow:
+                        0 0 0 2px rgba(15, 138, 95, 0.1);
+                }
+
+                .st-key-custom_image_width button,
+                .st-key-custom_image_height button {
+                    border-color: #d9e1dc;
+                    background: #ffffff;
+                    color: #0f8a5f;
+                }
+
+                .st-key-custom_image_width button:hover,
+                .st-key-custom_image_height button:hover {
+                    border-color: #79b79c;
+                    background: #f4fbf7;
+                    color: #0f8a5f;
+                }
+                </style>
+
+                <div class="custom-size-section">
+                    <div class="custom-size-title">
+                        사용자 지정 크기
+                    </div>
+                    <p class="custom-size-description">
+                        원하는 출력 이미지의 가로와 세로 크기를 입력해주세요.
+                    </p>
+                </div>
+                """
+            )
+
+            custom_size_col1, custom_size_col2 = st.columns(2)
+
+            with custom_size_col1:
+                custom_width = st.number_input(
+                    "가로 (px)",
+                    min_value=256,
+                    max_value=4096,
+                    value=1024,
+                    step=64,
+                    key="custom_image_width",
+                    on_change=handle_custom_size_change,
+                )
+
+            with custom_size_col2:
+                custom_height = st.number_input(
+                    "세로 (px)",
+                    min_value=256,
+                    max_value=4096,
+                    value=1536,
+                    step=64,
+                    key="custom_image_height",
+                    on_change=handle_custom_size_change,
+                )
+    # 7. 직접 설정: 광고 목표 선택
     if st.session_state.strategy_mode == "manual":
         st.subheader("광고 목표 선택")
 
@@ -564,10 +696,12 @@ def render_strategy_selection():
                     key=f"goal_{goal_id}",
                     use_container_width=True,
                 ):
-                    st.session_state.selected_goal = goal_id
+                    if st.session_state.selected_goal != goal_id:
+                        st.session_state.selected_goal = goal_id
+                        clear_recommendation_state()
                     st.rerun()
                     
-        # 9. 직접 설정: 시각적 스타일 선택
+        # 8. 직접 설정: 시각적 스타일 선택
         st.subheader("시각적 스타일 선택")
 
         style_options = {
@@ -634,16 +768,51 @@ def render_strategy_selection():
                     key=f"style_{style_id}",
                     use_container_width=True,
                 ):
-                    st.session_state.selected_style = style_id
+                    if st.session_state.selected_style != style_id:
+                        st.session_state.selected_style = style_id
+                        clear_recommendation_state()
                     st.rerun()
 
-    # 10. 현재 전략 데이터 구성
+    # 9. 현재 전략 데이터 구성
+    platform_image_sizes = {
+        "instagram": (1024, 1024),
+        "baemin": (1024, 1536),
+        "naver": (1536, 1024),
+        "offline": (1024, 1536),
+    }
+
+    selected_platform = st.session_state.get(
+        "selected_platform"
+    )
+
+    image_width, image_height = platform_image_sizes.get(
+        selected_platform,
+        (1024, 1024),
+    )
+    
+    output_width = image_width
+    output_height = image_height
+    
+    if (
+        selected_platform == "offline"
+        and st.session_state.get("poster_size") == "custom"
+    ):
+        output_width = st.session_state.get(
+            "custom_image_width",
+            1024,
+        )
+        output_height = st.session_state.get(
+            "custom_image_height",
+            1536,
+        )
+
+        image_width, image_height = get_generation_image_size(
+            output_width,
+            output_height,
+        )
+        
     strategy_data = {
         "mode": st.session_state.strategy_mode,
-        "reuse_tone": st.session_state.get(
-            "reuse_previous_tone",
-            False,
-        ),
         "platform": st.session_state.get(
             "selected_platform"
         ),
@@ -653,6 +822,10 @@ def render_strategy_selection():
             == "offline"
             else None
         ),
+        "image_width": image_width,
+        "image_height": image_height,
+        "output_width": output_width,
+        "output_height": output_height,
         "goal": (
             st.session_state.get("selected_goal")
             if st.session_state.strategy_mode == "manual"
@@ -665,7 +838,7 @@ def render_strategy_selection():
         ),
     }
 
-    # 11. AI 추천받기
+    # 10. AI 추천받기
     can_recommend = (
         strategy_data["platform"] is not None
     )
@@ -729,6 +902,9 @@ def render_strategy_selection():
         use_container_width=True,
         disabled=not can_recommend,
     ):
+        st.session_state.pop("recommendation", None)
+        st.session_state.pop("selected_slogan", None)
+        
         loading_placeholder = st.empty()
 
         loading_placeholder.html(
@@ -845,19 +1021,18 @@ def render_strategy_selection():
             project = create_project(product_id)
 
             project_id = project["id"]
-            st.session_state.project_id = project_id
-            st.session_state.strategy_data = strategy_data.copy()
 
             recommendation = recommend_strategy(
                 project_id=project_id,
                 mode=strategy_data["mode"],
-                reuse_tone=strategy_data["reuse_tone"],
                 platform=strategy_data["platform"],
                 poster_size=strategy_data["poster_size"],
                 goal=strategy_data["goal"],
                 style=strategy_data["style"],
             )
-
+            
+            st.session_state.project_id = project_id
+            st.session_state.strategy_data = strategy_data.copy()
             st.session_state.recommendation = recommendation
             st.session_state.selected_slogan = None
 
@@ -871,10 +1046,12 @@ def render_strategy_selection():
 
     if recommendation:
         strategy_title = html.escape(
-            recommendation["strategy_title"]
+            recommendation.get("strategy_title")
+            or "AI 추천 전략"
         )
         strategy_description = html.escape(
-            recommendation["strategy_description"]
+            recommendation.get("strategy_description")
+            or "상품과 광고 설정을 바탕으로 추천된 전략입니다."
         )
 
         st.html(
@@ -974,10 +1151,17 @@ def render_strategy_selection():
             """
         )
 
-        # 13. 추천 슬로건 선택
+        # 11. 추천 슬로건 선택
         st.subheader("추천 슬로건 선택")
 
-        slogans = recommendation["slogans"]
+        slogans = recommendation.get("slogans", [])
+        
+        if not slogans:
+            st.warning(
+                "추천 슬로건을 불러올 수 없습니다. "
+                "AI 추천을 다시 받아주세요."
+            )
+            return
 
         selected_slogan = st.session_state.get("selected_slogan")
 
@@ -1104,9 +1288,9 @@ def render_strategy_selection():
                     st.session_state.selected_slogan = index
                     st.rerun()
 
-        # 14. 광고 시안 생성
+        # 12. 광고 시안 생성
         selected_slogan = st.session_state.get("selected_slogan")
-        project_id = st.session_state.project_id
+        project_id = st.session_state.get("project_id")
 
         st.html(
             """
@@ -1164,12 +1348,22 @@ def render_strategy_selection():
             </style>
             """
         )
+        can_generate = (
+            selected_slogan is not None
+            and project_id is not None
+        )
+        
+        if project_id is None:
+            st.warning(
+                "프로젝트 정보를 찾을 수 없습니다. "
+                "AI 추천을 다시 받아주세요."
+            )
 
         if st.button(
             "광고 시안 생성하기 →",
             key="generate_ad",
             use_container_width=True,
-            disabled=selected_slogan is None,
+            disabled=not can_generate,
         ):
             st.query_params["page"] = "ad_generation"
             st.rerun()

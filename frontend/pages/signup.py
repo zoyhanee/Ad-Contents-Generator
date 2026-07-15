@@ -3,20 +3,27 @@ import requests
 
 from components.header import render_header
 from api.auth import AuthAPIError, signup
+from utils.state import clear_signup_state
+
+
+@st.dialog("회원가입 완료 🎉", dismissible=False)
+def show_signup_success_dialog():
+    st.write("회원가입이 완료되었습니다.")
+    st.write("로그인 페이지로 이동해주세요.")
+
+    if st.button(
+        "로그인하러 가기",
+        key="signup_success_confirm",
+        use_container_width=True,
+    ):
+        clear_signup_state()
+
+        st.query_params["page"] = "login"
+        st.rerun()
+
 
 def render_signup():
     # 1. 회원가입 상태 초기화
-    if "signup_email" not in st.session_state:
-        st.session_state.signup_email = ""
-
-    if "signup_password" not in st.session_state:
-        st.session_state.signup_password = ""
-
-    if "signup_password_confirm" not in st.session_state:
-        st.session_state.signup_password_confirm = ""
-        
-    if "signup_store_name" not in st.session_state:
-        st.session_state.signup_store_name = ""
 
     # 2. 공통 헤더
     render_header()
@@ -188,14 +195,12 @@ def render_signup():
         )
         email = st.text_input(
             "이메일",
-            value=st.session_state.signup_email,
             placeholder="example@email.com",
             key="signup_email_input",
         )
 
         password = st.text_input(
             "비밀번호",
-            value=st.session_state.signup_password,
             type="password",
             placeholder="비밀번호를 입력하세요",
             key="signup_password_input",
@@ -203,7 +208,6 @@ def render_signup():
 
         password_confirm = st.text_input(
             "비밀번호 재확인",
-            value=st.session_state.signup_password_confirm,
             type="password",
             placeholder="비밀번호를 다시 입력하세요",
             key="signup_password_confirm_input",
@@ -211,14 +215,9 @@ def render_signup():
 
         store_name = st.text_input(
             "가게명",
-            value=st.session_state.signup_store_name,
             placeholder="예: 행복한 문구점",
             key="signup_store_name_input",
         )
-        st.session_state.signup_email = email
-        st.session_state.signup_password = password
-        st.session_state.signup_password_confirm = password_confirm
-        st.session_state.signup_store_name = store_name
         
         signup_clicked = st.button(
             "가입하기",
@@ -246,17 +245,8 @@ def render_signup():
                             password=password,
                             store_name=store_name,
                         )
-
-                        # 입력값 초기화
-                        st.session_state.signup_email = ""
-                        st.session_state.signup_password = ""
-                        st.session_state.signup_password_confirm = ""
-                        st.session_state.signup_store_name = ""
-
-                        st.success("회원가입이 완료되었습니다. 로그인해주세요.")
-
-                        st.query_params["page"] = "login"
-                        st.rerun()
+                        
+                        show_signup_success_dialog()
 
                     except AuthAPIError as e:
                         st.error(str(e))
@@ -264,7 +254,7 @@ def render_signup():
                     except requests.exceptions.ConnectionError:
                         st.error("백엔드 서버에 연결할 수 없습니다.")
 
-                    except Exception:
+                    except Exception as e:
                         st.error(f"회원가입 중 오류가 발생했습니다.\n{e}")
         
         st.html(

@@ -20,11 +20,20 @@ class OpenAIImageClient(ImageModelClient):
         self,
         prompt: str,
         source_image_path: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
     ) -> bytes:
+        size = (
+            f"{width}x{height}"
+            if width is not None and height is not None
+            else "auto"
+        )
+
         if source_image_path is None:
             response = self.client.images.generate(
                 model=self.model_name,
                 prompt=prompt,
+                size=size,
             )
         else:
             with open(source_image_path, "rb") as source_image:
@@ -32,6 +41,7 @@ class OpenAIImageClient(ImageModelClient):
                     model=self.model_name,
                     image=source_image,
                     prompt=prompt,
+                    size=size,
                 )
 
         image_base64 = response.data[0].b64_json

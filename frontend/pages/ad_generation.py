@@ -20,17 +20,11 @@ def render_ad_generation():
     if "selected_draft" not in st.session_state:
         st.session_state.selected_draft = None
 
-    if "drafts" not in st.session_state:
-        st.session_state.drafts = []
-        
-    if "selected_draft" not in st.session_state:
-        st.session_state.selected_draft = None
-
     if "selected_post_copy" not in st.session_state:
         st.session_state.selected_post_copy = None
-
-    if "drafts" not in st.session_state:
-        st.session_state.drafts = []
+    
+    if "generated_drafts" not in st.session_state:
+        st.session_state.generated_drafts = []
 
     # 2. 공통 헤더
     render_header()
@@ -170,15 +164,51 @@ def render_ad_generation():
             "광고 전략 선택으로 이동",
             key="back_to_strategy",
         ):
-            st.query_params["page"] = "strategy"
+            st.query_params["page"] = "strategy_selection"
             st.rerun()
 
         return
     
-    selected_slogan = (
-        recommendation["slogans"][selected_slogan_index]
-        if selected_slogan_index is not None
-        else None
+    slogans = recommendation.get("slogans", [])
+
+    if (
+        selected_slogan_index is None
+        or not 0 <= selected_slogan_index < len(slogans)
+    ):
+        st.warning(
+            "선택된 슬로건을 찾을 수 없습니다. "
+            "전략 페이지에서 슬로건을 다시 선택해주세요."
+        )
+
+        if st.button(
+            "광고 전략 선택으로 이동",
+            key="back_to_strategy_slogan",
+        ):
+            st.query_params["page"] = "strategy_selection"
+            st.rerun()
+
+        return
+
+    selected_slogan = slogans[selected_slogan_index]
+    
+    image_width = strategy_data.get(
+        "image_width",
+        1024,
+    )
+
+    image_height = strategy_data.get(
+        "image_height",
+        1024,
+    )
+
+    output_width = strategy_data.get(
+        "output_width",
+        image_width,
+    )
+
+    output_height = strategy_data.get(
+        "output_height",
+        image_height,
     )
     
     product_cache_key = f"ad_generation_product_{product_id}"
@@ -273,6 +303,25 @@ def render_ad_generation():
             f"<span><strong>포스터 규격</strong> "
             f"{poster_size.upper()}</span>"
         )
+        
+    # 사용자 지정 출력 규격
+    if (
+        poster_size == "custom"
+        and (
+            output_width != image_width
+            or output_height != image_height
+        )
+    ):
+        summary_items.append(
+            f"<span><strong>출력 규격</strong> "
+            f"{output_width} × {output_height}</span>"
+        )
+        
+    # AI 생성 규격
+    summary_items.append(
+        f"<span><strong>생성 규격</strong> "
+        f"{image_width} × {image_height}</span>"
+    )
 
     summary_html = "".join(summary_items)
     
@@ -300,12 +349,9 @@ def render_ad_generation():
         """
     )
 
-    # 7. 광고 시안 생성 상태 초기화
+    # 8. 광고 시안 생성 상태 초기화
     if "generation_status" not in st.session_state:
         st.session_state.generation_status = "ready"
-
-    if "generated_drafts" not in st.session_state:
-        st.session_state.generated_drafts = []
     
     st.html(
         """
@@ -344,7 +390,7 @@ def render_ad_generation():
         </style>
         """
     )
-    # 8. 광고 시안 생성 시작
+    # 9. 광고 시안 생성 시작
     if st.session_state.generation_status == "ready":
         st.html(
             """
@@ -367,7 +413,7 @@ def render_ad_generation():
             st.session_state.generation_status = "generating"
             st.rerun()
             
-    # 9. 광고 시안 생성 중
+    # 10. 광고 시안 생성 중
     elif st.session_state.generation_status == "generating":
         st.html(
             """
@@ -385,6 +431,8 @@ def render_ad_generation():
             result = generate_ad(
                 project_id=project_id,
                 selected_slogan=selected_slogan,
+                image_width=image_width,
+                image_height=image_height,
             )
 
             st.session_state.generated_drafts = result["drafts"]
@@ -395,7 +443,7 @@ def render_ad_generation():
             st.session_state.generation_status = "ready"
             st.error(str(e))
         
-    # 10. 광고 시안 생성 완료
+    # 11. 광고 시안 생성 완료
     elif st.session_state.generation_status == "completed":
         st.subheader("생성된 광고 시안")
 
@@ -523,9 +571,6 @@ def render_ad_generation():
                 f"{BACKEND_URL}/"
                 f"{draft['image_path']}"
             )
-            is_selected = (
-                st.session_state.selected_draft == draft_id
-            )
 
             with col:
                 st.image(
@@ -545,7 +590,7 @@ def render_ad_generation():
                     st.session_state.selected_draft = draft_id
                     st.rerun()
                     
-        # 11. AI 게시글 문구 선택
+        # 12. AI 게시글 문구 선택
         st.divider()
 
         st.subheader("AI 게시글 문구 선택")
@@ -767,7 +812,7 @@ def render_ad_generation():
                 st.session_state.regenerating_draft = selected_draft
                 st.rerun()
 
-        # 12. 선택 시안 재생성 처리
+        # 13. 선택 시안 재생성 처리
         regenerating_draft = st.session_state.get("regenerating_draft")
 
         if regenerating_draft is not None:
@@ -822,7 +867,7 @@ def render_ad_generation():
                 f"시안 {regenerated_draft}이 새 버전으로 재생성되었습니다."
             )
             
-        # 13. 하단 액션 버튼
+        # 14. 하단 액션 버튼
         st.divider()
         
         st.html(

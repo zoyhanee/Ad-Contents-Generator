@@ -1,6 +1,6 @@
 from io import BytesIO
 
-from api.client import get, get_bytes, post
+from api.client import get, get_bytes, patch, post
 
 
 def upload_product_image(
@@ -27,6 +27,26 @@ def create_product(
 ):
     return post(
         "/products",
+        json={
+            "name": name,
+            "price": price,
+            "description": description,
+            "industry": industry,
+            "image_path": image_path,
+        },
+    )
+    
+
+def update_product(
+    product_id: int,
+    name: str,
+    price: int | None,
+    description: str,
+    industry: str,
+    image_path: str,
+):
+    return patch(
+        f"/products/{product_id}",
         json={
             "name": name,
             "price": price,

@@ -23,6 +23,8 @@ def generate_drafts(
     platform: str,
     style: str | None,
     selected_slogan: str,
+    image_width: int,
+    image_height: int,
 ) -> list[dict]:
     text_client = create_text_model_client()
     image_client = create_image_model_client()
@@ -56,6 +58,8 @@ def generate_drafts(
         image_bytes = image_client.generate(
             prompt=image_prompt,
             source_image_path=product_image_path,
+            width=image_width,
+            height=image_height,
         )
 
         image_path = (

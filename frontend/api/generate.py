@@ -7,6 +7,8 @@ from config import API_BASE_URL
 def generate_ad(
     project_id: int,
     selected_slogan: str,
+    image_width: int,
+    image_height: int,
 ) -> dict:
     return post(
         "/generate",
@@ -14,6 +16,8 @@ def generate_ad(
         json={
             "project_id": project_id,
             "selected_slogan": selected_slogan,
+            "image_width": image_width,
+            "image_height": image_height,
         },
     )
 

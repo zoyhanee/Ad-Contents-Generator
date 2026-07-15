@@ -75,7 +75,6 @@ Stores strategy options and AI recommendation results.
 | id | integer | Strategy ID |
 | project_id | integer | Ad project ID |
 | strategy_mode | string | faster or manual |
-| reuse_tone | boolean | Whether to reuse previous tone |
 | selected_platforms | json | Selected platforms |
 | poster_size | string | Poster size for offline poster |
 | selected_goal | string | Selected ad goal |

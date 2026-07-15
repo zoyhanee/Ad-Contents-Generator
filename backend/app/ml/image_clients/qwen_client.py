@@ -39,6 +39,8 @@ class QwenImageClient(ImageModelClient):
         self,
         prompt: str,
         source_image_path: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
     ) -> bytes:
         if source_image_path is None:
             raise ValueError(
@@ -49,14 +51,20 @@ class QwenImageClient(ImageModelClient):
 
         source_image = Image.open(source_image_path).convert("RGB")
 
-        result = self.pipeline(
-            image=source_image,
-            prompt=prompt,
-            num_inference_steps=50,
-            true_cfg_scale=4.0,
-            output_type="pil",
-        )
+        generation_kwargs = {
+            "image": source_image,
+            "prompt": prompt,
+            "num_inference_steps": 50,
+            "true_cfg_scale": 4.0,
+            "output_type": "pil",
+        }
 
+        if width is not None and height is not None:
+            generation_kwargs["width"] = width
+            generation_kwargs["height"] = height
+
+        result = self.pipeline(**generation_kwargs)
+        
         generated_image = result.images[0]
 
         buffer = BytesIO()
