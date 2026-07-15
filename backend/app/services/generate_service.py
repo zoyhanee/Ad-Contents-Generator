@@ -73,6 +73,8 @@ def generate_ad_drafts(
             platform=platform,
             style=project.strategy.selected_style,
             selected_slogan=request.selected_slogan,
+            image_width=request.image_width,
+            image_height=request.image_height,
         )
 
         for draft in draft_data:

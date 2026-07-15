@@ -9,6 +9,14 @@ class ProductCreate(BaseModel):
     image_path: str | None = None
 
 
+class ProductUpdate(BaseModel):
+    name: str | None = None
+    price: int | None = None
+    description: str | None = None
+    industry: str | None = None
+    image_path: str | None = None
+    
+    
 class ProductResponse(BaseModel):
     id: int
     name: str

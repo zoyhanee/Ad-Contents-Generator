@@ -61,6 +61,19 @@ def post(
         timeout=timeout,
         **kwargs,
     )
+    
+
+def patch(
+    endpoint: str,
+    timeout: int = DEFAULT_TIMEOUT,
+    **kwargs,
+):
+    return _request(
+        "PATCH",
+        endpoint,
+        timeout=timeout,
+        **kwargs,
+    )
 
 
 def get(endpoint: str):

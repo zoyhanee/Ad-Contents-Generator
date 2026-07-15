@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, JSON, String, Text
+from sqlalchemy import DateTime, ForeignKey, JSON, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -20,7 +20,6 @@ class AdStrategy(Base):
         index=True,
     )
     strategy_mode: Mapped[str] = mapped_column(String(50))
-    reuse_tone: Mapped[bool] = mapped_column(Boolean, default=False)
     selected_platforms: Mapped[list[str]] = mapped_column(JSON, default=list)
     poster_size: Mapped[str | None] = mapped_column(String(50), nullable=True)
     selected_goal: Mapped[str | None] = mapped_column(String(50), nullable=True)

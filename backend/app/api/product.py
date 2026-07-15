@@ -9,6 +9,7 @@ from app.crud.product import (
     create_product,
     get_product_by_id,
     get_products_by_user,
+    update_product,
 )
 from app.db.database import get_db
 from app.dependencies import get_current_user
@@ -16,6 +17,7 @@ from app.models.user import User
 from app.schemas.product import (
     ProductCreate,
     ProductResponse,
+    ProductUpdate,
 )
 
 router = APIRouter(prefix="/products", tags=["Products"])
@@ -108,6 +110,36 @@ def get_product(
         )
 
     return product
+
+
+@router.patch(
+    "/{product_id}",
+    response_model=ProductResponse,
+)
+def update_product_api(
+    product_id: int,
+    product_update: ProductUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    product = get_product_by_id(
+        db=db,
+        product_id=product_id,
+        user_id=current_user.id,
+    )
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found.",
+        )
+
+    return update_product(
+        db=db,
+        product=product,
+        product_update=product_update,
+    )
+
 
 @router.get("/{product_id}/image")
 def get_product_image(

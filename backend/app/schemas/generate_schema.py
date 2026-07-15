@@ -4,6 +4,8 @@ from pydantic import BaseModel
 class GenerateRequest(BaseModel):
     project_id: int
     selected_slogan: str
+    image_width: int = 1024
+    image_height: int = 1024
 
 
 class DraftResponse(BaseModel):
