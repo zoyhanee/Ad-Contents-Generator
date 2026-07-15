@@ -114,7 +114,6 @@ def render_strategy_selection():
     except APIError as e:
         st.error(str(e))
         return
-
     
     industry_labels = {
         "restaurant": "음식점",
@@ -910,101 +909,114 @@ def render_strategy_selection():
 
         loading_placeholder.html(
             """
+            <div class="strategy-loading">
+                <div class="strategy-loading-icon">✨</div>
+
+                <div class="strategy-loading-text">
+                    <h3>AI가 상품을 분석하고 있어요</h3>
+                    <p>
+                        상품의 매력과 광고 설정을 바탕으로
+                        가장 어울리는 전략과 슬로건을 만들고 있습니다.
+                    </p>
+                </div>
+
+                <div class="strategy-loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
             <style>
-            .strategy-overlay {
-                position: fixed;
-                inset: 0;
-                z-index: 9999;
+            .strategy-loading {
+                display: flex;
+                align-items: center;
+                gap: 18px;
+                margin-top: 16px;
+                padding: 22px 24px;
+                border: 1.5px solid #cfe7da;
+                border-radius: 14px;
+                background: #f4fbf7;
+            }
+
+            .strategy-loading-icon {
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 24px;
-                background: rgba(15, 23, 42, 0.24);
-                backdrop-filter: blur(3px);
+                flex-shrink: 0;
+                width: 46px;
+                height: 46px;
+                border-radius: 12px;
+                background: #dff4e9;
+                font-size: 22px;
+                animation: strategy-pulse 1.6s ease-in-out infinite;
             }
 
-            .strategy-popup {
-                width: min(500px, calc(100vw - 48px));
-                padding: 40px 42px;
-                border: 1px solid #d9e1dc;
-                border-radius: 22px;
-                background: #ffffff;
-                box-shadow: 0 24px 70px rgba(15, 23, 42, 0.2);
-                text-align: center;
+            .strategy-loading-text {
+                flex: 1;
             }
 
-            .strategy-spinner {
-                width: 54px;
-                height: 54px;
-                margin: 0 auto 22px;
-                border: 5px solid #e4f2eb;
-                border-top-color: #0f8a5f;
-                border-radius: 999px;
-                animation: strategy-spin 1s linear infinite;
-            }
-
-            @keyframes strategy-spin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-
-            .strategy-popup h3 {
-                margin: 0 0 14px;
-                color: #08111f;
-                font-size: 23px;
-                font-weight: 900;
-            }
-
-            .strategy-popup p {
-                margin: 0;
-                color: #4b5b52;
-                font-size: 15px;
-                line-height: 1.8;
-            }
-
-            .strategy-time-guide {
-                margin-top: 18px;
-                padding: 14px 16px;
-                border-radius: 14px;
-                background: #f1f8f4;
-                color: #0f8a5f;
-                font-size: 15px;
+            .strategy-loading-text h3 {
+                margin: 0 0 5px;
+                color: #17211c;
+                font-size: 17px;
                 font-weight: 800;
             }
 
-            .strategy-warning {
-                margin-top: 18px;
-                color: #d94832;
+            .strategy-loading-text p {
+                margin: 0;
+                color: #66736c;
                 font-size: 14px;
-                font-weight: 700;
-                line-height: 1.7;
+                line-height: 1.6;
+            }
+
+            .strategy-loading-dots {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .strategy-loading-dots span {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #0f8a5f;
+                animation: strategy-bounce 1.2s infinite ease-in-out;
+            }
+
+            .strategy-loading-dots span:nth-child(2) {
+                animation-delay: 0.15s;
+            }
+
+            .strategy-loading-dots span:nth-child(3) {
+                animation-delay: 0.3s;
+            }
+
+            @keyframes strategy-pulse {
+                0%, 100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.08);
+                }
+            }
+
+            @keyframes strategy-bounce {
+                0%, 60%, 100% {
+                    transform: translateY(0);
+                    opacity: 0.4;
+                }
+
+                30% {
+                    transform: translateY(-5px);
+                    opacity: 1;
+                }
             }
             </style>
-
-            <div class="strategy-overlay">
-                <div class="strategy-popup">
-                    <div class="strategy-spinner"></div>
-
-                    <h3>AI가 광고 전략을 추천하고 있어요</h3>
-
-                    <p>
-                        입력하신 상품 정보와 선택 옵션을 바탕으로<br>
-                        광고 전략과 슬로건 후보를 만들고 있습니다.
-                    </p>
-
-                    <div class="strategy-time-guide">
-                        전략 추천에는 잠시 시간이 걸릴 수 있습니다.
-                    </div>
-
-                    <div class="strategy-warning">
-                        추천 중에는 새로고침하거나 창을 닫지 말아주세요.<br>
-                        완료되면 추천 결과가 자동으로 표시됩니다.
-                    </div>
-                </div>
-            </div>
             """
         )
+
         try:
             project = create_project(product_id)
 
