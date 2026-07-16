@@ -417,12 +417,98 @@ def render_ad_generation():
     elif st.session_state.generation_status == "generating":
         st.html(
             """
-            <div class="generation-loading">
-                <div class="generation-loading-icon">✨</div>
-                <h3>AI가 광고 시안을 만들고 있어요</h3>
-                <p>
-                    상품과 전략을 분석해 서로 다른 광고 방향을 생성하고 있습니다.
-                </p>
+            <style>
+            .generation-overlay {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+                background: rgba(15, 23, 42, 0.28);
+                backdrop-filter: blur(3px);
+            }
+
+            .generation-popup {
+                width: min(520px, calc(100vw - 48px));
+                padding: 42px 44px;
+                border: 1px solid #d9e1dc;
+                border-radius: 22px;
+                background: #ffffff;
+                box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+                text-align: center;
+            }
+
+            .generation-spinner {
+                width: 58px;
+                height: 58px;
+                margin: 0 auto 22px;
+                border: 5px solid #e4f2eb;
+                border-top-color: #0f8a5f;
+                border-radius: 999px;
+                animation: generation-spin 1s linear infinite;
+            }
+
+            @keyframes generation-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .generation-popup h3 {
+                margin: 0 0 14px;
+                color: #08111f;
+                font-size: 24px;
+                font-weight: 900;
+            }
+
+            .generation-popup p {
+                margin: 0;
+                color: #4b5b52;
+                font-size: 15px;
+                line-height: 1.8;
+            }
+
+            .generation-time-guide {
+                margin-top: 18px;
+                padding: 14px 16px;
+                border-radius: 14px;
+                background: #f1f8f4;
+                color: #0f8a5f;
+                font-size: 15px;
+                font-weight: 800;
+            }
+
+            .generation-warning {
+                margin-top: 18px;
+                color: #d94832;
+                font-size: 14px;
+                font-weight: 700;
+                line-height: 1.7;
+            }
+            </style>
+
+            <div class="generation-overlay">
+                <div class="generation-popup">
+                    <div class="generation-spinner"></div>
+
+                    <h3>AI가 광고 시안을 생성하고 있어요</h3>
+
+                    <p>
+                        입력하신 상품 정보를 바탕으로<br>
+                        광고 문구와 이미지 시안을 만들고 있습니다.
+                    </p>
+
+                    <div class="generation-time-guide">
+                        이미지 생성에는 약 2~5분 정도 소요될 수 있습니다.
+                    </div>
+
+                    <div class="generation-warning">
+                        생성 중에는 새로고침하거나 창을 닫지 말아주세요.<br>
+                        완료되면 자동으로 결과가 표시됩니다.
+                    </div>
+                </div>
             </div>
             """
         )
