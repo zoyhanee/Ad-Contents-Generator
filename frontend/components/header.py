@@ -13,7 +13,6 @@ def go_to_page(page: str) -> None:
 
 def render_header() -> None:
     authenticated = is_authenticated()
-
     user = st.session_state.get("user", {})
 
     user_name = (

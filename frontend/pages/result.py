@@ -2,11 +2,15 @@ from io import BytesIO
 
 import streamlit as st
 from PIL import Image
+
 from config import BACKEND_URL
 from components.header import render_header
 from api.client import APIError
 from api.project import finalize_project
-from api.generate import download_generated_image
+from api.generate import (
+    download_generated_image,
+    normalize_generated_image_path,
+)
 from utils.state import clear_after_draft
 from components.copy_button import render_copy_button
 
@@ -90,7 +94,9 @@ def render_result():
     # 선택된 최종 시안
     selected_draft = final_ad_result["selected_draft"]
 
-    image_path = selected_draft.get("image_path")
+    image_path = normalize_generated_image_path(
+        selected_draft.get("image_path")
+    )
     image_url = (
         f"{BACKEND_URL}/{image_path}"
         if image_path
@@ -148,7 +154,9 @@ def render_result():
     draft_id = selected_draft["id"]
     draft_version = selected_draft.get("version", 1)
 
-    image_path = selected_draft.get("image_path")
+    image_path = normalize_generated_image_path(
+        selected_draft.get("image_path")
+    )
     image_url = (
         f"{BACKEND_URL}/{image_path}"
         if image_path
@@ -542,7 +550,9 @@ def render_result():
         )
         
     # 5. 최종 액션 버튼
-    image_path = selected_draft.get("image_path")
+    image_path = normalize_generated_image_path(
+        selected_draft.get("image_path")
+    )
 
     st.html(
         """

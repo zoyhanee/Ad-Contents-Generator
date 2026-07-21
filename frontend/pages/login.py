@@ -1,8 +1,10 @@
+from html import escape
+
 import requests
 import streamlit as st
 
 from components.header import render_header
-from api.auth import AuthAPIError, login
+from api.auth import AuthAPIError, get_google_login_url, login
 
 
 def render_login():
@@ -164,6 +166,49 @@ def render_login():
                 color: #0b7651;
                 text-decoration: underline;
             }
+
+            .google-login-link {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                min-height: 48px;
+                margin-top: 10px;
+                border: 1.5px solid #d9e1dc;
+                border-radius: 10px;
+                background: #ffffff;
+                font-size: 15px;
+                font-weight: 700;
+                text-decoration: none;
+                color: #4b5563 !important;
+                transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+            }
+
+            .google-login-link:hover,
+            .google-login-link:focus {
+                border-color: #b9c3bd;
+                background: #f8faf9;
+                color: #17211c !important;
+                box-shadow: 0 0 0 2px rgba(15, 138, 95, 0.06);
+                text-decoration: none;
+            }
+
+            .google-login-icon {
+                width: 18px;
+                height: 18px;
+                flex: 0 0 18px;
+            }
+
+            .st-key-google_login_submit button {
+                min-height: 48px;
+                margin-top: 10px;
+                border: 1.5px solid #d9e1dc;
+                border-radius: 10px;
+                background: #f1f3f5;
+                color: #98a19b;
+                font-size: 15px;
+                font-weight: 700;
+            }
             
             </style>
             """
@@ -189,6 +234,41 @@ def render_login():
             key="login_submit",
             use_container_width=True,
         )
+
+        try:
+            google_login_url = get_google_login_url()
+
+        except Exception:
+            google_login_url = None
+
+        if google_login_url:
+            safe_google_login_url = escape(google_login_url, quote=True)
+
+            st.html(
+                f"""
+                <a
+                    class="google-login-link"
+                    href="{safe_google_login_url}"
+                    target="_self"
+                    rel="noopener"
+                >
+                    <img
+                        class="google-login-icon"
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        alt=""
+                    />
+                    <span>Google 계정으로 로그인</span>
+                </a>
+                """
+            )
+
+        else:
+            st.button(
+                "Google로 로그인",
+                key="google_login_submit",
+                use_container_width=True,
+                disabled=True,
+            )
     
     if login_clicked:
         if not email.strip() or not password.strip():
@@ -218,6 +298,7 @@ def render_login():
 
             except Exception:
                 st.error("로그인 중 오류가 발생했습니다.")
+
             
     st.html(
         """

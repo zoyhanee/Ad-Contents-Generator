@@ -6,6 +6,7 @@ from components.header import render_header
 from api.client import APIError
 from api.generate import (
     generate_ad,
+    normalize_generated_image_path,
     regenerate_draft,
 )
 from api.product import get_product
@@ -652,17 +653,25 @@ def render_ad_generation():
             st.session_state.generated_drafts,
         ):
             draft_id = draft["id"]
+            image_path = normalize_generated_image_path(
+                draft.get("image_path")
+            )
             
             image_url = (
                 f"{BACKEND_URL}/"
-                f"{draft['image_path']}"
+                f"{image_path}"
+                if image_path
+                else None
             )
 
             with col:
-                st.image(
-                    image_url,
-                    use_container_width=True,
-                )
+                if image_url:
+                    st.image(
+                        image_url,
+                        use_container_width=True,
+                    )
+                else:
+                    st.caption("이미지를 불러올 수 없습니다.")
 
                 st.caption(
                     f"시안 {draft_id} · Version {draft['version']}"
