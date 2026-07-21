@@ -89,13 +89,29 @@ def render_strategy_selection():
         st.stop()
         
     product_cache_key = f"strategy_product_{product_id}"
-    image_cache_key = f"strategy_product_image_src_{product_id}"
+
+    # 상품 이미지가 변경되면 새로운 캐시 키를 사용하도록 image_path 포함
+    current_product = st.session_state.get("product") or {}
+    current_image_path = current_product.get("image_path", "")
+    image_cache_key = (
+        f"strategy_product_image_src_{product_id}_{current_image_path}"
+    )
 
     try:
-        if product_cache_key not in st.session_state:
-            st.session_state[product_cache_key] = get_product(product_id)
+        # 상품 수정 후에는 최신 세션 상품 정보를 우선 사용
+        session_product = st.session_state.get("product")
 
-        product = st.session_state[product_cache_key]
+        if (
+            session_product is not None
+            and session_product.get("id") == product_id
+        ):
+            product = session_product
+            st.session_state[product_cache_key] = session_product
+        else:
+            if product_cache_key not in st.session_state:
+                st.session_state[product_cache_key] = get_product(product_id)
+
+            product = st.session_state[product_cache_key]
 
         if image_cache_key not in st.session_state:
             image_bytes, image_type = get_product_image(product_id)

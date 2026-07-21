@@ -70,7 +70,34 @@ def render_product_input():
         "editing_product",
         False,
     )
-    
+
+    # 수정 모드 진입 시 최신 상품 정보를 입력 위젯에 한 번만 반영
+    if is_editing:
+        current_product = st.session_state.get("product")
+        current_product_id = st.session_state.get("product_id")
+        edit_init_key = f"product_edit_initialized_{current_product_id}"
+
+        if (
+            current_product is not None
+            and edit_init_key not in st.session_state
+        ):
+            st.session_state.product_name_input = (
+                current_product.get("name", "")
+            )
+            st.session_state.product_price_input = (
+                f"{int(current_product.get('price', 0)):,}"
+            )
+            st.session_state.product_description_input = (
+                current_product.get("description", "")
+            )
+            st.session_state.product_industry = (
+                current_product.get("industry", "restaurant")
+            )
+
+            # 수정 화면 진입 시 이전 업로드 파일 상태 제거
+            st.session_state.pop("product_image", None)
+            st.session_state[edit_init_key] = True
+
     # 2. 공통 헤더
     render_header()
 
@@ -210,12 +237,23 @@ def render_product_input():
         
         elif is_editing:
             try:
-                image_bytes, _ = get_product_image(
-                    st.session_state.product_id
-                )
+                product_id = st.session_state.product_id
+                cache_key = f"editing_product_image_{product_id}"
+
+                if cache_key not in st.session_state:
+                    image_bytes, image_type = get_product_image(
+                        product_id
+                    )
+
+                    st.session_state[cache_key] = {
+                        "bytes": image_bytes,
+                        "content_type": image_type,
+                    }
+
+                cached_image = st.session_state[cache_key]
 
                 st.image(
-                    image_bytes,
+                    cached_image["bytes"],
                     caption="현재 상품 이미지",
                     use_container_width=True,
                 )
@@ -452,6 +490,8 @@ def render_product_input():
         disabled=not can_continue,
     ):
         try:
+            current_product_id = st.session_state.get("product_id")
+
             # 가격 문자열 → 숫자 변환
             price = int(product_price.replace(",", "").strip())
             
@@ -465,7 +505,7 @@ def render_product_input():
             # 2. 신규 생성 / 기존 상품 수정
             if is_editing:
                 product = update_product(
-                    product_id=st.session_state.product_id,
+                    product_id=current_product_id,
                     name=product_name.strip(),
                     price=price,
                     description=product_description.strip(),
@@ -481,10 +521,46 @@ def render_product_input():
                     image_path=image_path,
                 )
             
+            if current_product_id is not None:
+                st.session_state.pop(
+                    f"editing_product_image_{current_product_id}",
+                    None,
+                )
+                st.session_state.pop(
+                    f"product_edit_initialized_{current_product_id}",
+                    None,
+                )
+
+                # 상품 정보/이미지 수정 후 페이지별 기존 상품 캐시 제거
+                st.session_state.pop(
+                    f"strategy_product_{current_product_id}",
+                    None,
+                )
+                st.session_state.pop(
+                    f"ad_generation_product_{current_product_id}",
+                    None,
+                )
+
+                # image_path가 포함된 전략 이미지 캐시까지 모두 제거
+                strategy_image_prefix = (
+                    f"strategy_product_image_src_{current_product_id}"
+                )
+                for state_key in list(st.session_state.keys()):
+                    if state_key.startswith(strategy_image_prefix):
+                        st.session_state.pop(state_key, None)
+
+                # get_product_image가 st.cache_data 함수인 경우 API 이미지 캐시 제거
+                if normalized_image is not None and hasattr(
+                    get_product_image,
+                    "clear",
+                ):
+                    get_product_image.clear()
+            
             # 3. 이전 상품 기준의 이후 단계 상태 초기화
             clear_after_product()
 
-            # 4. 현재 상품 정보 저장
+            # 4. 현재 상품 정보만 최신값으로 저장
+            # 위젯 key는 이미 생성된 상태이므로 여기서 직접 수정하지 않음
             st.session_state.product_id = product["id"]
             st.session_state.product = product
             

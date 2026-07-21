@@ -214,10 +214,20 @@ def render_ad_generation():
     product_cache_key = f"ad_generation_product_{product_id}"
 
     try:
-        if product_cache_key not in st.session_state:
-            st.session_state[product_cache_key] = get_product(product_id)
+        # 상품 수정 후에는 최신 세션 상품 정보를 우선 사용
+        session_product = st.session_state.get("product")
 
-        product_data = st.session_state[product_cache_key]
+        if (
+            session_product is not None
+            and session_product.get("id") == product_id
+        ):
+            product_data = session_product
+            st.session_state[product_cache_key] = session_product
+        else:
+            if product_cache_key not in st.session_state:
+                st.session_state[product_cache_key] = get_product(product_id)
+
+            product_data = st.session_state[product_cache_key]
 
     except APIError as e:
         st.error(str(e))
