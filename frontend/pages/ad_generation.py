@@ -1061,6 +1061,7 @@ def render_ad_generation():
             )
 
             st.session_state.final_ad_result = {
+                "project_id": st.session_state.get("project_id"),
                 "strategy": {
                     **strategy_data,
                     "recommendation": {

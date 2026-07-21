@@ -55,3 +55,15 @@ def get_project_by_id(
         )
         .first()
     )
+    
+def get_projects_by_user(
+    db: Session,
+    *,
+    user_id: int,
+) -> list[AdProject]:
+    return (
+        db.query(AdProject)
+        .filter(AdProject.user_id == user_id)
+        .order_by(AdProject.updated_at.desc())
+        .all()
+    )

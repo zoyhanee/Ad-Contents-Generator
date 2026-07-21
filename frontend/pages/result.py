@@ -2,15 +2,15 @@ from io import BytesIO
 
 import streamlit as st
 from PIL import Image
-
+from config import BACKEND_URL
 from components.header import render_header
 from api.client import APIError
+from api.project import finalize_project
 from api.generate import download_generated_image
 from utils.state import clear_after_draft
 from components.copy_button import render_copy_button
 
 
-BACKEND_URL = "http://127.0.0.1:8000"
 
 
 def resize_image_bytes(
@@ -68,10 +68,21 @@ def render_result():
             "광고 시안 선택으로 돌아가기",
             key="back_to_ad_generation",
         ):
-            st.query_params["page"] = "ad_generation"
-            st.rerun()
+            st.switch_page("pages/ad_generation.py")
 
         return
+    
+    # 최종 결과가 있을 때만 여기부터 실행
+    project_id = final_ad_result.get("project_id")
+
+    finalized_project_id = st.session_state.get(
+        "finalized_project_id"
+    )
+
+    is_finalized = (
+        project_id is not None
+        and finalized_project_id == project_id
+    )
 
     # 공통 헤더
     render_header()
@@ -404,6 +415,8 @@ def render_result():
         final_ad_result.get("selected_post_copy")
         or selected_draft.get("post_copy")
     )
+    
+    edited_post_copy = post_copy or ""
 
     platform_text = platform_labels.get(
         platform,
@@ -596,6 +609,42 @@ def render_result():
         .st-key-create_new_ad button:active {
             transform: translateY(0);
         }
+        
+        /* 최종 결과 저장 */
+        .st-key-save_final_result button {
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+            background: #17211c;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 800;
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .st-key-save_final_result button:hover {
+            border: none;
+            background: #26352d;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        /* 저장 완료 */
+        .final-save-complete {
+            height: 56px;
+            border-radius: 12px;
+            background: #e7f4ed;
+            color: #0f8a5f;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+            font-weight: 800;
+        }
         </style>
         """
     )
@@ -650,11 +699,52 @@ def render_result():
             )
 
     with action_col2:
-        new_ad_clicked = st.button(
-            "＋ 새 광고 만들기",
-            key="create_new_ad",
-            use_container_width=True,
-        )
+        if is_finalized:
+            st.html(
+                """
+                <div class="final-save-complete">
+                    ✓ 저장 완료
+                </div>
+                """
+            )
+            save_final_clicked = False
+
+        else:
+            save_final_clicked = st.button(
+                "✓ 최종 결과 저장",
+                key="save_final_result",
+                use_container_width=True,
+                disabled=project_id is None,
+            )
+        
+    if save_final_clicked:
+        try:
+            with st.spinner("최종 결과를 저장하고 있어요..."):
+                saved_result = finalize_project(
+                    project_id=project_id,
+                    draft_id=draft_id,
+                    post_copy=edited_post_copy,
+                )
+
+            st.session_state.finalized_project_id = project_id
+            st.session_state.final_result_id = saved_result["id"]
+            st.session_state.final_result_version = (
+                saved_result["version"]
+            )
+
+            st.success("최종 광고가 저장되었습니다.")
+            st.rerun()
+
+        except APIError as exc:
+            st.error(
+                f"최종 결과 저장에 실패했습니다: {exc}"
+            )
+            
+    new_ad_clicked = st.button(
+        "＋ 새 광고 만들기",
+        key="create_new_ad",
+        use_container_width=True,
+    )
     
     if new_ad_clicked:
         keys_to_clear = [

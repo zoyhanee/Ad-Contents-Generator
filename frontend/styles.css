@@ -46,6 +46,17 @@
     color: #111827;
 }
 
+.nav-link {
+    color: #111827;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #0f7a4a;
+}
+
 .auth {
     display: flex;
     justify-content: flex-end;

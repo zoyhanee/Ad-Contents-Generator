@@ -9,6 +9,7 @@ from pages.product_input import render_product_input
 from pages.strategy import render_strategy_selection
 from pages.ad_generation import render_ad_generation
 from pages.result import render_result
+from pages.history import render_history
 
 
 st.set_page_config(
@@ -29,6 +30,7 @@ PAGES = {
     "strategy_selection": "strategy_selection.html",
     "ad_generation": "ad_generation.html",
     "result": None,
+    "history": None,
 }
 
     
@@ -37,6 +39,7 @@ PROTECTED_PAGES = {
     "strategy_selection",
     "ad_generation",
     "result",
+    "history",
 }
 
 def get_current_page():
@@ -107,6 +110,10 @@ elif current_page == "ad_generation":
 elif current_page == "result":
     load_common_css()
     render_result()
+    
+elif current_page == "history":
+    load_common_css()
+    render_history()
 
 else:
     st.html(load_html(current_page))

@@ -38,8 +38,8 @@ class AdProject(Base):
         uselist=False,
     )
     drafts = relationship("AdDraft", back_populates="project")
-    final_result = relationship(
+    final_results = relationship(
         "FinalResult",
         back_populates="project",
-        uselist=False,
+        cascade="all, delete-orphan",
     )
