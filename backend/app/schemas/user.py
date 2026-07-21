@@ -14,6 +14,7 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     store_name: str | None
+    provider: str
 
     model_config = ConfigDict(from_attributes=True)
     
@@ -21,4 +22,8 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class OAuthLoginUrlResponse(BaseModel):
+    login_url: str
     

@@ -1,4 +1,4 @@
-from api.client import APIError, post
+from api.client import APIError, get, post
 
 
 def signup(
@@ -29,6 +29,16 @@ def login(
             "password": password,
         },
     )
+
+
+def get_google_login_url() -> str:
+    response = get("/auth/google/login-url")
+
+    return response["login_url"]
+
+
+def get_me() -> dict:
+    return get("/auth/me")
 
 
 AuthAPIError = APIError

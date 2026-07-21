@@ -1,4 +1,5 @@
 import html
+from urllib.parse import quote
 
 import streamlit as st
 
@@ -9,6 +10,14 @@ def render_header():
     authenticated = is_authenticated()
 
     user = st.session_state.get("user", {})
+    access_token = st.session_state.get("access_token")
+    logo_href = "?page=landing"
+
+    if authenticated and access_token:
+        logo_href = (
+            "?page=landing"
+            f"&access_token={quote(access_token, safe='')}"
+        )
 
     if authenticated:
         user_name = html.escape(
@@ -56,7 +65,7 @@ def render_header():
         <div class="header">
             <a
                 class="logo"
-                href="?page=landing"
+                href="{logo_href}"
                 target="_self"
             >
                 AdMaker <span>AI</span>
