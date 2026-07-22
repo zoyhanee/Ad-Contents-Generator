@@ -35,36 +35,100 @@ def generate_ad_drafts(
             status_code=404,
             detail="Strategy not found.",
         )
-    
-    existing_drafts = (
-        db.query(AdDraft)
-        .filter(AdDraft.project_id == project.id)
-        .all()
-    )
-
-    if existing_drafts:
-        return {
-            "project_id": project.id,
-            "drafts": [
-                {
-                    "id": draft.draft_label,
-                    "title": draft.title,
-                    "version": draft.version,
-                    "image_path": draft.image_path,
-                    "image_prompt": draft.image_prompt,
-                    "post_copy": draft.post_copy,
-                }
-                for draft in existing_drafts
-            ],
-        }
 
     try:
-        project.strategy.selected_slogan = request.selected_slogan
+        # 요청으로 들어온 새 슬로건
+        requested_slogan = request.selected_slogan.strip()
+
+        # 기존 시안을 생성할 때 사용했던 슬로건
+        previous_slogan = (
+            project.strategy.selected_slogan or ""
+        ).strip()
+
+        existing_drafts = (
+            db.query(AdDraft)
+            .filter(AdDraft.project_id == project.id)
+            .all()
+        )
+
+        print(
+            "[GENERATE SERVICE]",
+            {
+                "project_id": project.id,
+                "previous_slogan": previous_slogan,
+                "requested_slogan": requested_slogan,
+                "existing_draft_count": len(existing_drafts),
+            },
+        )
+
+        # 기존 시안이 있고 슬로건도 동일하면 기존 결과 재사용
+        if (
+            existing_drafts
+            and previous_slogan == requested_slogan
+        ):
+            print(
+                "[GENERATE SERVICE] "
+                "같은 슬로건이므로 기존 시안을 반환합니다."
+            )
+
+            return {
+                "project_id": project.id,
+                "drafts": [
+                    {
+                        "id": draft.draft_label,
+                        "title": draft.title,
+                        "version": draft.version,
+                        "image_path": draft.image_path,
+                        "image_prompt": draft.image_prompt,
+                        "post_copy": draft.post_copy,
+                    }
+                    for draft in existing_drafts
+                ],
+            }
+
+        # 기존 시안이 있지만 슬로건이 변경됐다면 기존 시안 제거
+        if existing_drafts:
+            print(
+                "[GENERATE SERVICE] "
+                "슬로건이 변경되어 기존 시안을 삭제합니다."
+            )
+
+            for draft in existing_drafts:
+                # 기존 이미지 파일 삭제
+                if draft.image_path:
+                    image_path = Path(draft.image_path)
+
+                    if image_path.exists():
+                        try:
+                            image_path.unlink()
+                        except OSError as e:
+                            print(
+                                "[GENERATE SERVICE] "
+                                f"기존 이미지 삭제 실패: {e}"
+                            )
+
+                db.delete(draft)
+
+            # DELETE 쿼리를 먼저 DB에 반영
+            db.flush()
+
+        # 변경된 슬로건을 전략에 반영
+        project.strategy.selected_slogan = requested_slogan
 
         platform = (
             project.strategy.selected_platforms[0]
             if project.strategy.selected_platforms
             else "instagram"
+        )
+
+        print(
+            "[GENERATE SERVICE] 새 시안 생성 시작",
+            {
+                "selected_slogan": requested_slogan,
+                "platform": platform,
+                "image_width": request.image_width,
+                "image_height": request.image_height,
+            },
         )
 
         draft_data = generate_drafts(
@@ -73,22 +137,24 @@ def generate_ad_drafts(
             product_image_path=project.product.image_path,
             platform=platform,
             style=project.strategy.selected_style,
-            selected_slogan=request.selected_slogan,
+            selected_slogan=requested_slogan,
             image_width=request.image_width,
             image_height=request.image_height,
         )
 
-        # 이미지 A/B/C 생성 완료 후 각각 평가하고 FastAPI 로그에만 출력
+        # 이미지 A/B/C 생성 완료 후 평가
         evaluate_and_log_images(
             drafts=draft_data,
             platform=platform,
             use_clip=False,
             use_llm=True,
             product_name=project.product.name,
-            product_description=project.product.description or "",
+            product_description=(
+                project.product.description or ""
+            ),
             goal=project.strategy.selected_goal or "",
             style=project.strategy.selected_style or "",
-            slogan=request.selected_slogan or "",
+            slogan=requested_slogan,
         )
 
         for draft in draft_data:
@@ -107,6 +173,15 @@ def generate_ad_drafts(
         project.status = "generated"
 
         db.commit()
+
+        print(
+            "[GENERATE SERVICE] 새 시안 생성 완료",
+            {
+                "project_id": project.id,
+                "selected_slogan": requested_slogan,
+                "draft_count": len(draft_data),
+            },
+        )
 
         return {
             "project_id": project.id,

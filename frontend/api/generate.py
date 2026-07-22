@@ -12,7 +12,7 @@ def generate_ad(
 ) -> dict:
     return post(
         "/generate",
-        timeout=300,
+        timeout=900,
         json={
             "project_id": project_id,
             "selected_slogan": selected_slogan,

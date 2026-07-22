@@ -49,8 +49,13 @@ def clear_after_product():
         "recommendation",
         "selected_slogan",
 
+        # 이미지 생성 입력 캐시
+        "ad_generation_input",
+
         # 광고 생성 결과
         "generation_status",
+        "generation_slogan",
+        "generated_for_slogan",
         "generated_drafts",
         "selected_draft",
         "selected_post_copy",
@@ -78,7 +83,10 @@ def clear_recommendation_state():
         
 def clear_after_strategy():
     keys = [
+        "ad_generation_input",
         "generation_status",
+        "generation_slogan",
+        "generated_for_slogan",
         "generated_drafts",
         "selected_draft",
         "selected_post_copy",
@@ -94,4 +102,3 @@ def clear_after_strategy():
 
 def clear_after_draft():
     st.session_state.pop("final_ad_result", None)
-    

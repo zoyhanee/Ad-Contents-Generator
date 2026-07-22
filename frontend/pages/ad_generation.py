@@ -113,6 +113,24 @@ def render_ad_generation():
             use_container_width=True,
         ):
             clear_after_strategy()
+
+            # 이전 슬로건으로 생성된 광고 결과가 남지 않도록
+            # 광고 생성 페이지의 상태를 명시적으로 초기화합니다.
+            generation_keys = [
+                "generation_status",
+                "generation_slogan",
+                "generated_for_slogan",
+                "generated_drafts",
+                "selected_draft",
+                "selected_post_copy",
+                "regeneration_request",
+                "regenerating_draft",
+                "regeneration_completed",
+                "final_ad_result",
+            ]
+
+            for key in generation_keys:
+                st.session_state.pop(key, None)
             
             st.query_params["page"] = "strategy_selection"
             st.rerun()
@@ -362,6 +380,26 @@ def render_ad_generation():
     # 8. 광고 시안 생성 상태 초기화
     if "generation_status" not in st.session_state:
         st.session_state.generation_status = "ready"
+
+    # 이전에 생성한 슬로건과 현재 선택한 슬로건이 다르면
+    # 기존 이미지 결과를 폐기하고 새로 생성할 수 있도록 초기화합니다.
+    generated_for_slogan = st.session_state.get("generated_for_slogan")
+
+    if (
+        generated_for_slogan is not None
+        and generated_for_slogan != selected_slogan
+    ):
+        st.session_state.generation_status = "ready"
+        st.session_state.generated_drafts = []
+        st.session_state.selected_draft = None
+        st.session_state.selected_post_copy = None
+
+        st.session_state.pop("generation_slogan", None)
+        st.session_state.pop("generated_for_slogan", None)
+        st.session_state.pop("regeneration_request", None)
+        st.session_state.pop("regenerating_draft", None)
+        st.session_state.pop("regeneration_completed", None)
+        st.session_state.pop("final_ad_result", None)
     
     st.html(
         """
@@ -420,7 +458,13 @@ def render_ad_generation():
             key="start_generation",
             use_container_width=True,
         ):
+            # 버튼을 누른 바로 그 시점의 슬로건을 별도로 저장합니다.
+            # rerun 이후에도 반드시 이 값으로 이미지를 생성합니다.
+            st.session_state.generation_slogan = selected_slogan
             st.session_state.generation_status = "generating"
+            st.session_state.generated_drafts = []
+            st.session_state.selected_draft = None
+            st.session_state.selected_post_copy = None
             st.rerun()
             
     # 10. 광고 시안 생성 중
@@ -524,15 +568,35 @@ def render_ad_generation():
         )
 
         try:
+            # 생성 버튼 클릭 시점에 저장한 슬로건을 사용합니다.
+            generation_slogan = st.session_state.get(
+                "generation_slogan",
+                selected_slogan,
+            )
+
+            print(
+                "[AD GENERATION]",
+                {
+                    "selected_slogan_index": selected_slogan_index,
+                    "current_selected_slogan": selected_slogan,
+                    "generation_slogan": generation_slogan,
+                    "generation_status": st.session_state.get(
+                        "generation_status"
+                    ),
+                },
+            )
+
             result = generate_ad(
                 project_id=project_id,
-                selected_slogan=selected_slogan,
+                selected_slogan=generation_slogan,
                 image_width=image_width,
                 image_height=image_height,
             )
 
             st.session_state.generated_drafts = result["drafts"]
+            st.session_state.generated_for_slogan = generation_slogan
             st.session_state.generation_status = "completed"
+            st.session_state.pop("generation_slogan", None)
             st.rerun()
 
         except APIError as e:
@@ -1034,10 +1098,13 @@ def render_ad_generation():
             )
             
         if regenerate_all_clicked:
+            # 현재 화면에 표시된 슬로건으로 전체 시안을 다시 생성합니다.
+            st.session_state.generation_slogan = selected_slogan
             st.session_state.generation_status = "generating"
             st.session_state.generated_drafts = []
             st.session_state.selected_draft = None
             st.session_state.selected_post_copy = None
+            st.session_state.pop("generated_for_slogan", None)
 
             st.session_state.pop("regeneration_request", None)
             st.session_state.pop("regenerating_draft", None)
