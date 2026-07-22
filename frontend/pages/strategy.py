@@ -89,13 +89,29 @@ def render_strategy_selection():
         st.stop()
         
     product_cache_key = f"strategy_product_{product_id}"
-    image_cache_key = f"strategy_product_image_src_{product_id}"
+
+    # 상품 이미지가 변경되면 새로운 캐시 키를 사용하도록 image_path 포함
+    current_product = st.session_state.get("product") or {}
+    current_image_path = current_product.get("image_path", "")
+    image_cache_key = (
+        f"strategy_product_image_src_{product_id}_{current_image_path}"
+    )
 
     try:
-        if product_cache_key not in st.session_state:
-            st.session_state[product_cache_key] = get_product(product_id)
+        # 상품 수정 후에는 최신 세션 상품 정보를 우선 사용
+        session_product = st.session_state.get("product")
 
-        product = st.session_state[product_cache_key]
+        if (
+            session_product is not None
+            and session_product.get("id") == product_id
+        ):
+            product = session_product
+            st.session_state[product_cache_key] = session_product
+        else:
+            if product_cache_key not in st.session_state:
+                st.session_state[product_cache_key] = get_product(product_id)
+
+            product = st.session_state[product_cache_key]
 
         if image_cache_key not in st.session_state:
             image_bytes, image_type = get_product_image(product_id)
@@ -1353,5 +1369,55 @@ def render_strategy_selection():
             use_container_width=True,
             disabled=not can_generate,
         ):
+            selected_slogan_index = st.session_state.get(
+                "selected_slogan"
+            )
+            slogans = recommendation.get("slogans", [])
+
+            if (
+                selected_slogan_index is None
+                or not 0 <= selected_slogan_index < len(slogans)
+            ):
+                st.error("선택한 슬로건 정보를 찾을 수 없습니다.")
+                st.stop()
+
+            selected_slogan_text = slogans[selected_slogan_index]
+
+            # 이미지 생성에 사용할 확정 입력값을 스냅샷으로 저장합니다.
+            st.session_state.ad_generation_input = {
+                "project_id": project_id,
+                "product_id": product_id,
+                "selected_slogan_index": selected_slogan_index,
+                "selected_slogan": selected_slogan_text,
+                "image_width": strategy_data.get("image_width", 1024),
+                "image_height": strategy_data.get("image_height", 1024),
+                "output_width": strategy_data.get(
+                    "output_width",
+                    strategy_data.get("image_width", 1024),
+                ),
+                "output_height": strategy_data.get(
+                    "output_height",
+                    strategy_data.get("image_height", 1024),
+                ),
+                "strategy_data": strategy_data.copy(),
+            }
+
+            # 이전 광고 생성 결과만 초기화합니다.
+            generation_keys = [
+                "generation_status",
+                "generation_slogan",
+                "generated_for_slogan",
+                "generated_drafts",
+                "selected_draft",
+                "selected_post_copy",
+                "regeneration_request",
+                "regenerating_draft",
+                "regeneration_completed",
+                "final_ad_result",
+            ]
+
+            for key in generation_keys:
+                st.session_state.pop(key, None)
+
             st.query_params["page"] = "ad_generation"
             st.rerun()
