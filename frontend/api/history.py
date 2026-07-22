@@ -20,6 +20,7 @@ def update_history(
 ) -> dict:
     return patch(
         f"/history/{project_id}",
+        timeout=300,
         json={
             "post_copy": post_copy,
             "image_feedback": image_feedback,

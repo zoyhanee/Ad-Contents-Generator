@@ -502,7 +502,7 @@ def render_ad_generation():
                     </p>
 
                     <div class="generation-time-guide">
-                        이미지 생성에는 약 2~5분 정도 소요될 수 있습니다.
+                        이미지 생성에는 최대 5분 정도 소요될 수 있습니다.
                     </div>
 
                     <div class="generation-warning">
@@ -916,14 +916,109 @@ def render_ad_generation():
             )
 
             try:
-                with st.spinner(
-                    f"시안 {regenerating_draft}을 다시 생성하고 있어요..."
-                ):
-                    result = regenerate_draft(
-                        project_id=project_id,
-                        draft_id=regeneration_request["draft_id"],
-                        feedback=regeneration_request["feedback"],
-                    )
+                st.html(
+                    f"""
+                    <style>
+                    .regeneration-overlay {{
+                        position: fixed;
+                        inset: 0;
+                        z-index: 9999;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 24px;
+                        background: rgba(15, 23, 42, 0.28);
+                        backdrop-filter: blur(3px);
+                    }}
+
+                    .regeneration-popup {{
+                        width: min(520px, calc(100vw - 48px));
+                        padding: 42px 44px;
+                        border: 1px solid #d9e1dc;
+                        border-radius: 22px;
+                        background: #ffffff;
+                        box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+                        text-align: center;
+                    }}
+
+                    .regeneration-spinner {{
+                        width: 58px;
+                        height: 58px;
+                        margin: 0 auto 22px;
+                        border: 5px solid #e4f2eb;
+                        border-top-color: #0f8a5f;
+                        border-radius: 999px;
+                        animation: regeneration-spin 1s linear infinite;
+                    }}
+
+                    @keyframes regeneration-spin {{
+                        to {{
+                            transform: rotate(360deg);
+                        }}
+                    }}
+
+                    .regeneration-popup h3 {{
+                        margin: 0 0 14px;
+                        color: #08111f;
+                        font-size: 24px;
+                        font-weight: 900;
+                    }}
+
+                    .regeneration-popup p {{
+                        margin: 0;
+                        color: #4b5b52;
+                        font-size: 15px;
+                        line-height: 1.8;
+                    }}
+
+                    .regeneration-time-guide {{
+                        margin-top: 18px;
+                        padding: 14px 16px;
+                        border-radius: 14px;
+                        background: #f1f8f4;
+                        color: #0f8a5f;
+                        font-size: 15px;
+                        font-weight: 800;
+                    }}
+
+                    .regeneration-warning {{
+                        margin-top: 18px;
+                        color: #d94832;
+                        font-size: 14px;
+                        font-weight: 700;
+                        line-height: 1.7;
+                    }}
+                    </style>
+
+                    <div class="regeneration-overlay">
+                        <div class="regeneration-popup">
+                            <div class="regeneration-spinner"></div>
+
+                            <h3>시안 {regenerating_draft}를 다시 생성하고 있어요</h3>
+
+                            <p>
+                                입력하신 수정 요청을 반영해<br>
+                                새로운 광고 이미지 시안을 만들고 있습니다.
+                            </p>
+
+                            <div class="regeneration-time-guide">
+                                이미지 재생성에는 최대 5분 정도 소요될 수 있습니다.
+                            </div>
+
+                            <div class="regeneration-warning">
+                                생성 중에는 새로고침하거나 창을 닫지 말아주세요.<br>
+                                완료되면 자동으로 수정된 시안이 표시됩니다.
+                            </div>
+                        </div>
+                    </div>
+                    """
+                )
+
+                result = regenerate_draft(
+                    project_id=project_id,
+                    draft_id=regeneration_request["draft_id"],
+                    feedback=regeneration_request["feedback"],
+                )
 
                 regenerated_draft = result["draft"]
 

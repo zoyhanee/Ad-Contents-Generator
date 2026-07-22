@@ -22,6 +22,15 @@ def format_saved_at(value: str | None) -> str:
         return saved_at.strftime("%Y.%m.%d %H:%M")
     except ValueError:
         return value
+
+
+def normalize_history_image_path(
+    image_path: str | None,
+) -> str | None:
+    if not image_path:
+        return None
+
+    return image_path.replace("\\", "/").lstrip("/")
     
 
 @st.dialog("저장 완료")
@@ -41,6 +50,68 @@ def show_save_success_dialog():
 def render_history_detail(
     project_id: int,
 ) -> None:
+    st.html(
+        """
+        <style>
+        .st-key-back_to_history button,
+        .st-key-edit_history_ad button,
+        .st-key-go_to_latest_history_version button,
+        .st-key-save_history_edit button,
+        .st-key-cancel_history_edit button {
+            height: 48px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            opacity: 1;
+        }
+
+        .st-key-back_to_history button,
+        .st-key-edit_history_ad button,
+        .st-key-go_to_latest_history_version button,
+        .st-key-cancel_history_edit button {
+            border: none;
+            background: #0f8a5f;
+            color: #ffffff;
+        }
+
+        .st-key-back_to_history button:hover,
+        .st-key-edit_history_ad button:hover,
+        .st-key-go_to_latest_history_version button:hover,
+        .st-key-cancel_history_edit button:hover {
+            border: none;
+            background: #0b7651;
+            color: #ffffff;
+        }
+
+        .st-key-save_history_edit button {
+            border: none;
+            background: #0f8a5f;
+            color: #ffffff;
+        }
+
+        .st-key-save_history_edit button:hover {
+            border: none;
+            background: #0b7651;
+            color: #ffffff;
+        }
+
+        .st-key-back_to_history button:focus,
+        .st-key-edit_history_ad button:focus,
+        .st-key-go_to_latest_history_version button:focus,
+        .st-key-save_history_edit button:focus,
+        .st-key-cancel_history_edit button:focus,
+        .st-key-back_to_history button:focus-visible,
+        .st-key-edit_history_ad button:focus-visible,
+        .st-key-go_to_latest_history_version button:focus-visible,
+        .st-key-save_history_edit button:focus-visible,
+        .st-key-cancel_history_edit button:focus-visible {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(15, 138, 95, 0.12);
+        }
+        </style>
+        """
+    )
+
     if st.button(
         "← 히스토리로 돌아가기",
         key="back_to_history",
@@ -100,7 +171,9 @@ def render_history_detail(
         selected_version = selected_result["version"]
 
     version = selected_result["version"]
-    image_path = selected_result.get("image_path")
+    image_path = normalize_history_image_path(
+        selected_result.get("image_path")
+    )
     post_copy = selected_result.get("post_copy")
     saved_at = format_saved_at(
         selected_result.get("saved_at")
@@ -225,6 +298,43 @@ def render_history_detail(
 
     st.subheader("버전 기록")
 
+    st.html(
+        """
+        <style>
+        div[class*="st-key-history_version_"] button {
+            height: 42px;
+            border: 1.5px solid #d9e1dc;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #17211c !important;
+            font-size: 14px;
+            font-weight: 800;
+            opacity: 1;
+        }
+
+        div[class*="st-key-history_version_"] button * {
+            color: inherit !important;
+            opacity: 1 !important;
+        }
+
+        div[class*="st-key-history_version_"] button:hover {
+            border-color: #0f8a5f;
+            background: #f4fbf7;
+            color: #0f8a5f !important;
+        }
+
+        div[class*="st-key-history_version_"] button:disabled,
+        div[class*="st-key-history_version_"] button:disabled:hover {
+            border: 1.5px solid #0f8a5f;
+            background: #0f8a5f;
+            color: #ffffff !important;
+            opacity: 1;
+            cursor: default;
+        }
+        </style>
+        """
+    )
+
     for item in versions:
         item_version = item["version"]
         item_saved_at = format_saved_at(
@@ -292,23 +402,133 @@ def render_history_detail(
                 )
 
                 if normalized_image_feedback:
-                    spinner_message = (
-                        "AI가 광고 이미지를 수정하고 있습니다..."
+                    st.html(
+                        """
+                        <style>
+                        .history-update-overlay {
+                            position: fixed;
+                            inset: 0;
+                            z-index: 9999;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            padding: 24px;
+                            background: rgba(15, 23, 42, 0.28);
+                            backdrop-filter: blur(3px);
+                        }
+
+                        .history-update-popup {
+                            width: min(520px, calc(100vw - 48px));
+                            padding: 42px 44px;
+                            border: 1px solid #d9e1dc;
+                            border-radius: 22px;
+                            background: #ffffff;
+                            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22);
+                            text-align: center;
+                        }
+
+                        .history-update-spinner {
+                            width: 58px;
+                            height: 58px;
+                            margin: 0 auto 22px;
+                            border: 5px solid #e4f2eb;
+                            border-top-color: #0f8a5f;
+                            border-radius: 999px;
+                            animation: history-update-spin 1s linear infinite;
+                        }
+
+                        @keyframes history-update-spin {
+                            to {
+                                transform: rotate(360deg);
+                            }
+                        }
+
+                        .history-update-popup h3 {
+                            margin: 0 0 14px;
+                            color: #08111f;
+                            font-size: 24px;
+                            font-weight: 900;
+                        }
+
+                        .history-update-popup p {
+                            margin: 0;
+                            color: #4b5b52;
+                            font-size: 15px;
+                            line-height: 1.8;
+                        }
+
+                        .history-update-time-guide {
+                            margin-top: 18px;
+                            padding: 14px 16px;
+                            border-radius: 14px;
+                            background: #f1f8f4;
+                            color: #0f8a5f;
+                            font-size: 15px;
+                            font-weight: 800;
+                        }
+
+                        .history-update-warning {
+                            margin-top: 18px;
+                            color: #d94832;
+                            font-size: 14px;
+                            font-weight: 700;
+                            line-height: 1.7;
+                        }
+                        </style>
+
+                        <div class="history-update-overlay">
+                            <div class="history-update-popup">
+                                <div class="history-update-spinner"></div>
+
+                                <h3>AI가 광고 이미지를 수정하고 있어요</h3>
+
+                                <p>
+                                    입력하신 이미지 수정 요청을 반영해<br>
+                                    새로운 광고 이미지를 만들고 있습니다.
+                                </p>
+
+                                <div class="history-update-time-guide">
+                                    이미지 수정에는 최대 5분 정도 소요될 수 있습니다.
+                                </div>
+
+                                <div class="history-update-warning">
+                                    생성 중에는 새로고침하거나 창을 닫지 말아주세요.<br>
+                                    완료되면 자동으로 수정본이 저장됩니다.
+                                </div>
+                            </div>
+                        </div>
+                        """
                     )
                 else:
-                    spinner_message = (
-                        "수정본을 저장하고 있습니다..."
+                    st.html(
+                        """
+                        <style>
+                        .history-update-inline {
+                            margin: 18px 0;
+                            padding: 16px 18px;
+                            border-radius: 12px;
+                            background: #f1f8f4;
+                            color: #0f8a5f;
+                            font-size: 14px;
+                            font-weight: 800;
+                            text-align: center;
+                        }
+                        </style>
+
+                        <div class="history-update-inline">
+                            수정본을 저장하고 있습니다...
+                        </div>
+                        """
                     )
 
-                with st.spinner(spinner_message):
-                    update_history(
-                        project_id=project_id,
-                        post_copy=edited_post_copy,
-                        image_feedback=(
-                            normalized_image_feedback
-                            or None
-                        ),
-                    )
+                update_history(
+                    project_id=project_id,
+                    post_copy=edited_post_copy,
+                    image_feedback=(
+                        normalized_image_feedback
+                        or None
+                    ),
+                )
 
                 st.session_state.history_editing = False
 
@@ -466,7 +686,9 @@ def render_history():
         product_name = item["product_name"]
         safe_product_name = escape(product_name)
         version = item["version"]
-        image_path = item.get("image_path")
+        image_path = normalize_history_image_path(
+            item.get("image_path")
+        )
         saved_at = format_saved_at(
             item.get("saved_at")
         )

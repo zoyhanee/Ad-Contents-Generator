@@ -1,4 +1,5 @@
 import streamlit as st
+from urllib.parse import quote
 
 from utils.state import (
     clear_auth_state,
@@ -24,7 +25,8 @@ def render_header() -> None:
     st.html(
         """
         <style>
-        .header-brand {
+        .header-brand,
+        .header-brand-link {
             height: 44px;
             display: flex;
             align-items: center;
@@ -32,9 +34,11 @@ def render_header() -> None:
             font-weight: 800;
             color: #0f7a4a;
             white-space: nowrap;
+            text-decoration: none;
         }
 
-        .header-brand span {
+        .header-brand span,
+        .header-brand-link span {
             color: #ff4f3e;
         }
 
@@ -49,9 +53,8 @@ def render_header() -> None:
             white-space: nowrap;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(
-            .header-brand
-        ) {
+        div[data-testid="stHorizontalBlock"]:has(.header-brand),
+        div[data-testid="stHorizontalBlock"]:has(.header-brand-link) {
             min-height: 84px;
             align-items: center;
             border-bottom: 1px solid #e5e7eb;
@@ -76,6 +79,36 @@ def render_header() -> None:
             color: #0f8a5f;
         }
 
+        .st-key-header_login button,
+        .st-key-header_signup button {
+            height: 44px;
+            border: 1px solid #0f7a4a;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #0f7a4a;
+            font-size: 15px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .st-key-header_login button:hover {
+            border-color: #0f7a4a;
+            background: #f4fbf7;
+            color: #0f8a5f;
+        }
+
+        .st-key-header_signup button {
+            border-color: #0f7a4a;
+            background: #0f7a4a;
+            color: #ffffff;
+        }
+
+        .st-key-header_signup button:hover {
+            border-color: #0f7a4a;
+            background: #0b7651;
+            color: #ffffff;
+        }
+
         .st-key-header_logout button {
             height: 44px;
             border: 1px solid #0f7a4a;
@@ -96,6 +129,15 @@ def render_header() -> None:
         """
     )
 
+    logo_href = "?page=landing"
+
+    if authenticated and st.session_state.get("access_token"):
+        token = quote(
+            st.session_state["access_token"],
+            safe="",
+        )
+        logo_href = f"?page=landing&access_token={token}"
+
     if authenticated:
         (
             logo_col,
@@ -112,10 +154,14 @@ def render_header() -> None:
 
         with logo_col:
             st.html(
-                """
-                <div class="header-brand">
+                f"""
+                <a
+                    class="header-brand-link"
+                    href="{logo_href}"
+                    target="_self"
+                >
                     AdMaker&nbsp;<span>AI</span>
-                </div>
+                </a>
                 """
             )
 
@@ -168,42 +214,60 @@ def render_header() -> None:
 
         return
 
-    st.html(
-        """
-        <div class="header">
+    (
+        logo_col,
+        spacer_left,
+        new_ad_col,
+        history_col,
+        spacer_right,
+        login_col,
+        signup_col,
+    ) = st.columns(
+        [1.6, 1.2, 1.2, 0.9, 1.2, 0.9, 0.9],
+        vertical_alignment="center",
+    )
+
+    with logo_col:
+        st.html(
+            f"""
             <a
-                class="logo"
-                href="?page=landing"
+                class="header-brand-link"
+                href="{logo_href}"
                 target="_self"
             >
-                AdMaker <span>AI</span>
+                AdMaker&nbsp;<span>AI</span>
             </a>
+            """
+        )
 
-            <div class="nav">
-                <div>서비스 소개</div>
-                <div>기능 안내</div>
-                <div>이용방법</div>
-                <div>요금 안내</div>
-                <div>고객 센터</div>
-            </div>
+    with new_ad_col:
+        if st.button(
+            "새 광고 만들기",
+            key="header_new_ad",
+            width="stretch",
+        ):
+            go_to_page("login")
 
-            <div class="auth">
-                <a
-                    class="nav-btn"
-                    href="?page=login"
-                    target="_self"
-                >
-                    로그인
-                </a>
+    with history_col:
+        if st.button(
+            "히스토리",
+            key="header_history",
+            width="stretch",
+        ):
+            go_to_page("login")
 
-                <a
-                    class="nav-btn primary"
-                    href="?page=signup"
-                    target="_self"
-                >
-                    회원가입
-                </a>
-            </div>
-        </div>
-        """
-    )
+    with login_col:
+        if st.button(
+            "로그인",
+            key="header_login",
+            width="stretch",
+        ):
+            go_to_page("login")
+
+    with signup_col:
+        if st.button(
+            "회원가입",
+            key="header_signup",
+            width="stretch",
+        ):
+            go_to_page("signup")
