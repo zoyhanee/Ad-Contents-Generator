@@ -34,6 +34,8 @@ def recommend(
     recommendation = recommend_strategy(
         product=project.product,
         strategy=request.strategy,
+        db=db,
+        project_id=project.id,
     )
 
     saved_strategy = save_strategy_recommendation(

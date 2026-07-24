@@ -10,6 +10,7 @@ from app.models import (
     ad_draft,
     ad_project,
     ad_strategy,
+    evaluation_result,
     final_result,
     product,
     user,

@@ -11,6 +11,7 @@ from app.crud.project import get_project_by_id
 from app.ml.clients.factory import create_text_model_client
 from app.ml.post_copy_generator import generate_post_copy
 from app.services.evaluation_service import evaluate_and_log_images
+from app.core.config import settings
 
 
 def generate_ad_drafts(
@@ -142,9 +143,33 @@ def generate_ad_drafts(
             image_height=request.image_height,
         )
 
-        # 이미지 A/B/C 생성 완료 후 평가
+        saved_drafts = []
+        for draft in draft_data:
+            ad_draft = AdDraft(
+                project_id=project.id,
+                draft_label=draft["id"],
+                title=draft["title"],
+                version=draft["version"],
+                image_path=draft["image_path"],
+                image_prompt=draft["image_prompt"],
+                post_copy=draft["post_copy"],
+            )
+            db.add(ad_draft)
+            saved_drafts.append((ad_draft, draft))
+
+        db.flush()
+
+        drafts_for_evaluation = [
+            {
+                **draft,
+                "draft_id": ad_draft.id,
+            }
+            for ad_draft, draft in saved_drafts
+        ]
+
+        # 이미지 A/B/C 생성 완료 후 평가 결과를 draft_id와 함께 저장합니다.
         evaluate_and_log_images(
-            drafts=draft_data,
+            drafts=drafts_for_evaluation,
             platform=platform,
             use_clip=False,
             use_llm=True,
@@ -155,20 +180,10 @@ def generate_ad_drafts(
             goal=project.strategy.selected_goal or "",
             style=project.strategy.selected_style or "",
             slogan=requested_slogan,
+            db=db,
+            project_id=project.id,
+            model_name=settings.IMAGE_MODEL_NAME,
         )
-
-        for draft in draft_data:
-            db.add(
-                AdDraft(
-                    project_id=project.id,
-                    draft_label=draft["id"],
-                    title=draft["title"],
-                    version=draft["version"],
-                    image_path=draft["image_path"],
-                    image_prompt=draft["image_prompt"],
-                    post_copy=draft["post_copy"],
-                )
-            )
 
         project.status = "generated"
 
@@ -298,6 +313,7 @@ User feedback:
             drafts=[
                 {
                     "id": draft.draft_label,
+                    "draft_id": draft.id,
                     "image_path": str(image_path),
                     "image_prompt": regenerate_prompt,
                 }
@@ -310,6 +326,9 @@ User feedback:
             goal=project.strategy.selected_goal or "",
             style=project.strategy.selected_style or "",
             slogan=project.strategy.selected_slogan or "",
+            db=db,
+            project_id=project.id,
+            model_name=settings.IMAGE_MODEL_NAME,
         )
 
         db.commit()

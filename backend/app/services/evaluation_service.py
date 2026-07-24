@@ -15,6 +15,7 @@ from typing import Iterable, Optional
 import numpy as np
 from PIL import Image, ImageFilter, ImageStat
 from app.core.config import settings
+from app.models import EvaluationResult
 
 
 logger = logging.getLogger("uvicorn.error")
@@ -184,6 +185,39 @@ class IntegratedEvaluation:
     consistency_score: float
     final_score: float
     details: dict
+
+
+def save_evaluation_result(
+    *,
+    db,
+    project_id: int,
+    evaluation_type: str,
+    score: float | None = None,
+    draft_id: int | None = None,
+    target_label: str | None = None,
+    prompt_version: str | None = None,
+    model_name: str | None = None,
+    eval_model_name: str | None = None,
+    detail_json: dict | None = None,
+    success: bool = True,
+    error_message: str | None = None,
+) -> None:
+    """평가 결과를 실험 로그처럼 DB에 저장합니다."""
+    db.add(
+        EvaluationResult(
+            project_id=project_id,
+            draft_id=draft_id,
+            evaluation_type=evaluation_type,
+            target_label=target_label,
+            prompt_version=prompt_version,
+            model_name=model_name,
+            eval_model_name=eval_model_name,
+            score=score,
+            detail_json=detail_json,
+            success=success,
+            error_message=error_message,
+        )
+    )
 
 
 def _clamp(value: float, low: float = 0.0, high: float = 5.0) -> float:
@@ -1040,8 +1074,12 @@ def evaluate_and_log_slogans(
     platform: str,
     goal: str | None,
     style: str | None,
+    db=None,
+    project_id: int | None = None,
+    prompt_version: str | None = None,
+    model_name: str | None = None,
 ) -> None:
-    """생성된 슬로건을 각각 평가하고 서버 로그에만 출력합니다."""
+    """생성된 슬로건을 평가하고, DB 세션이 있으면 결과도 저장합니다."""
     for index, slogan in enumerate(slogans, start=1):
         try:
             result = evaluate_slogan(
@@ -1088,6 +1126,20 @@ def evaluate_and_log_slogans(
                 result.originality,
                 result.final_score,
             )
+            if db is not None and project_id is not None:
+                save_evaluation_result(
+                    db=db,
+                    project_id=project_id,
+                    evaluation_type="slogan",
+                    target_label=f"slogan_{index}",
+                    prompt_version=prompt_version,
+                    model_name=model_name,
+                    score=result.final_score,
+                    detail_json={
+                        **asdict(result),
+                        "slogan": slogan,
+                    },
+                )
         except Exception:
             logger.exception(
                 "슬로건 %d 평가 중 오류가 발생했습니다. 생성 결과에는 영향을 주지 않습니다.",
@@ -1107,8 +1159,12 @@ def evaluate_and_log_images(
     style: str = "",
     slogan: str = "",
     llm_model: str | None = None,
+    db=None,
+    project_id: int | None = None,
+    prompt_version: str | None = None,
+    model_name: str | None = None,
 ) -> None:
-    """생성된 이미지를 각각 평가하고 서버 로그에만 출력합니다."""
+    """생성된 이미지를 평가하고, DB 세션이 있으면 결과도 저장합니다."""
     for index, draft in enumerate(drafts, start=1):
         draft_label = draft.get("id", index)
 
@@ -1169,6 +1225,23 @@ def evaluate_and_log_images(
                 result.llm_feedback or "미사용",
                 result.final_score,
             )
+            if db is not None and project_id is not None:
+                save_evaluation_result(
+                    db=db,
+                    project_id=project_id,
+                    draft_id=draft.get("draft_id"),
+                    evaluation_type="image",
+                    target_label=str(draft_label),
+                    prompt_version=prompt_version,
+                    model_name=model_name,
+                    eval_model_name=llm_model,
+                    score=result.final_score,
+                    detail_json={
+                        **asdict(result),
+                        "image_path": draft["image_path"],
+                        "image_prompt": draft.get("image_prompt", ""),
+                    },
+                )
         except Exception:
             logger.exception(
                 "이미지 %s 평가 중 오류가 발생했습니다. 생성 결과에는 영향을 주지 않습니다.",

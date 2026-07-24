@@ -51,3 +51,7 @@ class AdDraft(Base):
         back_populates="selected_draft",
         uselist=False,
     )
+    evaluation_results = relationship(
+        "EvaluationResult",
+        back_populates="draft",
+    )

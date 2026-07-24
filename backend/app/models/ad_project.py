@@ -43,3 +43,8 @@ class AdProject(Base):
         back_populates="project",
         cascade="all, delete-orphan",
     )
+    evaluation_results = relationship(
+        "EvaluationResult",
+        back_populates="project",
+        cascade="all, delete-orphan",
+    )
