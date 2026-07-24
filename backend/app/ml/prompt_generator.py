@@ -9,7 +9,26 @@ def generate_image_prompt(
     style: str | None,
     selected_slogan: str,
     concept: str,
+    improvement_rules: list[str] | None = None,
 ) -> str:
+    improvement_rules = improvement_rules or []
+    improvement_guide = ""
+
+    if improvement_rules:
+        rules_text = "\n".join(
+            f"- {rule}"
+            for rule in improvement_rules
+        )
+
+        improvement_guide = f"""
+
+Accumulated evaluation-based image improvement guidance:
+The following guidance comes from recurring weaknesses found in previous generated ad evaluations.
+Apply it only when it is relevant to the current product, strategy, slogan, and concept.
+
+{rules_text}
+""".rstrip()
+
     prompt = f"""
 You are an expert advertising creative director.
 
@@ -32,6 +51,7 @@ Advertising slogan:
 
 Creative concept:
 {concept}
+{improvement_guide}
 
 Requirements:
 - Follow the creative concept clearly.
