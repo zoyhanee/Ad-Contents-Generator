@@ -625,25 +625,43 @@ def render_result():
             height: 56px;
             border: none;
             border-radius: 12px;
-            background: #17211c;
+            background: #0f8a5f;
             color: #ffffff;
             font-size: 15px;
             font-weight: 800;
+            box-shadow: 0 8px 20px rgba(15, 138, 95, 0.16);
             transition:
                 background 0.2s ease,
-                transform 0.2s ease;
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .st-key-save_final_result button:hover {
             border: none;
-            background: #26352d;
+            background: #0b7651;
             color: #ffffff;
             transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(15, 138, 95, 0.22);
+        }
+
+        .st-key-save_final_result button:active {
+            transform: translateY(0);
+        }
+
+        .st-key-save_final_result button:focus,
+        .st-key-save_final_result button:focus-visible {
+            border: none;
+            outline: none !important;
+            color: #ffffff;
+            box-shadow:
+                0 0 0 3px rgba(15, 138, 95, 0.14),
+                0 8px 20px rgba(15, 138, 95, 0.16);
         }
 
         /* 저장 완료 */
         .final-save-complete {
             height: 56px;
+            border: 1.5px solid #b9dfca;
             border-radius: 12px;
             background: #e7f4ed;
             color: #0f8a5f;

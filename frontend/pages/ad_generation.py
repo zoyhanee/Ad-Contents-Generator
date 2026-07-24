@@ -210,6 +210,16 @@ def render_ad_generation():
 
     selected_slogan = slogans[selected_slogan_index]
     
+    
+    # 선택한 AI 추천 슬로건을 사용자가 직접 수정할 수 있도록 편집 상태를 관리합니다.
+    if (
+        st.session_state.get("editable_slogan_source")
+        != selected_slogan
+    ):
+        st.session_state.editable_slogan = selected_slogan
+        st.session_state.editable_slogan_source = selected_slogan
+        
+        
     image_width = strategy_data.get(
         "image_width",
         1024,
@@ -378,17 +388,56 @@ def render_ad_generation():
         """
     )
 
+    # 7. 선택한 슬로건 직접 수정
+    st.html(
+        """
+        <div style="
+            margin-top: 20px;
+            margin-bottom: 12px;
+        ">
+            <div style="
+                color: #17211c;
+                font-size: 17px;
+                font-weight: 800;
+                margin-bottom: 5px;
+            ">
+                ✏️ 선택한 슬로건 수정
+            </div>
+
+            <div style="
+                color: #718078;
+                font-size: 13px;
+                line-height: 1.6;
+            ">
+                AI 추천 슬로건이 조금 아쉽다면
+                원하는 부분만 자유롭게 수정해보세요.
+            </div>
+        </div>
+        """
+    )
+
+    edited_slogan = st.text_input(
+        "슬로건",
+        key="editable_slogan",
+        label_visibility="collapsed",
+    )
+
+    if not edited_slogan.strip():
+        st.warning("슬로건을 입력해주세요.")
+
     # 8. 광고 시안 생성 상태 초기화
     if "generation_status" not in st.session_state:
         st.session_state.generation_status = "ready"
 
     # 이전에 생성한 슬로건과 현재 선택한 슬로건이 다르면
     # 기존 이미지 결과를 폐기하고 새로 생성할 수 있도록 초기화합니다.
+    current_slogan = st.session_state.editable_slogan.strip()
+    
     generated_for_slogan = st.session_state.get("generated_for_slogan")
 
     if (
         generated_for_slogan is not None
-        and generated_for_slogan != selected_slogan
+        and generated_for_slogan != current_slogan
     ):
         st.session_state.generation_status = "ready"
         st.session_state.generated_drafts = []
@@ -458,14 +507,16 @@ def render_ad_generation():
             "✨ AI 광고 시안 생성하기",
             key="start_generation",
             use_container_width=True,
+            disabled=not edited_slogan.strip(),
         ):
-            # 버튼을 누른 바로 그 시점의 슬로건을 별도로 저장합니다.
-            # rerun 이후에도 반드시 이 값으로 이미지를 생성합니다.
-            st.session_state.generation_slogan = selected_slogan
+            # 사용자가 최종적으로 수정한 슬로건을 생성용 슬로건으로 저장합니다.
+            st.session_state.generation_slogan = edited_slogan.strip()
+
             st.session_state.generation_status = "generating"
             st.session_state.generated_drafts = []
             st.session_state.selected_draft = None
             st.session_state.selected_post_copy = None
+
             st.rerun()
             
     # 10. 광고 시안 생성 중
@@ -1203,7 +1254,9 @@ def render_ad_generation():
             
         if regenerate_all_clicked:
             # 현재 화면에 표시된 슬로건으로 전체 시안을 다시 생성합니다.
-            st.session_state.generation_slogan = selected_slogan
+            st.session_state.generation_slogan = (
+                st.session_state.editable_slogan.strip()
+            )
             st.session_state.generation_status = "generating"
             st.session_state.generated_drafts = []
             st.session_state.selected_draft = None
@@ -1251,7 +1304,7 @@ def render_ad_generation():
                             "strategy_description"
                         ],
                     },
-                    "selected_slogan": selected_slogan,
+                    "selected_slogan": st.session_state.editable_slogan.strip(),
                 },
                 "selected_draft": selected_draft_data,
                 "selected_post_copy": (
