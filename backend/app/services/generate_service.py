@@ -10,7 +10,6 @@ from app.ml.image_clients.factory import create_image_model_client
 from app.crud.project import get_project_by_id
 from app.ml.clients.factory import create_text_model_client
 from app.ml.post_copy_generator import generate_post_copy
-from app.services.evaluation_service import evaluate_and_log_images
 
 
 def generate_ad_drafts(
@@ -140,21 +139,6 @@ def generate_ad_drafts(
             selected_slogan=requested_slogan,
             image_width=request.image_width,
             image_height=request.image_height,
-        )
-
-        # 이미지 A/B/C 생성 완료 후 평가
-        evaluate_and_log_images(
-            drafts=draft_data,
-            platform=platform,
-            use_clip=False,
-            use_llm=True,
-            product_name=project.product.name,
-            product_description=(
-                project.product.description or ""
-            ),
-            goal=project.strategy.selected_goal or "",
-            style=project.strategy.selected_style or "",
-            slogan=requested_slogan,
         )
 
         for draft in draft_data:
@@ -293,25 +277,6 @@ User feedback:
         draft.post_copy = post_copy
         draft.feedback = request.feedback
         draft.version += 1
-
-        evaluate_and_log_images(
-            drafts=[
-                {
-                    "id": draft.draft_label,
-                    "image_path": str(image_path),
-                    "image_prompt": regenerate_prompt,
-                }
-            ],
-            platform=platform,
-            use_clip=False,
-            use_llm=True,
-            product_name=project.product.name,
-            product_description=project.product.description or "",
-            goal=project.strategy.selected_goal or "",
-            style=project.strategy.selected_style or "",
-            slogan=project.strategy.selected_slogan or "",
-        )
-
         db.commit()
         db.refresh(draft)
 
