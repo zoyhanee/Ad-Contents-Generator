@@ -18,6 +18,9 @@ class Settings(BaseSettings):
 
     OPENAI_API_KEY: str
 
+    #Prompt_Version
+    PROMPT_VERSION: str = "v1"
+
     # Authentication
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
