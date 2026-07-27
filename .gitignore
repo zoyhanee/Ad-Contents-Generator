@@ -233,7 +233,7 @@ generated/
 results/
 
 # Model weights
-models/
+/models/
 *.ckpt
 *.safetensors
 *.bin
@@ -250,3 +250,4 @@ logs/
 
 # Runtime storage
 backend/storage/*
+backend/storage/**.bak
