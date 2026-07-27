@@ -26,9 +26,11 @@ def generate_drafts(
     selected_slogan: str,
     image_width: int,
     image_height: int,
+    image_improvement_rules: list[str] | None = None,
 ) -> list[dict]:
     text_client = create_text_model_client()
     image_client = create_image_model_client()
+    image_improvement_rules = image_improvement_rules or []
 
     GENERATED_IMAGE_DIR.mkdir(
         parents=True,
@@ -47,6 +49,7 @@ def generate_drafts(
             style=style,
             selected_slogan=selected_slogan,
             concept=concept,
+            improvement_rules=image_improvement_rules,
         )
 
         post_copy = generate_post_copy(

@@ -10,6 +10,10 @@ from app.ml.image_clients.factory import create_image_model_client
 from app.crud.project import get_project_by_id
 from app.ml.clients.factory import create_text_model_client
 from app.ml.post_copy_generator import generate_post_copy
+from app.services.evaluation_service import (
+    get_image_improvement_rules,
+    get_prompt_improvement_context,
+)
 
 
 def generate_ad_drafts(
@@ -130,6 +134,15 @@ def generate_ad_drafts(
             },
         )
 
+        improvement_context = get_prompt_improvement_context(
+            db=db,
+            min_evaluations=1,
+        )
+
+        image_improvement_rules = get_image_improvement_rules(
+            improvement_context,
+        )
+
         draft_data = generate_drafts(
             product_name=project.product.name,
             product_description=project.product.description,
@@ -139,6 +152,7 @@ def generate_ad_drafts(
             selected_slogan=requested_slogan,
             image_width=request.image_width,
             image_height=request.image_height,
+            image_improvement_rules=image_improvement_rules,
         )
 
         for draft in draft_data:
