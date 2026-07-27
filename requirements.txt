@@ -91,3 +91,6 @@ websockets==16.0
 zipp==4.1.0
 alembic==1.18.5
 pillow-heif==1.4.0
+timm
+kornia
+einops

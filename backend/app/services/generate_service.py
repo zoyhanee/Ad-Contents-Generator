@@ -40,10 +40,8 @@ def generate_ad_drafts(
         )
 
     try:
-        # 요청으로 들어온 새 슬로건
         requested_slogan = request.selected_slogan.strip()
 
-        # 기존 시안을 생성할 때 사용했던 슬로건
         previous_slogan = (
             project.strategy.selected_slogan or ""
         ).strip()
@@ -64,7 +62,6 @@ def generate_ad_drafts(
             },
         )
 
-        # 기존 시안이 있고 슬로건도 동일하면 기존 결과 재사용
         if (
             existing_drafts
             and previous_slogan == requested_slogan
@@ -89,7 +86,6 @@ def generate_ad_drafts(
                 ],
             }
 
-        # 기존 시안이 있지만 슬로건이 변경됐다면 기존 시안 제거
         if existing_drafts:
             print(
                 "[GENERATE SERVICE] "
@@ -97,7 +93,6 @@ def generate_ad_drafts(
             )
 
             for draft in existing_drafts:
-                # 기존 이미지 파일 삭제
                 if draft.image_path:
                     image_path = Path(draft.image_path)
 
@@ -112,10 +107,8 @@ def generate_ad_drafts(
 
                 db.delete(draft)
 
-            # DELETE 쿼리를 먼저 DB에 반영
             db.flush()
 
-        # 변경된 슬로건을 전략에 반영
         project.strategy.selected_slogan = requested_slogan
 
         platform = (
@@ -153,6 +146,8 @@ def generate_ad_drafts(
             image_width=request.image_width,
             image_height=request.image_height,
             image_improvement_rules=image_improvement_rules,
+            ad_goal=project.strategy.selected_goal,
+            price=str(project.product.price) if project.product.price else None,
         )
 
         for draft in draft_data:
