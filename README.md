@@ -472,6 +472,9 @@ Run Backend / Frontend
 # ※ Collaboration Log
 
 한성택 : 
+
 김범수 : 
+
 엄지영 : 
+
 신기성 : 
