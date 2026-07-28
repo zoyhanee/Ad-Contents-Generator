@@ -7,6 +7,7 @@ from app.api.product import router as product_router
 from app.api.strategy import router as strategy_router
 from app.api.project import router as project_router
 from app.api.history import router as history_router
+from app.api.edit import router as edit_router
 
 
 api_router = APIRouter()
@@ -18,3 +19,4 @@ api_router.include_router(product_router)
 api_router.include_router(strategy_router)
 api_router.include_router(project_router)
 api_router.include_router(history_router)
+api_router.include_router(edit_router)
