@@ -48,7 +48,7 @@ pandas==3.0.3
 pillow==12.2.0
 protobuf==7.35.1
 psutil==7.2.2
-pwdlib==0.3.0
+pwdlib[argon2]
 pyarrow==24.0.0
 pycparser==3.0
 pydantic==2.13.4
