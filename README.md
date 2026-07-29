@@ -529,7 +529,7 @@ docker compose down
 # ※ Collaboration Log
 - **최종 보고서** : [다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
 - **협업 일지**
-- 한성택  
-- 김범수  
-- 엄지영  
-- [신기성](https://blog.naver.com/ispeed0011/224361451557)
+  - 한성택  
+  - 김범수  
+  - 엄지영  
+  - [신기성](https://blog.naver.com/ispeed0011/224361451557)
