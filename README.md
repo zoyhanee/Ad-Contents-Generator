@@ -468,3 +468,68 @@ Run Backend / Frontend
 ```
 
 ------------------------------------------------------------------------
+
+# 🐳 Docker Quick Start
+
+## Prerequisites
+
+- Docker
+- Docker Compose
+
+Verify the installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+## 1. Clone Repository
+
+```bash
+git clone git@github.com:zoyhanee/Ad-Contents-Generator.git
+
+cd Ad-Contents-Generator
+```
+
+## 2. Configure Environment Variables
+
+Create a `.env` file in the project root.
+
+```bash
+cp .env.example .env
+```
+
+Fill in the required API keys and configuration values.
+
+## 3. Build and Run
+
+```bash
+docker compose up --build
+```
+
+This starts:
+
+- Backend (FastAPI): http://localhost:8000
+- Frontend (Streamlit): http://localhost:8501
+
+Swagger UI:
+
+```
+http://localhost:8000/docs
+```
+
+## 4. Stop Services
+
+```bash
+docker compose down
+```
+
+------------------------------------------------------------------------
+
+# ※ Collaboration Log
+- **최종 보고서** : [다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
+- **협업 일지**
+  - 한성택  
+  - 김범수  
+  - [엄지영](https://app.notion.com/p/39887511ab8580c6acbac65ee99afbb8?source=copy_link)  
+  - [신기성](https://blog.naver.com/ispeed0011/224361451557)
