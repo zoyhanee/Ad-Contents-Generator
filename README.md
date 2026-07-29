@@ -528,10 +528,7 @@ docker compose down
 
 # ※ Collaboration Log
 
-한성택 : 
-
-김범수 : 
-
-엄지영 : 
-
+한성택  
+김범수  
+엄지영  
 [신기성](https://blog.naver.com/ispeed0011/224361451557)
