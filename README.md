@@ -531,5 +531,9 @@ docker compose down
 - **협업 일지**
   - 한성택  
   - 김범수  
+<<<<<<< HEAD
   - [엄지영](https://app.notion.com/p/39887511ab8580c6acbac65ee99afbb8?source=copy_link)  
+=======
+  - 엄지영  
+>>>>>>> d15061ab55ab7f552b78341f101ffd04a07c8f67
   - [신기성](https://blog.naver.com/ispeed0011/224361451557)
