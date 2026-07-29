@@ -527,9 +527,8 @@ docker compose down
 ------------------------------------------------------------------------
 
 # ※ Collaboration Log
-**최종 보고서**  
--[다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
-**협업일지**  
+-**최종 보고서** : [다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
+- **협업 일지**
 -한성택  
 -김범수  
 -엄지영  
