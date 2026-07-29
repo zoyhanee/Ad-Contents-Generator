@@ -529,7 +529,7 @@ docker compose down
 # ※ Deliverables
 - **최종 보고서** : [다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
 - **협업 일지**
-  - 한성택  
+  - [한성택](https://app.notion.com/p/Daily-4-3ac5f26f8906804d9fb5c32b085bcb9c)
   - 김범수  
   - [엄지영](https://app.notion.com/p/39887511ab8580c6acbac65ee99afbb8?source=copy_link) 
   - [신기성](https://blog.naver.com/ispeed0011/224361451557)
