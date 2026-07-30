@@ -530,6 +530,6 @@ docker compose down
 - **최종 보고서** : [다운로드](https://drive.google.com/file/d/1mM4LpHXKkQuROfPWRsOms-ojbthMSCtx/view?usp=drive_link)
 - **협업 일지**
   - [한성택](https://app.notion.com/p/Daily-4-3ac5f26f8906804d9fb5c32b085bcb9c)
-  - 김범수  
+  - [김범수](https://app.notion.com/p/_-4-3916f05dfc108015a03eca2aefb4cd3c)  
   - [엄지영](https://app.notion.com/p/39887511ab8580c6acbac65ee99afbb8?source=copy_link) 
   - [신기성](https://blog.naver.com/ispeed0011/224361451557)
